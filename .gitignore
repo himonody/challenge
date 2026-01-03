@@ -3,7 +3,6 @@
 */.DS_Store
 temp
 *.exe
-go-admin
 tmp/
 tmp/app
 !tmp

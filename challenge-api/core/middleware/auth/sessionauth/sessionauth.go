@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -56,18 +57,10 @@ func (s *SessionAuth) Login(c *gin.Context) {
 	}
 
 	//session信息
-	roleId, _ := c.Get(authdto.RoleId)
-	roleKey, _ := c.Get(authdto.RoleKey)
-	deptId, _ := c.Get(authdto.DeptId)
 	userName, _ := c.Get(authdto.UserName)
-	dataScope, _ := c.Get(authdto.DataScope)
 	sessionInfo, err := json.Marshal(map[string]interface{}{
 		authdto.LoginUserId: userId,
-		authdto.RoleKey:     roleKey,
 		authdto.UserName:    userName,
-		authdto.DataScope:   dataScope,
-		authdto.RoleId:      roleId,
-		authdto.DeptId:      deptId,
 	})
 	if err != nil {
 		rLog.Error(err)
@@ -98,7 +91,7 @@ func (s *SessionAuth) Login(c *gin.Context) {
 		Data: authdto.Data{
 			Token:    sid,
 			UserName: userName.(string),
-			//Expire:   time.Now().Add(time.Duration(config.AuthConfig.Timeout) * time.Second).Format(time.RFC3339),
+			Expire:   time.Now().Add(time.Duration(config.AuthConfig.Timeout) * time.Second).Format(time.RFC3339),
 			//UserInfo: userInfo,
 		},
 	}

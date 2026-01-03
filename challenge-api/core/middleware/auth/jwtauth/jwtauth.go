@@ -104,19 +104,11 @@ func (j *JwtAuth) AuthMiddlewareFunc() gin.HandlerFunc {
 func PayloadFunc(data interface{}) MapClaims {
 	if v, ok := data.(map[string]interface{}); ok {
 		userId, _ := v[authdto.LoginUserId]
-		roleKey, _ := v[authdto.RoleKey]
 		userName, _ := v[authdto.UserName]
-		dataScope, _ := v[authdto.DataScope]
-		roleId, _ := v[authdto.RoleId]
-		deptId, _ := v[authdto.DeptId]
 
 		return MapClaims{
 			authdto.LoginUserId: userId,
-			authdto.RoleKey:     roleKey,
 			authdto.UserName:    userName,
-			authdto.DataScope:   dataScope,
-			authdto.RoleId:      roleId,
-			authdto.DeptId:      deptId,
 		}
 	}
 	return MapClaims{}
@@ -126,11 +118,7 @@ func IdentityHandler(c *gin.Context) interface{} {
 	claims := ExtractClaims(c)
 	return map[string]interface{}{
 		authdto.LoginUserId: claims[authdto.LoginUserId],
-		authdto.RoleKey:     claims[authdto.RoleKey],
 		authdto.UserName:    claims[authdto.UserName],
-		authdto.DataScope:   claims[authdto.DataScope],
-		authdto.RoleId:      claims[authdto.RoleId],
-		authdto.DeptId:      claims[authdto.DeptId],
 	}
 }
 
@@ -140,19 +128,11 @@ func Authenticator(c *gin.Context) (interface{}, error) {
 		return nil, ErrFailedAuthentication
 	}
 
-	roleId, _ := c.Get(authdto.RoleId)
-	roleKey, _ := c.Get(authdto.RoleKey)
-	deptId, _ := c.Get(authdto.DeptId)
 	userName, _ := c.Get(authdto.UserName)
-	dataScope, _ := c.Get(authdto.DataScope)
 
 	resp := map[string]interface{}{
 		authdto.LoginUserId: userId,
-		authdto.RoleKey:     roleKey,
 		authdto.UserName:    userName,
-		authdto.DataScope:   dataScope,
-		authdto.RoleId:      roleId,
-		authdto.DeptId:      deptId,
 	}
 	return resp, nil
 }
@@ -163,25 +143,9 @@ func Authorizator(data interface{}, c *gin.Context) bool {
 		if userId != nil {
 			c.Set(authdto.LoginUserId, int64(userId.(float64))) //这里一定要用string保存userId，以防取出Interface转换复杂
 		}
-		roleKey, _ := v[authdto.RoleKey]
-		if roleKey != nil {
-			c.Set(authdto.RoleKey, roleKey)
-		}
-		roleId, _ := v[authdto.RoleId]
-		if roleId != nil {
-			c.Set(authdto.RoleId, int64(roleId.(float64))) //这里一定要用string保存userId，以防取出Interface转换复杂
-		}
-		deptId, _ := v[authdto.DeptId]
-		if roleId != nil {
-			c.Set(authdto.DeptId, int64(deptId.(float64))) //这里一定要用string保存userId，以防取出Interface转换复杂
-		}
 		userName, _ := v[authdto.UserName]
 		if userName != nil {
 			c.Set(authdto.UserName, userName)
-		}
-		dataScope, _ := v[authdto.DataScope]
-		if dataScope != nil {
-			c.Set(authdto.DataScope, dataScope)
 		}
 		return true
 	}

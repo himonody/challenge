@@ -6,7 +6,7 @@ type CaptchaResp struct {
 }
 
 type RegisterReq struct {
-	UserName    string `json:"userName"`
+	UserName    string `json:"username"`
 	Password    string `json:"password"`
 	RefCode     string `json:"refCode"`
 	CaptchaId   string `json:"captchaId"`
@@ -14,7 +14,7 @@ type RegisterReq struct {
 }
 
 type LoginReq struct {
-	UserName    string `json:"userName"`
+	UserName    string `json:"username"`
 	Password    string `json:"password"`
 	CaptchaId   string `json:"captchaId"`
 	CaptchaCode string `json:"captchaCode"`
