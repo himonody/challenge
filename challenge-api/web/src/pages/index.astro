@@ -1,0 +1,60 @@
+---
+import "../styles/global.css";
+import { StackDemo } from "../components/StackDemo";
+---
+
+<html lang="zh-CN" x-data="{ open: false }">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Challenge API Web</title>
+    <script type="module" is:inline>
+      import Alpine from "alpinejs";
+      window.Alpine = Alpine;
+      Alpine.start();
+    </script>
+  </head>
+  <body class="min-h-screen bg-slate-950 text-slate-100">
+    <main class="mx-auto flex max-w-5xl flex-col gap-10 px-4 py-10">
+      <header class="flex flex-col gap-2">
+        <p class="text-xs uppercase tracking-[0.2em] text-emerald-400">Challenge API</p>
+        <h1 class="text-3xl font-semibold sm:text-4xl">Astro + Tailwind + React 技术栈示例</h1>
+        <p class="max-w-2xl text-sm text-slate-400">
+          本页演示了 Tailwind CSS 布局、React 组件（Framer Motion + Zod）、以及 Alpine.js 的简单交互。
+        </p>
+      </header>
+
+      <section class="grid gap-8 md:grid-cols-[1.4fr,1fr]">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 shadow-lg shadow-slate-950/40">
+          <h2 class="mb-4 text-base font-medium">React + Framer Motion + Zod</h2>
+          <StackDemo client:load />
+        </div>
+
+        <div class="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/40 p-6">
+          <h2 class="text-base font-medium">Alpine.js 区块</h2>
+          <p class="text-sm text-slate-400">
+            这个卡片使用 Alpine.js 控制展开/收起状态，通过 <code>x-data</code> 和 <code>x-show</code> 指令。
+          </p>
+          <div class="space-y-2" x-data="{ open: false }">
+            <button
+              class="inline-flex items-center justify-center rounded bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-100 hover:bg-slate-700"
+              @click="open = !open"
+            >
+              <span x-show="!open">展开详情</span>
+              <span x-show="open">收起</span>
+            </button>
+            <div
+              x-show="open"
+              x-transition
+              class="rounded border border-slate-800 bg-slate-900/80 p-3 text-xs text-slate-300"
+            >
+              这里是使用 Alpine.js 控制的内容区域，可作为简单的交互组件或说明块。
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
