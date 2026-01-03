@@ -211,8 +211,8 @@ CREATE TABLE `app_challenge_config` (
                                     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '活动配置ID',
                                     `day_count` INT NOT NULL DEFAULT 0 COMMENT '挑战天数 1/7/21',
                                     `amount` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '单人挑战金额',
-                                    `checkin_start` datetime NOT NULL DEFAULT '1970-01-01 00:00:00' COMMENT '每日打卡开始时间',
-                                    `checkin_end` datetime NOT NULL DEFAULT '1970-01-01 00:00:00' COMMENT '每日打卡结束时间',
+                                    `checkin_start` datetime  DEFAULT NULL COMMENT '每日打卡开始时间',
+                                    `checkin_end` datetime  DEFAULT NULL COMMENT '每日打卡结束时间',
                                     `platform_bonus` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '平台补贴金额',
                                     `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态 1启用 2停用',
                                     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间戳',
@@ -229,8 +229,8 @@ CREATE TABLE `app_challenge_checkin` (
                                      `challenge_id` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '用户挑战ID',
                                      `user_id` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '用户ID',
 
-                                     `checkin_date` INT NOT NULL DEFAULT 0 COMMENT '打卡日期 YYYYMMDD',
-                                     `checkin_time` datetime NOT NULL DEFAULT '1970-01-01 00:00:00' COMMENT '打卡时间戳',
+                                     `checkin_date` DATE NOT NULL COMMENT '打卡日期 YYYYMMDD',
+                                     `checkin_time` datetime  DEFAULT NULL COMMENT '打卡时间戳',
 
                                      `mood_code` TINYINT NOT NULL DEFAULT 0 COMMENT '心情枚举 1开心 2平静 3一般 4疲惫 5低落 6爆棚',
                                      `mood_text` VARCHAR(200) NOT NULL DEFAULT '' COMMENT '用户心情文字描述（最多200字）',
@@ -284,7 +284,7 @@ CREATE TABLE `app_challenge_checkin_video_ad` (
                                               `verify_status` TINYINT NOT NULL DEFAULT 0 COMMENT '校验状态 0待校验 1成功 2失败',
 
                                               `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '观看完成时间戳',
-                                              `verified_at` datetime NOT NULL DEFAULT '1970-01-01 00:00:00' COMMENT '校验完成时间戳',
+                                              `verified_at` datetime  DEFAULT NULL COMMENT '校验完成时间戳',
 
                                               PRIMARY KEY (`id`),
                                               UNIQUE KEY `uk_ad_order` (`ad_order_no`),
@@ -307,7 +307,7 @@ CREATE TABLE `app_challenge_user` (
                                   `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态 1进行中 2成功 3失败',
                                   `fail_reason` TINYINT NOT NULL DEFAULT 0 COMMENT '失败原因 0无 1未打卡 2作弊',
                                   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '报名时间戳',
-                                  `finished_at` datetime NOT NULL DEFAULT '1970-01-01 00:00:00' COMMENT '完成时间戳',
+                                  `finished_at` datetime  DEFAULT NULL COMMENT '完成时间戳',
                                   PRIMARY KEY (`id`),
                                   UNIQUE KEY `uk_user_active` (`user_id`,`status`),
                                   KEY `idx_pool` (`pool_id`)
@@ -320,8 +320,8 @@ DROP TABLE IF EXISTS `app_challenge_pool`;
 CREATE TABLE `app_challenge_pool` (
                                   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '奖池ID',
                                   `config_id` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '活动配置ID',
-                                  `start_date` INT NOT NULL DEFAULT 0 COMMENT '活动开始日期',
-                                  `end_date` INT NOT NULL DEFAULT 0 COMMENT '活动结束日期',
+                                  `start_date` datetime  DEFAULT NULL COMMENT '活动开始日期',
+                                  `end_date` datetime  DEFAULT NULL COMMENT '活动结束日期',
                                   `total_amount` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '奖池当前总金额',
                                   `settled` TINYINT NOT NULL DEFAULT 0 COMMENT '是否已结算 0否 1是',
                                   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间戳',
@@ -363,7 +363,7 @@ CREATE TABLE `app_challenge_settlement` (
 -- ----------------------------
 DROP TABLE IF EXISTS `app_challenge_daily_stat`;
 CREATE TABLE `app_challenge_daily_stat` (
-                                        `stat_date` INT NOT NULL DEFAULT 0 COMMENT '统计日期 YYYYMMDD',
+                                        `stat_date` DATE NOT NULL COMMENT '统计日期 YYYYMMDD',
                                         `join_user_cnt` INT NOT NULL DEFAULT 0 COMMENT '参与人数',
                                         `success_user_cnt` INT NOT NULL DEFAULT 0 COMMENT '成功人数',
                                         `fail_user_cnt` INT NOT NULL DEFAULT 0 COMMENT '失败人数',
@@ -397,26 +397,12 @@ CREATE TABLE `app_challenge_total_stat` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='平台累计统计';
 
 -- ----------------------------
--- Table structure for app_invite_relation
--- ----------------------------
-DROP TABLE IF EXISTS `app_invite_relation`;
-CREATE TABLE `app_invite_relation` (
-                                   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '关系ID',
-                                   `inviter_id` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '邀请人',
-                                   `invitee_id` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '被邀请人',
-                                   `level` TINYINT NOT NULL DEFAULT 1 COMMENT '邀请层级',
-                                   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '绑定时间',
-                                   PRIMARY KEY (`id`),
-                                   UNIQUE KEY `uk_invitee` (`invitee_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='邀请关系表';
-
--- ----------------------------
 -- Table structure for app_challenge_rank_daily
 -- ----------------------------
 DROP TABLE IF EXISTS `app_challenge_rank_daily`;
 CREATE TABLE `app_challenge_rank_daily` (
                                         `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '排行ID',
-                                        `rank_date` INT NOT NULL DEFAULT 0 COMMENT '排行日期',
+                                        `rank_date` DATE NOT NULL COMMENT '排行日期',
                                         `rank_type` TINYINT NOT NULL DEFAULT 0 COMMENT '1邀请 2收益 3毅力',
                                         `user_id` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '用户ID',
                                         `value` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '排行值',
@@ -436,7 +422,7 @@ CREATE TABLE `app_withdraw_order` (
                                   `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态 1待审核 2通过 3拒绝 4打款完成',
                                   `reject_reason` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '拒绝原因',
                                   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '申请时间',
-                                  `reviewed_at` datetime NOT NULL DEFAULT '1970-01-01 00:00:00' COMMENT '审核时间',
+                                  `reviewed_at` datetime  DEFAULT NULL COMMENT '审核时间',
                                   PRIMARY KEY (`id`),
                                   KEY `idx_user` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='提现申请表';

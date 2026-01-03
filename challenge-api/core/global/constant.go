@@ -5,12 +5,12 @@ package global
  */
 
 const (
-	RouteRootPath = "/admin-api"
-	ModelName     = "challenge-admin"
+	RouteRootPath = "/api"
+	ModelName     = "challenge"
 	LoginLog      = "login_log_queue"
 	OperateLog    = "operate_log_queue"
 	TrafficKey    = "X-Request-Id"
-	LoggerKey     = "_go-admin-logger-request"
+	LoggerKey     = "_challenge-logger-request"
 
 	// SysStatusOk 通用-正常
 	SysStatusOk    = "1"

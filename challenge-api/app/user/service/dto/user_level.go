@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"go-admin/core/dto"
+	"challenge/core/dto"
 	"time"
 )
 

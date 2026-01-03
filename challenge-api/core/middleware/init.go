@@ -3,6 +3,7 @@ package middleware
 import (
 	"challenge/core/middleware/auth/jwtauth"
 	"challenge/core/runtime"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,6 +19,7 @@ func InitMiddleware(r *gin.Engine) {
 	r.Use(LoggerToFile())
 	// 自定义错误处理
 	r.Use(CustomError)
+	r.Use(OnlyPost())
 	// IsKeepAlive is a middleware function that appends headers
 	r.Use(KeepAlive)
 	// 跨域处理
@@ -39,4 +41,17 @@ func Auth() gin.HandlerFunc {
 	}
 	// 默认直接放行，避免因配置问题导致服务不可用
 	return func(c *gin.Context) { c.Next() }
+}
+
+func OnlyPost() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if c.Request.Method == http.MethodPost || c.Request.Method == http.MethodOptions {
+			c.Next()
+			return
+		}
+		c.AbortWithStatusJSON(http.StatusOK, gin.H{
+			"code": http.StatusMethodNotAllowed,
+			"msg":  "Method Not Allowed",
+		})
+	}
 }

@@ -18,7 +18,7 @@ func registerUserRouter(v1 *gin.RouterGroup) {
 
 	r := v1.Group("/app/user/user").Use(middleware.Auth())
 	{
-		r.GET("", func(context *gin.Context) {
+		r.POST("", func(context *gin.Context) {
 			context.JSON(http.StatusOK, gin.H{
 				"code": 200,
 				"msg":  "success",

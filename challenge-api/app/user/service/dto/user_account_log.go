@@ -1,9 +1,9 @@
 package dto
 
 import (
+	commDto "challenge/app/app/common/dto"
+	"challenge/core/dto"
 	"github.com/shopspring/decimal"
-	commDto "go-admin/app/app/common/dto"
-	"go-admin/core/dto"
 	"time"
 )
 

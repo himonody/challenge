@@ -1,7 +1,7 @@
 # 更多配置请前往源码位置：config/config中查阅
 settings:
   application:
-    Author: Jason
+    Author: nox
     # dev开发环境 test测试环境 prod线上环境
     mode: dev
     # 服务器ip，默认使用 0.0.0.0

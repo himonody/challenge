@@ -1,8 +1,8 @@
 package dto
 
 import (
-	commDto "go-admin/app/app/common/dto"
-	"go-admin/core/dto"
+	commDto "challenge/app/app/common/dto"
+	"challenge/core/dto"
 	"time"
 )
 

@@ -5,11 +5,13 @@ import (
 	"challenge/core/config"
 	"challenge/core/lang"
 	"challenge/core/middleware/auth/authdto"
+	"challenge/core/runtime"
 	"challenge/core/utils/log"
 	"challenge/core/utils/strutils"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -51,7 +53,16 @@ func (j *JwtAuth) Login(c *gin.Context) {
 }
 
 func (j *JwtAuth) Logout(c *gin.Context) {
-
+	userId := c.GetInt64(authdto.LoginUserId)
+	if userId > 0 {
+		_ = runtime.RuntimeConfig.GetCacheAdapter().Del(JWTLoginPrefix, strconv.FormatInt(userId, 10))
+	}
+	c.JSON(http.StatusOK, authdto.Resp{
+		RequestId: strutils.GenerateMsgIDFromContext(c),
+		Msg:       "",
+		Code:      http.StatusOK,
+		Data:      nil,
+	})
 }
 
 func (j *JwtAuth) Get(c *gin.Context, key string) (interface{}, int, error) {

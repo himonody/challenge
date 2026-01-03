@@ -18,7 +18,7 @@ config/settings.b.dev.yml
 .DS_Store
 
 # go sum
-go.sum
+challenge-admin/go.sum
 .jpg
 .jpeg
 .png

@@ -3,6 +3,7 @@
 package app
 
 import (
+	authRouter "challenge/app/auth"
 	userRouter "challenge/app/user"
 )
 
@@ -14,6 +15,7 @@ func ChallengeRouter() []func() {
 	var routers []func()
 
 	//app-应用
+	routers = append(routers, authRouter.AuthRouter()...)
 	routers = append(routers, userRouter.UserRouter()...)
 
 	return routers

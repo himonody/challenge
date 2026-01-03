@@ -10,15 +10,16 @@ import (
 	"challenge/core/utils/log"
 	"challenge/core/utils/strutils"
 	"encoding/json"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 const (
-	SessionLoginPrefixTmp = "admin:login:session:tmp" //登录中转
-	SessionLoginPrefix    = "admin:login:session:user"
+	SessionLoginPrefixTmp = "challenge:login:session:tmp" //登录中转
+	SessionLoginPrefix    = "challenge:login:session:user"
 )
 
 type SessionAuth struct{}

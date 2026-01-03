@@ -20,7 +20,7 @@ import (
 )
 
 const JwtPayloadKey = "JWT_PAYLOAD"
-const JWTLoginPrefix = "admin:jwt"
+const JWTLoginPrefix = "challenge:jwt"
 
 type MapClaims map[string]interface{}
 
