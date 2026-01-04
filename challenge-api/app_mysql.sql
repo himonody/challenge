@@ -10,7 +10,6 @@ CREATE TABLE `app_user` (
                             `id` int NOT NULL AUTO_INCREMENT COMMENT '用户编码',
                             `level_id` int NOT NULL DEFAULT '1' COMMENT '用户等级编号',
                             `username` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '账号名称/用户名',
-                            `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '密码',
                             `nickname` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '用户昵称',
                             `true_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '真实姓名',
                             `money` decimal(30,2) NOT NULL DEFAULT '0.00' COMMENT '余额',
@@ -42,9 +41,9 @@ CREATE TABLE `app_user` (
 -- Records of app_user
 -- ----------------------------
 BEGIN;
-INSERT INTO `app_user` (`id`, `level_id`, `username`, `password`, `nickname`, `true_name`, `money`, `email`, `mobile_title`, `mobile`, `avatar`, `pay_pwd`, `pwd`, `ref_code`, `parent_id`, `parent_ids`, `tree_sort`, `tree_sorts`, `tree_leaf`, `tree_level`, `status`, `remark`, `create_by`, `update_by`, `created_at`, `updated_at`) VALUES (1, 1, '- -', '', '- -', '- -', 1.00, 'fb0cc809bbed1743bd7d2d8f444e2bae099e69819f4e072f7057bb1e4249bf3d', '86', '6d84b6afd68a5c7188779114f16c46e9', 'http://www.bitxx.top/images/my_head-touch-icon-next.png', '', '', 'akIiWm', 0, '0,', 1, '1,', '2', 1, '1', '', 0, 1, '2023-04-03 21:09:13', '2023-10-19 14:03:37');
-INSERT INTO `app_user` (`id`, `level_id`, `username`, `password`, `nickname`, `true_name`, `money`, `email`, `mobile_title`, `mobile`, `avatar`, `pay_pwd`, `pwd`, `ref_code`, `parent_id`, `parent_ids`, `tree_sort`, `tree_sorts`, `tree_leaf`, `tree_level`, `status`, `remark`, `create_by`, `update_by`, `created_at`, `updated_at`) VALUES (2, 2, '- -', '', '- -', '- -', 0.00, 'dca887a13d1225ccd447dc52a712861c099e69819f4e072f7057bb1e4249bf3d', '86', '84ace68f39f53a315d8114c61413505d', 'http://www.bitxx.top/images/my_head-touch-icon-next.png', '', '', 'GQFz6v', 1, '0,1,', 1, '1,1,', '1', 2, '1', '', 0, 1, '2023-04-03 21:29:34', '2023-10-19 14:06:49');
-INSERT INTO `app_user` (`id`, `level_id`, `username`, `password`, `nickname`, `true_name`, `money`, `email`, `mobile_title`, `mobile`, `avatar`, `pay_pwd`, `pwd`, `ref_code`, `parent_id`, `parent_ids`, `tree_sort`, `tree_sorts`, `tree_leaf`, `tree_level`, `status`, `remark`, `create_by`, `update_by`, `created_at`, `updated_at`) VALUES (3, 1, '- -', '', '- -', '- -', 0.00, '4884f3537b62e668d33c6af76ddf6670099e69819f4e072f7057bb1e4249bf3d', '86', 'ff4273c3b1372055923122f9881b651b', 'http://www.bitxx.top/images/my_head-touch-icon-next.png', '', '', 'tT1Fbk', 1, '0,1,', 2, '1,2,', '1', 2, '1', '', 0, 1, '2023-04-03 21:29:35', '2023-10-19 14:06:37');
+INSERT INTO `app_user` (`id`, `level_id`, `username`, `nickname`, `true_name`, `money`, `email`, `mobile_title`, `mobile`, `avatar`, `pay_pwd`, `pwd`, `ref_code`, `parent_id`, `parent_ids`, `tree_sort`, `tree_sorts`, `tree_leaf`, `tree_level`, `status`, `remark`, `create_by`, `update_by`, `created_at`, `updated_at`) VALUES (1, 1, '- -',  '- -', '- -', 1.00, 'fb0cc809bbed1743bd7d2d8f444e2bae099e69819f4e072f7057bb1e4249bf3d', '86', '6d84b6afd68a5c7188779114f16c46e9', 'http://www.bitxx.top/images/my_head-touch-icon-next.png', '', '', 'akIiWm', 0, '0,', 1, '1,', '2', 1, '1', '', 0, 1, '2023-04-03 21:09:13', '2023-10-19 14:03:37');
+INSERT INTO `app_user` (`id`, `level_id`, `username`, `nickname`, `true_name`, `money`, `email`, `mobile_title`, `mobile`, `avatar`, `pay_pwd`, `pwd`, `ref_code`, `parent_id`, `parent_ids`, `tree_sort`, `tree_sorts`, `tree_leaf`, `tree_level`, `status`, `remark`, `create_by`, `update_by`, `created_at`, `updated_at`) VALUES (2, 2, '- -', '- -', '- -', 0.00, 'dca887a13d1225ccd447dc52a712861c099e69819f4e072f7057bb1e4249bf3d', '86', '84ace68f39f53a315d8114c61413505d', 'http://www.bitxx.top/images/my_head-touch-icon-next.png', '', '', 'GQFz6v', 1, '0,1,', 1, '1,1,', '1', 2, '1', '', 0, 1, '2023-04-03 21:29:34', '2023-10-19 14:06:49');
+INSERT INTO `app_user` (`id`, `level_id`, `username`, `nickname`, `true_name`, `money`, `email`, `mobile_title`, `mobile`, `avatar`, `pay_pwd`, `pwd`, `ref_code`, `parent_id`, `parent_ids`, `tree_sort`, `tree_sorts`, `tree_leaf`, `tree_level`, `status`, `remark`, `create_by`, `update_by`, `created_at`, `updated_at`) VALUES (3, 1, '- -',  '- -', '- -', 0.00, '4884f3537b62e668d33c6af76ddf6670099e69819f4e072f7057bb1e4249bf3d', '86', 'ff4273c3b1372055923122f9881b651b', 'http://www.bitxx.top/images/my_head-touch-icon-next.png', '', '', 'tT1Fbk', 1, '0,1,', 2, '1,2,', '1', 2, '1', '', 0, 1, '2023-04-03 21:29:35', '2023-10-19 14:06:37');
 COMMIT;
 
 -- ----------------------------
@@ -178,12 +177,12 @@ COMMIT;
 DROP TABLE IF EXISTS `app_user_oper_log`;
 CREATE TABLE `app_user_oper_log` (
                                      `id` int NOT NULL AUTO_INCREMENT COMMENT '日志编码',
-                                     `user_id` int NOT NULL DEFAULT '1' COMMENT '用户编号',
+                                     `user_id` int NOT NULL DEFAULT 0 COMMENT '用户编号',
                                      `action_type` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '用户行为类型',
-                                     `by_type` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '更新用户类型 1-app用户 2-后台用户',
+                                     `by_type` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '1' COMMENT '更新用户类型 1-app用户 2-后台用户',
                                      `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '1' COMMENT '状态(1-正常 2-异常)',
-                                     `create_by` int NOT NULL DEFAULT '0' COMMENT '创建者',
-                                     `update_by` int NOT NULL DEFAULT '0' COMMENT '更新者',
+                                     `create_by` int NOT NULL DEFAULT 0 COMMENT '创建者',
+                                     `update_by` int NOT NULL DEFAULT 0 COMMENT '更新者',
                                      `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                                      `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
                                      `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '备注信息',
@@ -419,6 +418,8 @@ CREATE TABLE `app_withdraw_order` (
                                   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '提现订单ID',
                                   `user_id` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '用户ID',
                                   `amount` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '提现金额',
+                                  `address` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '提现地址',
+                                  `free` DECIMAL(30,2) NOT NULL DEFAULT 0.03 COMMENT '提现手续费',
                                   `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态 1待审核 2通过 3拒绝 4打款完成',
                                   `reject_reason` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '拒绝原因',
                                   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '申请时间',
@@ -466,5 +467,75 @@ CREATE TABLE `app_risk_event` (
                               `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发生时间',
                               PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='风控事件记录';
+
+DROP TABLE IF EXISTS `app_message`;
+CREATE TABLE `app_message` (
+                               `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '消息ID',
+
+                               `msg_type` TINYINT NOT NULL DEFAULT 1 COMMENT '消息类型：1系统通知 2站内信 3私信',
+
+                               `title` VARCHAR(100) NOT NULL DEFAULT '' COMMENT '消息标题',
+                               `content` TEXT NOT NULL COMMENT '消息内容',
+
+                               `sender_id` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '发送者ID（0=系统）',
+                               `sender_type` TINYINT NOT NULL DEFAULT 0 COMMENT '发送者类型：0系统 1用户 2管理员',
+                               `sender_name` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '发送者名称（冗余字段）',
+
+                               `biz_type` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '业务类型：order / audit / activity',
+                               `biz_id` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '业务ID',
+
+                               `extra` JSON NULL COMMENT '扩展数据（跳转参数、按钮等）',
+
+                               `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+
+                               PRIMARY KEY (`id`),
+                               KEY `idx_type_time` (`msg_type`, `created_at`),
+                               KEY `idx_sender` (`sender_type`, `sender_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='站内信-消息主体';
+
+DROP TABLE IF EXISTS `app_message_user`;
+CREATE TABLE `app_message_user` (
+                                    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+
+                                    `message_id` BIGINT UNSIGNED NOT NULL COMMENT '消息ID',
+                                    `user_id` BIGINT UNSIGNED NOT NULL COMMENT '接收用户ID',
+
+                                    `is_read` TINYINT NOT NULL DEFAULT 0 COMMENT '是否已读：0未读 1已读',
+                                    `is_deleted` TINYINT NOT NULL DEFAULT 0 COMMENT '是否删除：0否 1是',
+
+                                    `read_at` DATETIME NULL COMMENT '阅读时间',
+                                    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '接收时间',
+
+                                    PRIMARY KEY (`id`),
+                                    UNIQUE KEY `uk_user_message` (`user_id`, `message_id`),
+                                    KEY `idx_user_read` (`user_id`, `is_read`),
+                                    KEY `idx_user_time` (`user_id`, `created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='站内信-用户收件箱';
+
+
+DROP TABLE IF EXISTS `app_message_template`;
+CREATE TABLE `app_message_template` (
+                                        `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '模板ID',
+
+                                        `code` VARCHAR(50) NOT NULL COMMENT '模板编码（唯一，如：withdraw_fail）',
+                                        `msg_type` TINYINT NOT NULL DEFAULT 1 COMMENT '消息类型：1系统通知 2站内信 3私信',
+
+                                        `title_tpl` VARCHAR(100) NOT NULL COMMENT '标题模板',
+                                        `content_tpl` TEXT NOT NULL COMMENT '内容模板（支持变量）',
+
+                                        `sender_type` TINYINT NOT NULL DEFAULT 0 COMMENT '发送者类型：0系统 1用户 2管理员',
+                                        `sender_id` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '发送者ID（0=系统）',
+                                        `sender_name` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '发送者名称（冗余）',
+
+                                        `biz_type` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '业务类型：order / withdraw / risk',
+                                        `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态：1启用 0禁用',
+
+                                        `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+
+                                        PRIMARY KEY (`id`),
+                                        UNIQUE KEY `uk_code` (`code`),
+                                        KEY `idx_type_status` (`msg_type`, `status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='站内信-消息模板';
+
 
 SET FOREIGN_KEY_CHECKS = 1;

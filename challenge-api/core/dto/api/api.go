@@ -122,6 +122,7 @@ func (e *Api) MakeService(c *service.Service) *Api {
 	c.Log = e.Logger
 	c.Orm = e.Orm
 	c.Run = e.Run
+	c.C = e.Context
 	return e
 }
 

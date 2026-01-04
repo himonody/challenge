@@ -1,42 +1,59 @@
 package models
 
 import (
-	"github.com/shopspring/decimal"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
-type User struct {
-	Id          int64           `json:"id" gorm:"primaryKey;autoIncrement;comment:主键编码"`
-	LevelId     int64           `json:"levelId" gorm:"column:level_id;type:int;comment:用户等级编号"`
-	UserName    string          `json:"userName" gorm:"column:user_name;type:varchar(100);comment:用户昵称"`
-	TrueName    string          `json:"trueName" gorm:"column:true_name;type:varchar(100);comment:真实姓名"`
-	Money       decimal.Decimal `json:"money" gorm:"column:money;type:decimal(30,18);comment:余额"`
-	Email       string          `json:"email" gorm:"column:email;type:varchar(300);comment:电子邮箱"`
-	MobileTitle string          `json:"mobileTitle" gorm:"column:mobile_title;type:varchar(255);comment:用户手机号国家前缀"`
-	Mobile      string          `json:"mobile" gorm:"column:mobile;type:varchar(100);comment:手机号码"`
-	Avatar      string          `json:"avatar" gorm:"column:avatar;type:varchar(1000);comment:头像路径"`
-	PayPwd      string          `json:"payPwd" gorm:"column:pay_pwd;type:varchar(100);comment:提现密码"`
-	Pwd         string          `json:"pwd" gorm:"column:pwd;type:varchar(100);comment:登录密码"`
-	RefCode     string          `json:"refCode" gorm:"column:ref_code;type:varchar(255);comment:推荐码"`
-	ParentId    int64           `json:"parentId" gorm:"column:parent_id;type:int;comment:父级编号"`
-	ParentIds   string          `json:"parentIds" gorm:"column:parent_ids;type:varchar(1000);comment:所有父级编号"`
-	TreeSort    int64           `json:"treeSort" gorm:"column:tree_sort;type:decimal(10,0);comment:本级排序号（升序）"`
-	TreeSorts   string          `json:"treeSorts" gorm:"column:tree_sorts;type:varchar(1000);comment:所有级别排序号"`
-	TreeLeaf    string          `json:"treeLeaf" gorm:"column:tree_leaf;type:char(1);comment:是否最末级"`
-	TreeLevel   int64           `json:"treeLevel" gorm:"column:tree_level;type:int;comment:层次级别"`
-	Status      string          `json:"status" gorm:"column:status;type:char(1);comment:状态(1-正常 2-异常)"`
-	Remark      string          `json:"remark" gorm:"column:remark;type:varchar(500);comment:备注信息"`
-	CreateBy    int64           `json:"createBy" gorm:"column:create_by;type:int;comment:创建者"`
-	UpdateBy    int64           `json:"updateBy" gorm:"column:update_by;type:int;comment:更新者"`
-	CreatedAt   *time.Time      `json:"createdAt" gorm:"column:created_at;type:datetime;comment:创建时间"`
-	UpdatedAt   *time.Time      `json:"updatedAt" gorm:"column:updated_at;type:datetime;comment:更新时间"`
+// AppUser 用户管理
+type AppUser struct {
+	ID int `gorm:"column:id;primaryKey;autoIncrement;comment:用户编码" json:"id"`
 
-	// 扩展
-	UserLevel      *UserLevel `json:"userLevel" gorm:"foreignkey:level_id"`
-	ParentUserName string     `json:"parentUserName" gorm:"-"`
-	ParentRefCode  string     `json:"parentRefCode" gorm:"-"`
+	LevelID int `gorm:"column:level_id;not null;default:1;comment:用户等级编号" json:"level_id"`
+
+	Username string `gorm:"column:username;type:varchar(100);not null;default:'';comment:账号名称/用户名" json:"username"`
+	Nickname string `gorm:"column:nickname;type:varchar(100);not null;default:'';comment:用户昵称" json:"nickname"`
+	TrueName string `gorm:"column:true_name;type:varchar(100);not null;default:'';comment:真实姓名" json:"true_name"`
+
+	Money       decimal.Decimal `gorm:"column:money;type:decimal(30,2);not null;default:0.00;comment:余额" json:"money"`
+	FreezeMoney decimal.Decimal `gorm:"column:freeze_money;type:decimal(30,2);not null;default:0.00;comment:冻结金额" json:"freeze_money"`
+
+	Email string `gorm:"column:email;type:varchar(300);comment:电子邮箱" json:"email"`
+
+	MobileTitle string `gorm:"column:mobile_title;type:varchar(255);default:'+86';comment:用户手机号国家前缀" json:"mobile_title"`
+	Mobile      string `gorm:"column:mobile;type:varchar(100);comment:手机号码" json:"mobile"`
+
+	Avatar string `gorm:"column:avatar;type:varchar(1000);comment:头像路径" json:"avatar"`
+
+	PayPwd    string `gorm:"column:pay_pwd;type:varchar(100);not null;default:'';comment:提现密码" json:"-"`
+	PayStatus string `gorm:"column:pay_status;type:char(1);not null;default:'1';comment:提现状态(1-启用 2-禁用)" json:"pay_status"`
+
+	Pwd string `gorm:"column:pwd;type:varchar(100);not null;default:'';comment:登录密码" json:"-"`
+
+	RefCode string `gorm:"column:ref_code;type:varchar(255);comment:推荐码" json:"ref_code"`
+
+	ParentID  int    `gorm:"column:parent_id;not null;default:0;comment:父级编号" json:"parent_id"`
+	ParentIDs string `gorm:"column:parent_ids;type:varchar(1000);not null;default:'';comment:所有父级编号" json:"parent_ids"`
+
+	TreeSort  int    `gorm:"column:tree_sort;not null;default:0;comment:本级排序号" json:"tree_sort"`
+	TreeSorts string `gorm:"column:tree_sorts;type:varchar(1000);not null;default:'0';comment:所有级别排序号" json:"tree_sorts"`
+
+	TreeLeaf  string `gorm:"column:tree_leaf;type:char(1);not null;default:'0';comment:是否最末级" json:"tree_leaf"`
+	TreeLevel int    `gorm:"column:tree_level;not null;default:0;comment:层次级别" json:"tree_level"`
+
+	Status string `gorm:"column:status;type:char(1);not null;default:'1';comment:状态(1-正常 2-异常)" json:"status"`
+
+	Remark string `gorm:"column:remark;type:varchar(255);comment:备注信息" json:"remark"`
+
+	CreateBy int `gorm:"column:create_by;not null;default:0;comment:创建者" json:"create_by"`
+	UpdateBy int `gorm:"column:update_by;not null;default:0;comment:更新者" json:"update_by"`
+
+	CreatedAt time.Time `gorm:"column:created_at;type:datetime;not null;default:CURRENT_TIMESTAMP;comment:创建时间" json:"created_at"`
+	UpdatedAt time.Time `gorm:"column:updated_at;type:datetime;not null;default:CURRENT_TIMESTAMP;comment:更新时间" json:"updated_at"`
 }
 
-func (User) TableName() string {
+// TableName 指定表名
+func (AppUser) TableName() string {
 	return "app_user"
 }

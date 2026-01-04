@@ -1,6 +1,7 @@
 package router
 
 import (
+	"challenge/app/auth/apis"
 	"challenge/app/auth/service"
 	"challenge/core/middleware"
 
@@ -13,10 +14,10 @@ func init() {
 }
 
 func registerNoCheckAuthRouter(v1 *gin.RouterGroup) {
+	c := apis.Auth{}
 	r := v1.Group("/app/auth")
 	{
-		r.POST("/captcha", service.Captcha)
-		r.POST("/register", service.Register)
+		r.POST("/register", c.Register)
 		r.POST("/login", service.Login)
 	}
 }

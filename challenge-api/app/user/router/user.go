@@ -16,18 +16,18 @@ func init() {
 // registerUserRouter 注册需要认证的路由
 func registerUserRouter(v1 *gin.RouterGroup) {
 
-	r := v1.Group("/app/user/user").Use(middleware.Auth())
+	r := v1.Group("/app/user").Use(middleware.Auth())
 	{
-		r.POST("", func(context *gin.Context) {
+		r.POST("/profile", func(context *gin.Context) {
 			context.JSON(http.StatusOK, gin.H{
 				"code": 200,
 				"msg":  "success",
 			})
 		})
-		//r.GET("/:id", api.Get)
-		//r.POST("", api.Insert)
-		//r.PUT("/:id", api.Update)
-		//r.GET("/export", api.Export)
+		r.POST("/profile/update")
+		r.POST("/profile/detail")
+		r.POST("/profile/stat")
+
 	}
 }
 

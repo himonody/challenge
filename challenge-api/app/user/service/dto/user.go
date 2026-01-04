@@ -1,10 +1,11 @@
 package dto
 
 import (
-	commDto "challenge/app/common/dto"
+	commDto "challenge/app/common/service/dto"
 	"challenge/core/dto"
-	"github.com/shopspring/decimal"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 type UserQueryReq struct {
