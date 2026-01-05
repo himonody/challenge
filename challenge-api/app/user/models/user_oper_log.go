@@ -4,12 +4,6 @@ import (
 	"time"
 )
 
-const (
-	Register = "1"
-	Login    = "2"
-	Logout   = "3"
-)
-
 // AppUserOperLog 用户关键行为日志
 type AppUserOperLog struct {
 	ID int `gorm:"column:id;primaryKey;autoIncrement;comment:日志编码" json:"id"`

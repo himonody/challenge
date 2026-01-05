@@ -30,21 +30,83 @@ CREATE TABLE `app_user` (
                             `tree_level` int NOT NULL DEFAULT '0' COMMENT '层次级别',
                             `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '1' COMMENT '状态(1-正常 2-异常)',
                             `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '备注信息',
+
+                            `register_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
+                            `register_ip` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '注册IP',
+                            `last_login_at` datetime DEFAULT NULL COMMENT '最后登录时间',
+                            `last_login_ip` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '最后登录IP',
+
                             `create_by` int NOT NULL DEFAULT '0' COMMENT '创建者',
                             `update_by` int NOT NULL DEFAULT '0' COMMENT '更新者',
                             `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                             `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+
                             PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='用户管理';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='用户管理';
+
 
 -- ----------------------------
 -- Records of app_user
 -- ----------------------------
 BEGIN;
-INSERT INTO `app_user` (`id`, `level_id`, `username`, `nickname`, `true_name`, `money`, `email`, `mobile_title`, `mobile`, `avatar`, `pay_pwd`, `pwd`, `ref_code`, `parent_id`, `parent_ids`, `tree_sort`, `tree_sorts`, `tree_leaf`, `tree_level`, `status`, `remark`, `create_by`, `update_by`, `created_at`, `updated_at`) VALUES (1, 1, '- -',  '- -', '- -', 1.00, 'fb0cc809bbed1743bd7d2d8f444e2bae099e69819f4e072f7057bb1e4249bf3d', '86', '6d84b6afd68a5c7188779114f16c46e9', 'http://www.bitxx.top/images/my_head-touch-icon-next.png', '', '', 'akIiWm', 0, '0,', 1, '1,', '2', 1, '1', '', 0, 1, '2023-04-03 21:09:13', '2023-10-19 14:03:37');
-INSERT INTO `app_user` (`id`, `level_id`, `username`, `nickname`, `true_name`, `money`, `email`, `mobile_title`, `mobile`, `avatar`, `pay_pwd`, `pwd`, `ref_code`, `parent_id`, `parent_ids`, `tree_sort`, `tree_sorts`, `tree_leaf`, `tree_level`, `status`, `remark`, `create_by`, `update_by`, `created_at`, `updated_at`) VALUES (2, 2, '- -', '- -', '- -', 0.00, 'dca887a13d1225ccd447dc52a712861c099e69819f4e072f7057bb1e4249bf3d', '86', '84ace68f39f53a315d8114c61413505d', 'http://www.bitxx.top/images/my_head-touch-icon-next.png', '', '', 'GQFz6v', 1, '0,1,', 1, '1,1,', '1', 2, '1', '', 0, 1, '2023-04-03 21:29:34', '2023-10-19 14:06:49');
-INSERT INTO `app_user` (`id`, `level_id`, `username`, `nickname`, `true_name`, `money`, `email`, `mobile_title`, `mobile`, `avatar`, `pay_pwd`, `pwd`, `ref_code`, `parent_id`, `parent_ids`, `tree_sort`, `tree_sorts`, `tree_leaf`, `tree_level`, `status`, `remark`, `create_by`, `update_by`, `created_at`, `updated_at`) VALUES (3, 1, '- -',  '- -', '- -', 0.00, '4884f3537b62e668d33c6af76ddf6670099e69819f4e072f7057bb1e4249bf3d', '86', 'ff4273c3b1372055923122f9881b651b', 'http://www.bitxx.top/images/my_head-touch-icon-next.png', '', '', 'tT1Fbk', 1, '0,1,', 2, '1,2,', '1', 2, '1', '', 0, 1, '2023-04-03 21:29:35', '2023-10-19 14:06:37');
+
+INSERT INTO `app_user` (`id`, `level_id`, `username`, `nickname`, `true_name`,
+                        `money`, `freeze_money`,
+                        `email`, `mobile_title`, `mobile`, `avatar`,
+                        `pay_pwd`, `pay_status`, `pwd`,
+                        `ref_code`,
+                        `parent_id`, `parent_ids`,
+                        `tree_sort`, `tree_sorts`, `tree_leaf`, `tree_level`,
+                        `status`, `remark`,
+                        `register_at`, `register_ip`,
+                        `last_login_at`, `last_login_ip`,
+                        `create_by`, `update_by`,
+                        `created_at`, `updated_at`)
+VALUES (1, 1, '- -', '- -', '- -',
+        1.00, 0.00,
+        'fb0cc809bbed1743bd7d2d8f444e2bae099e69819f4e072f7057bb1e4249bf3d',
+        '86', '6d84b6afd68a5c7188779114f16c46e9',
+        'http://www.bitxx.top/images/my_head-touch-icon-next.png',
+        '', '1', '',
+        'akIiWm',
+        0, '0,',
+        1, '1,', '2', 1,
+        '1', '',
+        '2023-04-03 21:09:13', NULL,
+        NULL, NULL,
+        0, 1,
+        '2023-04-03 21:09:13', '2023-10-19 14:03:37'),
+       (2, 2, '- -', '- -', '- -',
+        0.00, 0.00,
+        'dca887a13d1225ccd447dc52a712861c099e69819f4e072f7057bb1e4249bf3d',
+        '86', '84ace68f39f53a315d8114c61413505d',
+        'http://www.bitxx.top/images/my_head-touch-icon-next.png',
+        '', '1', '',
+        'GQFz6v',
+        1, '0,1,',
+        1, '1,1,', '1', 2,
+        '1', '',
+        '2023-04-03 21:29:34', NULL,
+        NULL, NULL,
+        0, 1,
+        '2023-04-03 21:29:34', '2023-10-19 14:06:49'),
+       (3, 1, '- -', '- -', '- -',
+        0.00, 0.00,
+        '4884f3537b62e668d33c6af76ddf6670099e69819f4e072f7057bb1e4249bf3d',
+        '86', 'ff4273c3b1372055923122f9881b651b',
+        'http://www.bitxx.top/images/my_head-touch-icon-next.png',
+        '', '1', '',
+        'tT1Fbk',
+        1, '0,1,',
+        2, '1,2,', '1', 2,
+        '1', '',
+        '2023-04-03 21:29:35', NULL,
+        NULL, NULL,
+        0, 1,
+        '2023-04-03 21:29:35', '2023-10-19 14:06:37');
+
 COMMIT;
+
 
 -- ----------------------------
 -- Table structure for app_user_account_log
@@ -56,32 +118,48 @@ CREATE TABLE `app_user_account_log` (
                                         `change_money` decimal(30,2) NOT NULL DEFAULT '0.00' COMMENT '账变金额',
                                         `before_money` decimal(30,2) NOT NULL DEFAULT '0.00' COMMENT '账变前金额',
                                         `after_money` decimal(30,2) NOT NULL DEFAULT '0.00' COMMENT '账变后金额',
-                                        `money_type` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '1' COMMENT '金额类型 1:余额 ',
+                                        `money_type` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '1' COMMENT '金额类型 1:余额',
                                         `change_type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '1' COMMENT '帐变类型(1-类型1)',
+                                        `operate_ip` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '操作IP',
                                         `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '1' COMMENT '状态（1正常 2-异常）',
                                         `create_by` int NOT NULL DEFAULT '0' COMMENT '创建者',
                                         `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                                         `update_by` int NOT NULL DEFAULT '0' COMMENT '更新者',
                                         `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
                                         `remarks` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '备注信息',
+
                                         PRIMARY KEY (`id`),
-                                        KEY `idx_qyc_user_status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='账变记录';
+                                        KEY `idx_user_id` (`user_id`),
+                                        KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='账变记录';
 
 -- ----------------------------
 -- Records of app_user_account_log
 -- ----------------------------
 BEGIN;
-INSERT INTO `app_user_account_log` (`id`, `user_id`, `change_money`, `before_money`, `after_money`, `money_type`, `change_type`, `status`, `create_by`, `created_at`, `update_by`, `updated_at`, `remarks`) VALUES (1, 1, 10.00, 0.00, 20.00, '1', '1', '1', 1, '2023-03-09 22:55:48', 1, '2023-03-09 22:55:51', NULL);
-INSERT INTO `app_user_account_log` (`id`, `user_id`, `change_money`, `before_money`, `after_money`, `money_type`, `change_type`, `status`, `create_by`, `created_at`, `update_by`, `updated_at`, `remarks`) VALUES (2, 2, 10.00, 0.00, 20.00, '1', '1', '1', 1, '2023-03-09 22:55:48', 1, '2023-03-09 22:55:51', NULL);
-INSERT INTO `app_user_account_log` (`id`, `user_id`, `change_money`, `before_money`, `after_money`, `money_type`, `change_type`, `status`, `create_by`, `created_at`, `update_by`, `updated_at`, `remarks`) VALUES (3, 1, 10.00, 0.00, 20.00, '1', '1', '1', 1, '2023-03-09 22:55:48', 1, '2023-03-09 22:55:51', NULL);
-INSERT INTO `app_user_account_log` (`id`, `user_id`, `change_money`, `before_money`, `after_money`, `money_type`, `change_type`, `status`, `create_by`, `created_at`, `update_by`, `updated_at`, `remarks`) VALUES (4, 3, 10.00, 0.00, 20.00, '1', '1', '1', 1, '2023-03-09 22:55:48', 1, '2023-03-09 22:55:51', NULL);
-INSERT INTO `app_user_account_log` (`id`, `user_id`, `change_money`, `before_money`, `after_money`, `money_type`, `change_type`, `status`, `create_by`, `created_at`, `update_by`, `updated_at`, `remarks`) VALUES (5, 1, 10.00, 0.00, 20.00, '1', '1', '1', 1, '2023-03-09 22:55:48', 1, '2023-03-09 22:55:51', NULL);
-INSERT INTO `app_user_account_log` (`id`, `user_id`, `change_money`, `before_money`, `after_money`, `money_type`, `change_type`, `status`, `create_by`, `created_at`, `update_by`, `updated_at`, `remarks`) VALUES (6, 2, 10.00, 0.00, 20.00, '1', '1', '1', 1, '2023-03-09 22:55:48', 1, '2023-03-09 22:55:51', NULL);
-INSERT INTO `app_user_account_log` (`id`, `user_id`, `change_money`, `before_money`, `after_money`, `money_type`, `change_type`, `status`, `create_by`, `created_at`, `update_by`, `updated_at`, `remarks`) VALUES (7, 1, 10.00, 0.00, 20.00, '1', '1', '1', 1, '2023-03-09 22:55:48', 1, '2023-03-09 22:55:51', NULL);
-INSERT INTO `app_user_account_log` (`id`, `user_id`, `change_money`, `before_money`, `after_money`, `money_type`, `change_type`, `status`, `create_by`, `created_at`, `update_by`, `updated_at`, `remarks`) VALUES (8, 3, 10.00, 0.00, 20.00, '1', '1', '1', 1, '2023-03-09 22:55:48', 1, '2023-03-09 22:55:51', NULL);
-INSERT INTO `app_user_account_log` (`id`, `user_id`, `change_money`, `before_money`, `after_money`, `money_type`, `change_type`, `status`, `create_by`, `created_at`, `update_by`, `updated_at`, `remarks`) VALUES (9, 1, 10.00, 0.00, 20.00, '1', '1', '1', 1, '2023-03-09 22:55:48', 1, '2023-03-09 22:55:51', NULL);
+
+INSERT INTO `app_user_account_log` (
+    `id`, `user_id`,
+    `change_money`, `before_money`, `after_money`,
+    `money_type`, `change_type`,
+    `operate_ip`,
+    `status`,
+    `create_by`, `created_at`,
+    `update_by`, `updated_at`,
+    `remarks`
+) VALUES
+      (1,1,10.00,0.00,20.00,'1','1',NULL,'1',1,'2023-03-09 22:55:48',1,'2023-03-09 22:55:51',NULL),
+      (2,2,10.00,0.00,20.00,'1','1',NULL,'1',1,'2023-03-09 22:55:48',1,'2023-03-09 22:55:51',NULL),
+      (3,1,10.00,0.00,20.00,'1','1',NULL,'1',1,'2023-03-09 22:55:48',1,'2023-03-09 22:55:51',NULL),
+      (4,3,10.00,0.00,20.00,'1','1',NULL,'1',1,'2023-03-09 22:55:48',1,'2023-03-09 22:55:51',NULL),
+      (5,1,10.00,0.00,20.00,'1','1',NULL,'1',1,'2023-03-09 22:55:48',1,'2023-03-09 22:55:51',NULL),
+      (6,2,10.00,0.00,20.00,'1','1',NULL,'1',1,'2023-03-09 22:55:48',1,'2023-03-09 22:55:51',NULL),
+      (7,1,10.00,0.00,20.00,'1','1',NULL,'1',1,'2023-03-09 22:55:48',1,'2023-03-09 22:55:51',NULL),
+      (8,3,10.00,0.00,20.00,'1','1',NULL,'1',1,'2023-03-09 22:55:48',1,'2023-03-09 22:55:51',NULL),
+      (9,1,10.00,0.00,20.00,'1','1',NULL,'1',1,'2023-03-09 22:55:48',1,'2023-03-09 22:55:51',NULL);
+
 COMMIT;
+
 
 -- ----------------------------
 -- Table structure for app_user_conf
@@ -179,6 +257,7 @@ CREATE TABLE `app_user_oper_log` (
                                      `id` int NOT NULL AUTO_INCREMENT COMMENT '日志编码',
                                      `user_id` int NOT NULL DEFAULT 0 COMMENT '用户编号',
                                      `action_type` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '用户行为类型',
+                                     `operate_ip` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '操作IP',
                                      `by_type` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '1' COMMENT '更新用户类型 1-app用户 2-后台用户',
                                      `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '1' COMMENT '状态(1-正常 2-异常)',
                                      `create_by` int NOT NULL DEFAULT 0 COMMENT '创建者',
@@ -186,21 +265,34 @@ CREATE TABLE `app_user_oper_log` (
                                      `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                                      `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
                                      `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '备注信息',
-                                     PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC COMMENT='用户关键行为日志表';
+
+                                     PRIMARY KEY (`id`) USING BTREE,
+                                     KEY `idx_user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='用户关键行为日志表';
 
 -- ----------------------------
 -- Records of app_user_oper_log
 -- ----------------------------
 BEGIN;
-INSERT INTO `app_user_oper_log` (`id`, `user_id`, `action_type`, `by_type`, `status`, `create_by`, `update_by`, `created_at`, `updated_at`, `remark`) VALUES (1, 1, '', '2', '1', 1, 1, '2023-03-11 15:39:31', '2023-03-11 15:39:31', '');
-INSERT INTO `app_user_oper_log` (`id`, `user_id`, `action_type`, `by_type`, `status`, `create_by`, `update_by`, `created_at`, `updated_at`, `remark`) VALUES (2, 2, '', '2', '1', 1, 1, '2023-03-11 15:41:16', '2023-03-11 15:41:16', '');
-INSERT INTO `app_user_oper_log` (`id`, `user_id`, `action_type`, `by_type`, `status`, `create_by`, `update_by`, `created_at`, `updated_at`, `remark`) VALUES (3, 3, '', '1', '1', 1, 1, '2023-03-11 15:45:44', '2023-03-11 15:45:44', '');
-INSERT INTO `app_user_oper_log` (`id`, `user_id`, `action_type`, `by_type`, `status`, `create_by`, `update_by`, `created_at`, `updated_at`, `remark`) VALUES (4, 1, '', '1', '1', 1, 1, '2023-03-11 15:46:13', '2023-03-11 15:46:13', '');
-INSERT INTO `app_user_oper_log` (`id`, `user_id`, `action_type`, `by_type`, `status`, `create_by`, `update_by`, `created_at`, `updated_at`, `remark`) VALUES (5, 3, '2', '1', '1', 1, 1, '2023-03-11 15:54:05', '2023-03-11 15:54:05', '');
-INSERT INTO `app_user_oper_log` (`id`, `user_id`, `action_type`, `by_type`, `status`, `create_by`, `update_by`, `created_at`, `updated_at`, `remark`) VALUES (6, 2, '1', '1', '1', 1, 1, '2023-03-11 15:56:36', '2023-03-11 15:56:36', '');
-INSERT INTO `app_user_oper_log` (`id`, `user_id`, `action_type`, `by_type`, `status`, `create_by`, `update_by`, `created_at`, `updated_at`, `remark`) VALUES (7, 1, '2', '1', '1', 1, 1, '2023-03-11 16:03:35', '2023-03-11 16:03:35', '');
+
+INSERT INTO `app_user_oper_log` (
+    `id`, `user_id`,
+    `action_type`, `operate_ip`,
+    `by_type`, `status`,
+    `create_by`, `update_by`,
+    `created_at`, `updated_at`,
+    `remark`
+) VALUES
+      (1,1,'',NULL,'2','1',1,1,'2023-03-11 15:39:31','2023-03-11 15:39:31',''),
+      (2,2,'',NULL,'2','1',1,1,'2023-03-11 15:41:16','2023-03-11 15:41:16',''),
+      (3,3,'',NULL,'1','1',1,1,'2023-03-11 15:45:44','2023-03-11 15:45:44',''),
+      (4,1,'',NULL,'1','1',1,1,'2023-03-11 15:46:13','2023-03-11 15:46:13',''),
+      (5,3,'2',NULL,'1','1',1,1,'2023-03-11 15:54:05','2023-03-11 15:54:05',''),
+      (6,2,'1',NULL,'1','1',1,1,'2023-03-11 15:56:36','2023-03-11 15:56:36',''),
+      (7,1,'2',NULL,'1','1',1,1,'2023-03-11 16:03:35','2023-03-11 16:03:35','');
+
 COMMIT;
+
 
 -- ----------------------------
 -- Table structure for app_challenge_config
@@ -415,18 +507,22 @@ CREATE TABLE `app_challenge_rank_daily` (
 -- ----------------------------
 DROP TABLE IF EXISTS `app_withdraw_order`;
 CREATE TABLE `app_withdraw_order` (
-                                  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '提现订单ID',
-                                  `user_id` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '用户ID',
-                                  `amount` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '提现金额',
-                                  `address` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '提现地址',
-                                  `free` DECIMAL(30,2) NOT NULL DEFAULT 0.03 COMMENT '提现手续费',
-                                  `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态 1待审核 2通过 3拒绝 4打款完成',
-                                  `reject_reason` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '拒绝原因',
-                                  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '申请时间',
-                                  `reviewed_at` datetime  DEFAULT NULL COMMENT '审核时间',
-                                  PRIMARY KEY (`id`),
-                                  KEY `idx_user` (`user_id`)
+                                      `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '提现订单ID',
+                                      `user_id` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '用户ID',
+                                      `amount` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '提现金额',
+                                      `address` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '提现地址',
+                                      `apply_ip` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '申请IP',
+                                      `free` DECIMAL(30,2) NOT NULL DEFAULT 0.03 COMMENT '提现手续费',
+                                      `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态 1待审核 2通过 3拒绝 4打款完成',
+                                      `reject_reason` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '拒绝原因',
+                                      `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '申请时间',
+                                      `reviewed_at` datetime DEFAULT NULL COMMENT '审核时间',
+                                      `review_ip` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '审核IP',
+
+                                      PRIMARY KEY (`id`),
+                                      KEY `idx_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='提现申请表';
+
 
 -- ----------------------------
 -- Table structure for app_risk_user
@@ -467,6 +563,35 @@ CREATE TABLE `app_risk_event` (
                               `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发生时间',
                               PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='风控事件记录';
+
+DROP TABLE IF EXISTS `app_risk_rate_limit`;
+CREATE TABLE `app_risk_rate_limit` (
+                                       `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+                                       `scene` varchar(32) NOT NULL COMMENT '场景: register/login/sms/email',
+                                       `identity_type` varchar(16) NOT NULL COMMENT '标识类型 ip/device/mobile/email',
+                                       `identity_value` varchar(128) NOT NULL COMMENT '标识值',
+                                       `count` int NOT NULL DEFAULT 1 COMMENT '次数',
+                                       `window_start` datetime NOT NULL COMMENT '窗口开始时间',
+                                       `window_end` datetime NOT NULL COMMENT '窗口结束时间',
+                                       `blocked` char(1) NOT NULL DEFAULT '0' COMMENT '是否已拦截 0否 1是',
+                                       `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                       PRIMARY KEY (`id`),
+                                       UNIQUE KEY `uk_scene_identity_window`
+                                           (`scene`,`identity_type`,`identity_value`,`window_start`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='频率/防刷限制表';
+
+DROP TABLE IF EXISTS `app_risk_blacklist`;
+CREATE TABLE `app_risk_blacklist` (
+                                      `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+                                      `type` varchar(16) NOT NULL COMMENT 'ip/device/country/mobile/email',
+                                      `value` varchar(128) NOT NULL COMMENT '命中值',
+                                      `risk_level` TINYINT NOT NULL DEFAULT 3 COMMENT '风险等级',
+                                      `reason` varchar(255) NOT NULL DEFAULT '' COMMENT '封禁原因',
+                                      `status` char(1) NOT NULL DEFAULT '1' COMMENT '1生效 2失效',
+                                      `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                      PRIMARY KEY (`id`),
+                                      UNIQUE KEY `uk_type_value` (`type`,`value`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='风控黑名单';
 
 DROP TABLE IF EXISTS `app_message`;
 CREATE TABLE `app_message` (
@@ -536,6 +661,26 @@ CREATE TABLE `app_message_template` (
                                         UNIQUE KEY `uk_code` (`code`),
                                         KEY `idx_type_status` (`msg_type`, `status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='站内信-消息模板';
+
+
+
+DROP TABLE IF EXISTS `app_user_invite_code`;
+CREATE TABLE `app_user_invite_code` (
+                                   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+                                   `code` varchar(64) NOT NULL COMMENT '邀请码',
+                                   `owner_user_id` BIGINT UNSIGNED NOT NULL COMMENT '所属用户',
+                                   `status` char(1) NOT NULL DEFAULT '1' COMMENT '1可用 2禁用',
+                                   `total_limit` int NOT NULL DEFAULT 0 COMMENT '总次数 0不限制',
+                                   `daily_limit` int NOT NULL DEFAULT 0 COMMENT '每日次数 0不限制',
+                                   `used_total` int NOT NULL DEFAULT 0 COMMENT '已使用总次数',
+                                   `used_today` int NOT NULL DEFAULT 0 COMMENT '今日已使用次数',
+                                   `last_used_at` datetime DEFAULT NULL COMMENT '最后使用时间',
+                                   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                   PRIMARY KEY (`id`),
+                                   UNIQUE KEY `uk_code` (`code`),
+                                   KEY `idx_owner` (`owner_user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='邀请码表';
+
 
 
 SET FOREIGN_KEY_CHECKS = 1;

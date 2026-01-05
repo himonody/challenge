@@ -5,6 +5,7 @@ import (
 	"challenge/app/user/models"
 	m "challenge/app/user/models"
 	"challenge/app/user/repo"
+	"challenge/config/base/constant"
 	"challenge/config/base/lang"
 	baseLang "challenge/config/base/lang"
 	"challenge/core/dto/response"
@@ -16,8 +17,8 @@ import (
 	"challenge/core/utils/idgen"
 	"errors"
 	"fmt"
-	"net/http"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -93,15 +94,15 @@ func (a *Auth) Register(req *dto.RegisterReq) (*models.AppUser, int) {
 	user.Pwd = pwdHash
 	user.RefCode = refCode
 	user.ParentID = parentId
-	user.Status = "1"
+	user.Status = constant.GeneralStatusOk
 	user.CreatedAt = now
 	user.UpdatedAt = now
 	user.CreateBy = 0
 	user.UpdateBy = 0
-	user.TreeSort = 0
-	user.TreeSorts = "0"
-	user.TreeLeaf = "1"
-	user.TreeLevel = 0
+	user.TreeSort = constant.UserTreeSort0
+	user.TreeSorts = strconv.Itoa(constant.UserTreeSort0)
+	user.TreeLeaf = constant.UserTreeLeafYes
+	user.TreeLevel = constant.UserTreeLevel
 	if parentId != 0 {
 		user.ParentIDs = fmt.Sprintf("%d,", parentId)
 	}
@@ -116,13 +117,14 @@ func (a *Auth) Register(req *dto.RegisterReq) (*models.AppUser, int) {
 	}
 	log := new(models.AppUserOperLog)
 	log.UserID = user.ID
-	log.ActionType = m.Register
-	log.ByType = "1"
-	log.Status = "1"
+	log.ActionType = constant.UserActionRegister
+	log.ByType = constant.UserOperByTypeApp
+	log.Status = constant.GeneralStatusOk
 	log.CreateBy = user.ID
 	log.UpdateBy = user.ID
 	log.CreatedAt = now
 	log.UpdatedAt = now
+	log.Remark = constant.UserActionResultSuccess
 	if err = repo.CreateUserOperLog(tx, log); err != nil {
 		a.Log.Errorf("app.auth.service.Register  CreateUserOperLog req:%v error:%w", log, err)
 		tx.Rollback()

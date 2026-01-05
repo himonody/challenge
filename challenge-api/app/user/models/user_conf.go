@@ -15,7 +15,6 @@ type UserConf struct {
 	UpdateBy  int64      `json:"updateBy" gorm:"column:update_by;type:int;comment:更新者"`
 	CreatedAt *time.Time `json:"createdAt" gorm:"column:created_at;type:datetime;comment:创建时间"`
 	UpdatedAt *time.Time `json:"updatedAt" gorm:"column:updated_at;type:datetime;comment:更新时间"`
-	User      *User      `json:"user" gorm:"foreignkey:user_id"`
 }
 
 func (UserConf) TableName() string {

@@ -1,8 +1,9 @@
 package models
 
 import (
-	"github.com/shopspring/decimal"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 type UserAccountLog struct {
@@ -19,7 +20,6 @@ type UserAccountLog struct {
 	UpdateBy    int64           `json:"updateBy" gorm:"column:update_by;type:int;comment:更新者"`
 	UpdatedAt   *time.Time      `json:"updatedAt" gorm:"column:updated_at;type:datetime;comment:更新时间"`
 	Remarks     string          `json:"remarks" gorm:"column:remarks;type:varchar(500);comment:备注信息"`
-	User        *User           `json:"user" gorm:"foreignkey:user_id"`
 }
 
 func (UserAccountLog) TableName() string {
