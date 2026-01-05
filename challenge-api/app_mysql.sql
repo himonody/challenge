@@ -41,7 +41,15 @@ CREATE TABLE `app_user` (
                             `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                             `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
 
-                            PRIMARY KEY (`id`) USING BTREE
+                            PRIMARY KEY (`id`) USING BTREE,
+                            UNIQUE KEY `uk_username` (`username`),
+                            UNIQUE KEY `uk_email` (`email`),
+                            UNIQUE KEY `uk_mobile` (`mobile_title`,`mobile`),
+                            UNIQUE KEY `uk_ref_code` (`ref_code`),
+                            KEY `idx_parent_id` (`parent_id`),
+                            KEY `idx_status` (`status`),
+                            KEY `idx_register_at` (`register_at`),
+                            KEY `idx_last_login_at` (`last_login_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='用户管理';
 
 
@@ -118,8 +126,8 @@ CREATE TABLE `app_user_account_log` (
                                         `change_money` decimal(30,2) NOT NULL DEFAULT '0.00' COMMENT '账变金额',
                                         `before_money` decimal(30,2) NOT NULL DEFAULT '0.00' COMMENT '账变前金额',
                                         `after_money` decimal(30,2) NOT NULL DEFAULT '0.00' COMMENT '账变后金额',
-                                        `money_type` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '1' COMMENT '金额类型 1:余额',
-                                        `change_type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '1' COMMENT '帐变类型(1-类型1)',
+                                        `money_type` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '1' COMMENT '金额类型 1:余额（可扩展）',
+                                        `change_type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '1' COMMENT '账变类型编码',
                                         `operate_ip` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '操作IP',
                                         `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '1' COMMENT '状态（1正常 2-异常）',
                                         `create_by` int NOT NULL DEFAULT '0' COMMENT '创建者',
@@ -129,7 +137,8 @@ CREATE TABLE `app_user_account_log` (
                                         `remarks` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '备注信息',
 
                                         PRIMARY KEY (`id`),
-                                        KEY `idx_user_id` (`user_id`),
+                                        KEY `idx_user_id_created` (`user_id`,`created_at`),
+                                        KEY `idx_change_type` (`change_type`),
                                         KEY `idx_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='账变记录';
 
@@ -175,7 +184,9 @@ CREATE TABLE `app_user_conf` (
                                  `update_by` int NOT NULL DEFAULT '0' COMMENT '更新者',
                                  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                                  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-                                 PRIMARY KEY (`id`) USING BTREE
+                                 PRIMARY KEY (`id`) USING BTREE,
+                                 UNIQUE KEY `uk_user_id` (`user_id`),
+                                 KEY `idx_status` (`status`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=COMPACT COMMENT='用户配置';
 
 -- ----------------------------
@@ -201,7 +212,9 @@ CREATE TABLE `app_user_country_code` (
                                          `update_by` int NOT NULL DEFAULT '0' COMMENT '更新者',
                                          `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                                          `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-                                         PRIMARY KEY (`id`) USING BTREE
+                                         PRIMARY KEY (`id`) USING BTREE,
+                                         UNIQUE KEY `uk_code` (`code`),
+                                         KEY `idx_status` (`status`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=COMPACT COMMENT='国家区号';
 
 -- ----------------------------
@@ -238,7 +251,9 @@ CREATE TABLE `app_user_level` (
                                   `update_by` int NOT NULL DEFAULT '0' COMMENT '更新者',
                                   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                                   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-                                  PRIMARY KEY (`id`)
+                                  PRIMARY KEY (`id`),
+                                  UNIQUE KEY `uk_level_type_level` (`level_type`,`level`),
+                                  KEY `idx_status` (`status`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='用户等级';
 
 -- ----------------------------
@@ -256,7 +271,7 @@ DROP TABLE IF EXISTS `app_user_oper_log`;
 CREATE TABLE `app_user_oper_log` (
                                      `id` int NOT NULL AUTO_INCREMENT COMMENT '日志编码',
                                      `user_id` int NOT NULL DEFAULT 0 COMMENT '用户编号',
-                                     `action_type` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '用户行为类型',
+                                     `action_type` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '用户行为类型编码',
                                      `operate_ip` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '操作IP',
                                      `by_type` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '1' COMMENT '更新用户类型 1-app用户 2-后台用户',
                                      `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '1' COMMENT '状态(1-正常 2-异常)',
@@ -264,10 +279,12 @@ CREATE TABLE `app_user_oper_log` (
                                      `update_by` int NOT NULL DEFAULT 0 COMMENT '更新者',
                                      `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                                      `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-                                     `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '备注信息',
+                                     `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '备注信息/原因',
 
                                      PRIMARY KEY (`id`) USING BTREE,
-                                     KEY `idx_user_id` (`user_id`)
+                                     KEY `idx_user_created` (`user_id`,`created_at`),
+                                     KEY `idx_action_type` (`action_type`),
+                                     KEY `idx_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='用户关键行为日志表';
 
 -- ----------------------------
@@ -308,7 +325,8 @@ CREATE TABLE `app_challenge_config` (
                                     `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态 1启用 2停用',
                                     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间戳',
                                     PRIMARY KEY (`id`),
-                                    UNIQUE KEY `uk_day_amount` (`day_count`,`amount`)
+                                    UNIQUE KEY `uk_day_amount` (`day_count`,`amount`),
+                                    KEY `idx_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin  COMMENT='打卡挑战活动配置';
 
 -- ----------------------------
@@ -334,7 +352,8 @@ CREATE TABLE `app_challenge_checkin` (
 
                                      PRIMARY KEY (`id`),
                                      UNIQUE KEY `uk_challenge_date` (`challenge_id`,`checkin_date`),
-                                     KEY `idx_user_date` (`user_id`,`checkin_date`)
+                                     KEY `idx_user_date` (`user_id`,`checkin_date`),
+                                     KEY `idx_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='每日打卡记录（心情 + 内容）';
 
 -- ----------------------------
@@ -351,7 +370,9 @@ CREATE TABLE `app_challenge_checkin_image` (
                                            `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态 1正常 2屏蔽 3审核中',
                                            `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '上传时间戳',
                                            PRIMARY KEY (`id`),
-                                           KEY `idx_checkin` (`checkin_id`)
+                                           UNIQUE KEY `uk_checkin_hash` (`checkin_id`,`image_hash`),
+                                           KEY `idx_checkin` (`checkin_id`),
+                                           KEY `idx_user` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='打卡图片表';
 
 -- ----------------------------
@@ -380,7 +401,8 @@ CREATE TABLE `app_challenge_checkin_video_ad` (
                                               PRIMARY KEY (`id`),
                                               UNIQUE KEY `uk_ad_order` (`ad_order_no`),
                                               UNIQUE KEY `uk_checkin` (`checkin_id`),
-                                              KEY `idx_user` (`user_id`)
+                                              KEY `idx_user` (`user_id`),
+                                              KEY `idx_verify_status` (`verify_status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='视频广告打卡记录';
 
 -- ----------------------------
@@ -401,7 +423,8 @@ CREATE TABLE `app_challenge_user` (
                                   `finished_at` datetime  DEFAULT NULL COMMENT '完成时间戳',
                                   PRIMARY KEY (`id`),
                                   UNIQUE KEY `uk_user_active` (`user_id`,`status`),
-                                  KEY `idx_pool` (`pool_id`)
+                                  KEY `idx_pool` (`pool_id`),
+                                  KEY `idx_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='用户参与挑战记录';
 
 -- ----------------------------
@@ -417,7 +440,8 @@ CREATE TABLE `app_challenge_pool` (
                                   `settled` TINYINT NOT NULL DEFAULT 0 COMMENT '是否已结算 0否 1是',
                                   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间戳',
                                   PRIMARY KEY (`id`),
-                                  UNIQUE KEY `uk_config_date` (`config_id`,`start_date`)
+                                  UNIQUE KEY `uk_config_date` (`config_id`,`start_date`),
+                                  KEY `idx_settled` (`settled`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='活动奖池表';
 
 -- ----------------------------
@@ -432,7 +456,9 @@ CREATE TABLE `app_challenge_pool_flow` (
                                        `type` TINYINT NOT NULL DEFAULT 0 COMMENT '类型 1报名 2失败 3平台补贴 4结算',
                                        `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间戳',
                                        PRIMARY KEY (`id`),
-                                       KEY `idx_pool` (`pool_id`)
+                                       KEY `idx_pool` (`pool_id`),
+                                       KEY `idx_user` (`user_id`),
+                                       KEY `idx_type_time` (`type`,`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='奖池资金流水';
 
 -- ----------------------------
@@ -446,7 +472,8 @@ CREATE TABLE `app_challenge_settlement` (
                                         `reward` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '最终获得金额',
                                         `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '结算时间戳',
                                         PRIMARY KEY (`id`),
-                                        UNIQUE KEY `uk_challenge_user` (`challenge_id`,`user_id`)
+                                        UNIQUE KEY `uk_challenge_user` (`challenge_id`,`user_id`),
+                                        KEY `idx_user` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='挑战结算结果';
 
 -- ----------------------------
@@ -465,7 +492,8 @@ CREATE TABLE `app_challenge_daily_stat` (
                                         `pool_amount` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '奖池金额',
                                         `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间戳',
                                         `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间戳',
-                                        PRIMARY KEY (`stat_date`)
+                                        PRIMARY KEY (`stat_date`),
+                                        KEY `idx_date` (`stat_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='每日运营统计';
 
 -- ----------------------------
@@ -499,7 +527,8 @@ CREATE TABLE `app_challenge_rank_daily` (
                                         `value` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '排行值',
                                         `rank_no` INT NOT NULL DEFAULT 0 COMMENT '排名',
                                         PRIMARY KEY (`id`),
-                                        UNIQUE KEY `uk_rank` (`rank_date`,`rank_type`,`user_id`)
+                                        UNIQUE KEY `uk_rank` (`rank_date`,`rank_type`,`user_id`),
+                                        KEY `idx_rank_type` (`rank_type`,`rank_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='排行榜日快照';
 
 -- ----------------------------
@@ -520,7 +549,9 @@ CREATE TABLE `app_withdraw_order` (
                                       `review_ip` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '审核IP',
 
                                       PRIMARY KEY (`id`),
-                                      KEY `idx_user_id` (`user_id`)
+                                      KEY `idx_user_id` (`user_id`),
+                                      KEY `idx_status` (`status`),
+                                      KEY `idx_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='提现申请表';
 
 
@@ -534,7 +565,9 @@ CREATE TABLE `app_risk_user` (
                              `risk_score` INT NOT NULL DEFAULT 0 COMMENT '风险评分',
                              `reason` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '风险原因',
                              `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-                             PRIMARY KEY (`user_id`)
+                             PRIMARY KEY (`user_id`),
+                             KEY `idx_risk_level` (`risk_level`),
+                             KEY `idx_updated_at` (`updated_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='风控用户表';
 
 -- ----------------------------
@@ -547,7 +580,8 @@ CREATE TABLE `app_risk_device` (
                                `user_id` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '用户ID',
                                `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录时间',
                                PRIMARY KEY (`id`),
-                               KEY `idx_fp` (`device_fp`)
+                               KEY `idx_fp` (`device_fp`),
+                               KEY `idx_user` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='设备风控表';
 
 -- ----------------------------
@@ -561,7 +595,9 @@ CREATE TABLE `app_risk_event` (
                               `detail` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '事件详情',
                               `score` INT NOT NULL DEFAULT 0 COMMENT '风险分',
                               `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发生时间',
-                              PRIMARY KEY (`id`)
+                              PRIMARY KEY (`id`),
+                              KEY `idx_user` (`user_id`),
+                              KEY `idx_event_type_time` (`event_type`,`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='风控事件记录';
 
 DROP TABLE IF EXISTS `app_risk_rate_limit`;
@@ -577,7 +613,9 @@ CREATE TABLE `app_risk_rate_limit` (
                                        `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                        PRIMARY KEY (`id`),
                                        UNIQUE KEY `uk_scene_identity_window`
-                                           (`scene`,`identity_type`,`identity_value`,`window_start`)
+                                           (`scene`,`identity_type`,`identity_value`,`window_start`),
+                                       KEY `idx_scene_identity` (`scene`,`identity_type`,`identity_value`),
+                                       KEY `idx_blocked` (`blocked`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='频率/防刷限制表';
 
 DROP TABLE IF EXISTS `app_risk_blacklist`;
@@ -590,8 +628,97 @@ CREATE TABLE `app_risk_blacklist` (
                                       `status` char(1) NOT NULL DEFAULT '1' COMMENT '1生效 2失效',
                                       `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                       PRIMARY KEY (`id`),
-                                      UNIQUE KEY `uk_type_value` (`type`,`value`)
+                                      UNIQUE KEY `uk_type_value` (`type`,`value`),
+                                      KEY `idx_status` (`status`),
+                                      KEY `idx_type_status` (`type`,`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='风控黑名单';
+
+DROP TABLE IF EXISTS `app_risk_appeal`;
+CREATE TABLE `app_risk_appeal` (
+                                   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '申诉ID',
+
+    -- 申诉主体
+                                   `user_id` BIGINT UNSIGNED NOT NULL COMMENT '申诉用户ID',
+                                   `risk_level` TINYINT NOT NULL DEFAULT 0 COMMENT '申诉时风险等级',
+                                   `risk_reason` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '触发风控原因',
+
+    -- 申诉内容
+                                   `appeal_type` TINYINT NOT NULL DEFAULT 1 COMMENT '申诉类型 1账号封禁 2登录限制 3设备封禁',
+                                   `appeal_reason` VARCHAR(500) NOT NULL COMMENT '用户申诉说明',
+                                   `appeal_evidence` VARCHAR(1000) DEFAULT NULL COMMENT '申诉凭证(图片/链接)',
+
+    -- 关联信息（关键）
+                                   `ip` VARCHAR(45) DEFAULT NULL COMMENT '申诉时IP',
+                                   `device_fp` VARCHAR(64) DEFAULT NULL COMMENT '申诉设备指纹',
+
+    -- 审核信息
+                                   `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态 1待处理 2通过 3拒绝',
+                                   `reviewer_id` BIGINT UNSIGNED DEFAULT NULL COMMENT '审核人ID',
+                                   `review_remark` VARCHAR(255) DEFAULT NULL COMMENT '审核备注',
+
+    -- 行为结果
+                                   `action_result` TINYINT NOT NULL DEFAULT 0 COMMENT '处理结果 0无操作 1已解封账号 2已解封设备',
+
+    -- 时间
+                                   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '申诉时间',
+                                   `reviewed_at` DATETIME DEFAULT NULL COMMENT '审核时间',
+
+                                   PRIMARY KEY (`id`),
+
+                                   KEY `idx_user_id` (`user_id`),
+                                   KEY `idx_status` (`status`),
+                                   KEY `idx_device_fp` (`device_fp`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='风控申诉表';
+
+DROP TABLE IF EXISTS `app_risk_strategy`;
+CREATE TABLE `app_risk_strategy` (
+                                     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '策略ID',
+                                     `scene` VARCHAR(32) NOT NULL COMMENT '场景：register/login/withdraw 等',
+                                     `rule_code` VARCHAR(64) NOT NULL COMMENT '规则编码：如 LOGIN_FAIL_USER',
+                                     `identity_type` VARCHAR(16) NOT NULL COMMENT '统计维度：user/ip/device 等',
+                                     `window_seconds` INT NOT NULL COMMENT '统计窗口(秒)',
+                                     `threshold` INT NOT NULL COMMENT '触发阈值（次数）',
+                                     `action` VARCHAR(32) NOT NULL COMMENT '触发动作编码，关联 app_risk_action.code',
+                                     `action_value` INT NOT NULL DEFAULT 0 COMMENT '动作值(秒/分数)，覆盖默认值时使用',
+                                     `status` TINYINT NOT NULL DEFAULT 1 COMMENT '1启用 0停用',
+                                     `priority` INT NOT NULL DEFAULT 100 COMMENT '优先级，数值越小越优先',
+                                     `remark` VARCHAR(255) DEFAULT NULL COMMENT '说明',
+                                     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                                     PRIMARY KEY (`id`),
+                                     UNIQUE KEY `uk_scene_rule` (`scene`,`rule_code`),
+                                     KEY `idx_scene_status_priority` (`scene`,`status`,`priority`),
+                                     KEY `idx_scene_identity` (`scene`,`identity_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='风控策略表：定义场景下的统计窗口、阈值与动作';
+
+DROP TABLE IF EXISTS `app_risk_action`;
+CREATE TABLE `app_risk_action` (
+                                   `code` VARCHAR(32) NOT NULL COMMENT '动作编码，如 LOCK_5M/BAN/SCORE_50',
+                                   `type` VARCHAR(16) NOT NULL COMMENT '动作类型：LOCK/BAN/SCORE',
+                                   `default_value` INT NOT NULL DEFAULT 0 COMMENT '默认动作值：LOCK秒数/BAN=0/SCORE分值',
+                                   `remark` VARCHAR(255) DEFAULT NULL COMMENT '说明',
+                                   PRIMARY KEY (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='风控动作字典：定义动作类型与默认值';
+
+INSERT INTO app_risk_action VALUES
+                                ('LOCK_5M','LOCK',300,'锁定5分钟'),
+                                ('LOCK_30M','LOCK',1800,'锁定30分钟'),
+                                ('BAN','BAN',0,'永久封禁'),
+                                ('SCORE_50','SCORE',50,'增加50风险分'),
+                                ('SCORE_80','SCORE',80,'增加80风险分');
+
+DROP TABLE IF EXISTS `app_risk_strategy_cache`;
+CREATE TABLE `app_risk_strategy_cache` (
+                                           `scene` VARCHAR(32) NOT NULL COMMENT '场景：register/login/withdraw',
+                                           `identity_type` VARCHAR(16) NOT NULL COMMENT '统计维度：user/ip/device',
+                                           `rule_code` VARCHAR(64) NOT NULL COMMENT '规则编码',
+                                           `window_seconds` INT NOT NULL COMMENT '统计窗口(秒)',
+                                           `threshold` INT NOT NULL COMMENT '触发阈值（次数）',
+                                           `action` VARCHAR(32) NOT NULL COMMENT '触发动作编码',
+                                           `action_value` INT NOT NULL COMMENT '动作值(秒/分数)',
+                                           PRIMARY KEY (`scene`,`identity_type`,`rule_code`),
+                                           KEY `idx_scene_identity` (`scene`,`identity_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='风控策略运行缓存：策略下发后的本地缓存';
 
 DROP TABLE IF EXISTS `app_message`;
 CREATE TABLE `app_message` (
@@ -615,7 +742,8 @@ CREATE TABLE `app_message` (
 
                                PRIMARY KEY (`id`),
                                KEY `idx_type_time` (`msg_type`, `created_at`),
-                               KEY `idx_sender` (`sender_type`, `sender_id`)
+                               KEY `idx_sender` (`sender_type`, `sender_id`),
+                               KEY `idx_biz` (`biz_type`, `biz_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='站内信-消息主体';
 
 DROP TABLE IF EXISTS `app_message_user`;
@@ -634,7 +762,8 @@ CREATE TABLE `app_message_user` (
                                     PRIMARY KEY (`id`),
                                     UNIQUE KEY `uk_user_message` (`user_id`, `message_id`),
                                     KEY `idx_user_read` (`user_id`, `is_read`),
-                                    KEY `idx_user_time` (`user_id`, `created_at`)
+                                    KEY `idx_user_time` (`user_id`, `created_at`),
+                                    KEY `idx_user_deleted` (`user_id`, `is_deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='站内信-用户收件箱';
 
 
@@ -678,7 +807,10 @@ CREATE TABLE `app_user_invite_code` (
                                    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                    PRIMARY KEY (`id`),
                                    UNIQUE KEY `uk_code` (`code`),
-                                   KEY `idx_owner` (`owner_user_id`)
+                                   KEY `idx_owner` (`owner_user_id`),
+                                   KEY `idx_status` (`status`),
+                                   KEY `idx_owner_status` (`owner_user_id`,`status`),
+                                   KEY `idx_used_today` (`used_today`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='邀请码表';
 
 
