@@ -35,7 +35,7 @@ func (s *SessionAuth) Login(c *gin.Context) {
 		Data:      nil,
 	}
 
-	userId := c.GetInt64(authdto.LoginUserId)
+	userId := c.GetInt64(authdto.UserId)
 	if userId <= 0 {
 		c.JSON(baseLang.RequestErr, errResp)
 		return
@@ -57,10 +57,10 @@ func (s *SessionAuth) Login(c *gin.Context) {
 	}
 
 	//session信息
-	userName, _ := c.Get(authdto.UserName)
+	userName, _ := c.Get(authdto.Username)
 	sessionInfo, err := json.Marshal(map[string]interface{}{
-		authdto.LoginUserId: userId,
-		authdto.UserName:    userName,
+		authdto.UserId:   userId,
+		authdto.Username: userName,
 	})
 	if err != nil {
 		rLog.Error(err)
@@ -99,7 +99,7 @@ func (s *SessionAuth) Login(c *gin.Context) {
 }
 
 func (s *SessionAuth) Logout(c *gin.Context) {
-	userId := c.GetInt64(authdto.LoginUserId)
+	userId := c.GetInt64(authdto.UserId)
 	if userId <= 0 {
 		return
 	}
@@ -137,14 +137,14 @@ func (s *SessionAuth) Get(c *gin.Context, key string) (interface{}, int, error) 
 }
 
 func (s *SessionAuth) GetUserId(c *gin.Context) (int64, int, error) {
-	result, respCode, err := s.Get(c, authdto.LoginUserId)
+	result, respCode, err := s.Get(c, authdto.UserId)
 	if err != nil {
 		return 0, respCode, err
 	}
 	return int64(result.(float64)), respCode, err
 }
 func (s *SessionAuth) GetUserName(c *gin.Context) string {
-	result, _, _ := s.Get(c, authdto.UserName)
+	result, _, _ := s.Get(c, authdto.Username)
 	if result == nil {
 		return ""
 	}
@@ -180,7 +180,7 @@ func (s *SessionAuth) AuthMiddlewareFunc() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		c.Set(authdto.LoginUserId, uid)
+		c.Set(authdto.UserId, uid)
 		_ = cache.Expire(SessionLoginPrefixTmp, sid, config.AuthConfig.Timeout)
 		_ = cache.Expire(SessionLoginPrefix, uid, config.AuthConfig.Timeout)
 		c.Next()

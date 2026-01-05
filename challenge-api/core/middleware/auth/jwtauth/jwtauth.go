@@ -9,10 +9,11 @@ import (
 	"challenge/core/utils/log"
 	"challenge/core/utils/strutils"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 var jwtAuthMiddleware = &GinJWTMiddleware{}
@@ -53,7 +54,7 @@ func (j *JwtAuth) Login(c *gin.Context) {
 }
 
 func (j *JwtAuth) Logout(c *gin.Context) {
-	userId := c.GetInt64(authdto.LoginUserId)
+	userId := c.GetInt64(authdto.UserId)
 	if userId > 0 {
 		_ = runtime.RuntimeConfig.GetCacheAdapter().Del(JWTLoginPrefix, strconv.FormatInt(userId, 10))
 	}
@@ -82,7 +83,7 @@ func (j *JwtAuth) Get(c *gin.Context, key string) (interface{}, int, error) {
 }
 
 func (j *JwtAuth) GetUserId(c *gin.Context) (int64, int, error) {
-	result, respCode, err := j.Get(c, authdto.LoginUserId)
+	result, respCode, err := j.Get(c, authdto.UserId)
 	if err != nil {
 		return 0, respCode, err
 	}
@@ -90,7 +91,7 @@ func (j *JwtAuth) GetUserId(c *gin.Context) (int64, int, error) {
 }
 
 func (j *JwtAuth) GetUserName(c *gin.Context) string {
-	result, _, _ := j.Get(c, authdto.UserName)
+	result, _, _ := j.Get(c, authdto.Username)
 	if result == nil {
 		return ""
 	}
@@ -103,12 +104,12 @@ func (j *JwtAuth) AuthMiddlewareFunc() gin.HandlerFunc {
 
 func PayloadFunc(data interface{}) MapClaims {
 	if v, ok := data.(map[string]interface{}); ok {
-		userId, _ := v[authdto.LoginUserId]
-		userName, _ := v[authdto.UserName]
+		userId, _ := v[authdto.UserId]
+		userName, _ := v[authdto.Username]
 
 		return MapClaims{
-			authdto.LoginUserId: userId,
-			authdto.UserName:    userName,
+			authdto.UserId:   userId,
+			authdto.Username: userName,
 		}
 	}
 	return MapClaims{}
@@ -117,35 +118,35 @@ func PayloadFunc(data interface{}) MapClaims {
 func IdentityHandler(c *gin.Context) interface{} {
 	claims := ExtractClaims(c)
 	return map[string]interface{}{
-		authdto.LoginUserId: claims[authdto.LoginUserId],
-		authdto.UserName:    claims[authdto.UserName],
+		authdto.UserId:   claims[authdto.UserId],
+		authdto.Username: claims[authdto.Username],
 	}
 }
 
 func Authenticator(c *gin.Context) (interface{}, error) {
-	userId, b := c.Get(authdto.LoginUserId)
+	userId, b := c.Get(authdto.UserId)
 	if !b || userId == nil {
 		return nil, ErrFailedAuthentication
 	}
 
-	userName, _ := c.Get(authdto.UserName)
+	userName, _ := c.Get(authdto.Username)
 
 	resp := map[string]interface{}{
-		authdto.LoginUserId: userId,
-		authdto.UserName:    userName,
+		authdto.UserId:   userId,
+		authdto.Username: userName,
 	}
 	return resp, nil
 }
 
 func Authorizator(data interface{}, c *gin.Context) bool {
 	if v, ok := data.(map[string]interface{}); ok {
-		userId, _ := v[authdto.LoginUserId]
+		userId, _ := v[authdto.UserId]
 		if userId != nil {
-			c.Set(authdto.LoginUserId, int64(userId.(float64))) //这里一定要用string保存userId，以防取出Interface转换复杂
+			c.Set(authdto.UserId, int64(userId.(float64))) //这里一定要用string保存userId，以防取出Interface转换复杂
 		}
-		userName, _ := v[authdto.UserName]
+		userName, _ := v[authdto.Username]
 		if userName != nil {
-			c.Set(authdto.UserName, userName)
+			c.Set(authdto.Username, userName)
 		}
 		return true
 	}

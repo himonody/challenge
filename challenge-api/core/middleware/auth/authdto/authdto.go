@@ -1,9 +1,9 @@
 package authdto
 
 const (
-	UserInfo    = "UserInfo"
-	LoginUserId = "LoginUserId"
-	UserName    = "UserName"
+	UserInfo = "UserInfo"
+	UserId   = "UserId"
+	Username = "Username"
 
 	HeaderAuthorization = "Authorization"
 	HeaderTokenName     = "Bearer"

@@ -5,10 +5,10 @@ import (
 	"challenge/app/user/models"
 	m "challenge/app/user/models"
 	"challenge/app/user/repo"
+	"challenge/config/base/lang"
 	baseLang "challenge/config/base/lang"
 	"challenge/core/dto/response"
 	"challenge/core/dto/service"
-	"challenge/core/lang"
 	"challenge/core/middleware/auth"
 	"challenge/core/middleware/auth/authdto"
 	"challenge/core/utils/captchautils"
@@ -16,6 +16,7 @@ import (
 	"challenge/core/utils/idgen"
 	"errors"
 	"fmt"
+	"net/http"
 	"regexp"
 	"strings"
 	"time"
@@ -38,7 +39,7 @@ func NewAuthService(s *service.Service) *Auth {
 	return srv
 }
 
-func (a *Auth) Register(req *dto.RegisterReq) (models.AppUser, int, error) {
+func (a *Auth) Register(req *dto.RegisterReq) (*models.AppUser, int) {
 	req.UserName = strings.TrimSpace(req.UserName)
 	req.Password = strings.TrimSpace(req.Password)
 	req.RefCode = strings.TrimSpace(req.RefCode)
@@ -46,33 +47,33 @@ func (a *Auth) Register(req *dto.RegisterReq) (models.AppUser, int, error) {
 	req.CaptchaCode = strings.TrimSpace(req.CaptchaCode)
 
 	if !userPwdRegex.MatchString(req.UserName) {
-		return errors.New("用户名格式错误")
+		return nil, lang.AuthUsernameErrorCode
 	}
 	if !userPwdRegex.MatchString(req.Password) {
-		return errors.New("密码格式错误")
+		return nil, lang.AuthPasswordErrorCode
 	}
 	if req.CaptchaId == "" || req.CaptchaCode == "" {
-		return errors.New("验证码错误")
+		return nil, lang.AuthVerificationCodeErrorCode
 	}
 	if !captchautils.Verify(req.CaptchaId, req.CaptchaCode, true) {
-		return errors.New("验证码错误")
+		return nil, lang.AuthVerificationCodeErrorCode
 	}
 	var existCnt int64
 	a.Orm.Table("app_user").Where("username = ?", req.UserName).Count(&existCnt)
 	if existCnt > 0 {
-		return errors.New("用户名已存在")
+		return nil, lang.AuthUserAlreadyExistsCode
 	}
 	parentId := 0
 	if req.RefCode != "" {
 		var parent models.AppUser
 		if err := a.Orm.Table("app_user").Select("id").Where("ref_code = ?", req.RefCode).Take(&parent).Error; err != nil {
-			return errors.New("推荐码不存在")
+			return nil, lang.AuthInviteCodeNotFoundErrorCode
 		}
 		parentId = parent.ID
 	}
 	pwdHash, err := encrypt.HashEncrypt(req.Password)
 	if err != nil {
-		return errors.New("密码错误")
+		return nil, lang.DataDecodeCode
 	}
 
 	refCode := idgen.InviteId()
@@ -111,7 +112,7 @@ func (a *Auth) Register(req *dto.RegisterReq) (models.AppUser, int, error) {
 	if err != nil {
 		a.Log.Errorf("app.auth.service.Register  CreateUser req:%v error:%w", user, err)
 		tx.Rollback()
-		return err
+		return nil, lang.DataDecodeCode
 	}
 	log := new(models.AppUserOperLog)
 	log.UserID = user.ID
@@ -125,17 +126,14 @@ func (a *Auth) Register(req *dto.RegisterReq) (models.AppUser, int, error) {
 	if err = repo.CreateUserOperLog(tx, log); err != nil {
 		a.Log.Errorf("app.auth.service.Register  CreateUserOperLog req:%v error:%w", log, err)
 		tx.Rollback()
-		return err
+		return nil, lang.ServerErr
 	}
 	if err = tx.Commit().Error; err != nil {
 		a.Log.Errorf("app.auth.service.Register  Commit req:%v error:%w", user, err)
 		tx.Rollback()
-		return err
+		return nil, lang.ServerErr
 	}
-	a.C.Set(authdto.LoginUserId, user.ID)
-	a.C.Set(authdto.UserName, user.Username)
-	auth.Auth.Login(c)
-	return nil
+	return user, lang.SuccessCode
 }
 
 var (

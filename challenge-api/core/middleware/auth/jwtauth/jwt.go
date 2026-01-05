@@ -212,7 +212,7 @@ var (
 	ErrInvalidPubKey = errors.New("public key invalid")
 
 	// IdentityKey default identity key
-	IdentityKey = authdto.LoginUserId
+	IdentityKey = authdto.UserId
 )
 
 // New for check error with GinJWTMiddleware
@@ -307,7 +307,7 @@ func (mw *GinJWTMiddleware) MiddlewareInit() error {
 
 	if mw.LoginResponse == nil {
 		mw.LoginResponse = func(c *gin.Context, code int, token string, expire time.Time) {
-			userName, _ := c.Get(authdto.UserName)
+			userName, _ := c.Get(authdto.Username)
 			c.JSON(http.StatusOK, gin.H{
 				"requestId": strutils.GenerateMsgIDFromContext(c),
 				"msg":       "",
@@ -432,7 +432,7 @@ func (mw *GinJWTMiddleware) GetClaimsFromJWT(c *gin.Context) (MapClaims, error) 
 		claims[key] = value
 	}
 
-	saveTokenStr, _ := runtime.RuntimeConfig.GetCacheAdapter().Get(JWTLoginPrefix, strconv.FormatInt(int64(claims[authdto.LoginUserId].(float64)), 10))
+	saveTokenStr, _ := runtime.RuntimeConfig.GetCacheAdapter().Get(JWTLoginPrefix, strconv.FormatInt(int64(claims[authdto.UserId].(float64)), 10))
 	//单点登录
 	if config.ApplicationConfig.IsSingleLogin && saveTokenStr != tokenStr {
 		return nil, lang.MsgErr(baseLang.AuthErr, mw.GetAcceptLanguage(c))
@@ -490,7 +490,7 @@ func (mw *GinJWTMiddleware) LoginHandler(c *gin.Context) {
 			mw.CookieHTTPOnly,
 		)
 	}
-	err = runtime.RuntimeConfig.GetCacheAdapter().Set(JWTLoginPrefix, strconv.FormatInt(claims[authdto.LoginUserId].(int64), 10), tokenString, config.AuthConfig.Timeout)
+	err = runtime.RuntimeConfig.GetCacheAdapter().Set(JWTLoginPrefix, strconv.FormatInt(claims[authdto.UserId].(int64), 10), tokenString, config.AuthConfig.Timeout)
 	if err != nil {
 		mw.unauthorized(c, http.StatusInternalServerError, mw.HTTPStatusMessageFunc(ErrMissingAuthenticatorFunc, c))
 		return

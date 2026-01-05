@@ -11,19 +11,19 @@ const (
 	ServerErr         = 500
 	ParamErrCode      = 1001
 	OpErrCode         = 1002
-	DataDecodeCode    = 1013
-	DataDecodeLogCode = 1012
 	DataQueryCode     = 1003
 	DataQueryLogCode  = 1004
 	DataInsertLogCode = 1005
 	DataInsertCode    = 1006
-	DataNotUpdateCode = 1014
 	DataUpdateCode    = 1007
 	DataUpdateLogCode = 1008
 	DataDeleteCode    = 1009
 	DataDeleteLogCode = 1010
 	DataNotFoundCode  = 1011
 	ServerErrLogCode  = 1012
+	DataDecodeCode    = 1013
+	DataNotUpdateCode = 1014
+	DataDecodeLogCode = 1015
 )
 
 func init() {

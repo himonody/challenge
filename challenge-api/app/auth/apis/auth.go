@@ -3,7 +3,10 @@ package apis
 import (
 	"challenge/app/auth/service"
 	"challenge/app/auth/service/dto"
+	"challenge/config/lang"
 	"challenge/core/dto/api"
+	"challenge/core/middleware/auth"
+	"challenge/core/middleware/auth/authdto"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,21 +16,24 @@ type Auth struct {
 }
 
 func (a *Auth) Register(c *gin.Context) {
-	dto := dto.RegisterReq{}
+	req := dto.RegisterReq{}
 	s := service.Auth{}
 	err := a.MakeContext(c).
 		MakeOrm().
-		Bind(&dto).
+		Bind(&req).
 		MakeService(&s.Service).
 		MakeRuntime().Errors
 	if err != nil {
 		return
 	}
-	err = s.Register(&dto)
-	if err != nil {
+	user, code := s.Register(&req)
+	if code != 0 {
+		a.Error(code, lang.Get(a.Lang, code))
 		return
 	}
-
+	c.Set(authdto.UserId, user.ID)
+	c.Set(authdto.Username, user.Username)
+	auth.Auth.Login(c)
 }
 
 func (a *Auth) Login(c *gin.Context) {
