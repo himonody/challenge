@@ -25,6 +25,8 @@ func InitMiddleware(r *gin.Engine) {
 	r.Use(KeepAlive)
 	// 跨域处理
 	r.Use(Options)
+	//风险收集
+	r.Use(RiskCollect())
 	// Secure is a middleware function that appends security
 	r.Use(Secure)
 	// 链路追踪

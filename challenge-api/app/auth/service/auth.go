@@ -3,28 +3,18 @@ package service
 import (
 	"challenge/app/auth/service/dto"
 	"challenge/app/user/models"
-	m "challenge/app/user/models"
 	"challenge/app/user/repo"
 	"challenge/config/base/constant"
 	"challenge/config/base/lang"
-	baseLang "challenge/config/base/lang"
-	"challenge/core/dto/response"
 	"challenge/core/dto/service"
-	"challenge/core/middleware/auth"
-	"challenge/core/middleware/auth/authdto"
 	"challenge/core/utils/captchautils"
 	"challenge/core/utils/encrypt"
 	"challenge/core/utils/idgen"
-	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
 type Auth struct {
@@ -41,6 +31,8 @@ func NewAuthService(s *service.Service) *Auth {
 }
 
 func (a *Auth) Register(req *dto.RegisterReq) (*models.AppUser, int) {
+	//rc := a.C.MustGet("risk_ctx").(rd.RiskContext)
+
 	req.UserName = strings.TrimSpace(req.UserName)
 	req.Password = strings.TrimSpace(req.Password)
 	req.RefCode = strings.TrimSpace(req.RefCode)
@@ -142,67 +134,68 @@ var (
 	userPwdRegex = regexp.MustCompile(`^[A-Za-z0-9!@#$%^&*()\-_=+,.?/:;{}\[\]` + "`" + `~]{4,12}$`)
 )
 
-func Login(c *gin.Context) {
-	var req dto.LoginReq
-	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Error(c, baseLang.ParamErrCode, lang.MsgByCode(baseLang.ParamErrCode, lang.GetAcceptLanguage(c)))
-		return
-	}
-	if !userPwdRegex.MatchString(req.UserName) {
-		response.Error(c, baseLang.ParamErrCode, "用户名格式错误")
-		return
-	}
-	if !userPwdRegex.MatchString(req.Password) {
-		response.Error(c, baseLang.ParamErrCode, "密码格式错误")
-		return
-	}
-	if req.CaptchaId == "" || req.CaptchaCode == "" {
-		response.Error(c, baseLang.ParamErrCode, "验证码不能为空")
-		return
-	}
-	if !captchautils.Verify(req.CaptchaId, req.CaptchaCode, true) {
-		response.Error(c, baseLang.ParamErrCode, "验证码错误")
-		return
-	}
-
-	db, err := getDb(c)
-	if err != nil {
-		response.Error(c, baseLang.ServerErr, "db error")
-		return
-	}
-
-	userNameCol := resolveColumn(db, "app_user", "user_name", "username")
-	pwdCol := resolveColumn(db, "app_user", "pwd", "password")
-
-	var u userRow
-	q := db.Table("app_user").Select("id, " + userNameCol + " as user_name, " + pwdCol + " as pwd, status")
-	if err := q.Where(userNameCol+" = ?", req.UserName).Take(&u).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			response.Error(c, baseLang.RequestErr, "用户名或密码错误")
-			return
-		}
-		response.Error(c, baseLang.ServerErr, "db error")
-		return
-	}
-
-	if u.Status != "" && u.Status != "1" {
-		response.Error(c, baseLang.ForbitErr, "账号已禁用")
-		return
-	}
-	if u.Pwd == "" {
-		response.Error(c, baseLang.RequestErr, "用户名或密码错误")
-		return
-	}
-	if err := bcrypt.CompareHashAndPassword([]byte(u.Pwd), []byte(req.Password)); err != nil {
-		response.Error(c, baseLang.RequestErr, "用户名或密码错误")
-		return
-	}
-
-	c.Set(authdto.LoginUserId, u.Id)
-	c.Set(authdto.UserName, req.UserName)
-	auth.Auth.Login(c)
-}
-
-func Logout(c *gin.Context) {
-	auth.Auth.Logout(c)
-}
+//
+//func Login(c *gin.Context) {
+//	var req dto.LoginReq
+//	if err := c.ShouldBindJSON(&req); err != nil {
+//		response.Error(c, baseLang.ParamErrCode, lang.MsgByCode(baseLang.ParamErrCode, lang.GetAcceptLanguage(c)))
+//		return
+//	}
+//	if !userPwdRegex.MatchString(req.UserName) {
+//		response.Error(c, baseLang.ParamErrCode, "用户名格式错误")
+//		return
+//	}
+//	if !userPwdRegex.MatchString(req.Password) {
+//		response.Error(c, baseLang.ParamErrCode, "密码格式错误")
+//		return
+//	}
+//	if req.CaptchaId == "" || req.CaptchaCode == "" {
+//		response.Error(c, baseLang.ParamErrCode, "验证码不能为空")
+//		return
+//	}
+//	if !captchautils.Verify(req.CaptchaId, req.CaptchaCode, true) {
+//		response.Error(c, baseLang.ParamErrCode, "验证码错误")
+//		return
+//	}
+//
+//	db, err := getDb(c)
+//	if err != nil {
+//		response.Error(c, baseLang.ServerErr, "db error")
+//		return
+//	}
+//
+//	userNameCol := resolveColumn(db, "app_user", "user_name", "username")
+//	pwdCol := resolveColumn(db, "app_user", "pwd", "password")
+//
+//	var u userRow
+//	q := db.Table("app_user").Select("id, " + userNameCol + " as user_name, " + pwdCol + " as pwd, status")
+//	if err := q.Where(userNameCol+" = ?", req.UserName).Take(&u).Error; err != nil {
+//		if errors.Is(err, gorm.ErrRecordNotFound) {
+//			response.Error(c, baseLang.RequestErr, "用户名或密码错误")
+//			return
+//		}
+//		response.Error(c, baseLang.ServerErr, "db error")
+//		return
+//	}
+//
+//	if u.Status != "" && u.Status != "1" {
+//		response.Error(c, baseLang.ForbitErr, "账号已禁用")
+//		return
+//	}
+//	if u.Pwd == "" {
+//		response.Error(c, baseLang.RequestErr, "用户名或密码错误")
+//		return
+//	}
+//	if err := bcrypt.CompareHashAndPassword([]byte(u.Pwd), []byte(req.Password)); err != nil {
+//		response.Error(c, baseLang.RequestErr, "用户名或密码错误")
+//		return
+//	}
+//
+//	c.Set(authdto.LoginUserId, u.Id)
+//	c.Set(authdto.UserName, req.UserName)
+//	auth.Auth.Login(c)
+//}
+//
+//func Logout(c *gin.Context) {
+//	auth.Auth.Logout(c)
+//}

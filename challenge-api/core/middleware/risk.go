@@ -1,16 +1,14 @@
 package middleware
 
-import "github.com/gin-gonic/gin"
+import (
+	"challenge/app/risk/serivces/dto"
 
-type RiskContext struct {
-	IP       string
-	UA       string
-	DeviceFP string
-}
+	"github.com/gin-gonic/gin"
+)
 
 func RiskCollect() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		rc := RiskContext{
+		rc := dto.RiskContext{
 			IP:       c.ClientIP(),
 			UA:       c.GetHeader("User-Agent"),
 			DeviceFP: c.GetHeader("X-Device-FP"),
