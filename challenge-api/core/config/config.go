@@ -3,6 +3,7 @@ package config
 import (
 	"challenge/core/utils/log"
 	"fmt"
+
 	loadconfig "github.com/bitxx/load-config"
 	"github.com/bitxx/load-config/source"
 )
@@ -50,6 +51,7 @@ type Config struct {
 	Cache       *Cache                `yaml:"cache"`
 	Queue       *Queue                `yaml:"queue"`
 	Locker      *Locker               `yaml:"locker"`
+	Oss         *Oss                  `yaml:"oss"`
 }
 
 // 多db改造
@@ -76,6 +78,7 @@ func Setup(s source.Source,
 			Cache:       CacheConfig,
 			Queue:       QueueConfig,
 			Locker:      LockerConfig,
+			Oss:         OssConfig,
 		},
 		callbacks: fs,
 	}
