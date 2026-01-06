@@ -3,8 +3,10 @@ package queue
 import (
 	"challenge/core/utils/storage"
 	redisqueue2 "challenge/core/utils/storage/queue/redisqueue"
+	"context"
 	"fmt"
 	"github.com/redis/go-redis/v9"
+	"os"
 	"testing"
 	"time"
 )
@@ -69,6 +71,70 @@ func TestRedis_Append(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+// TestRedis_SendAndConsume verifies a message can be produced and consumed via Redis streams.
+func TestRedis_SendAndConsume(t *testing.T) {
+	addr := os.Getenv("TEST_REDIS_ADDR")
+	if addr == "" {
+		addr = "127.0.0.1:6379"
+	}
+	client := redis.NewClient(&redis.Options{Addr: addr})
+	if err := client.Ping(context.Background()).Err(); err != nil {
+		t.Skipf("skip: redis not available at %s: %v", addr, err)
+	}
+
+	stream := fmt.Sprintf("test_stream_%d", time.Now().UnixNano())
+	producerOptions := &redisqueue2.ProducerOptions{
+		StreamMaxLength:      100,
+		ApproximateMaxLength: true,
+		RedisClient:          client,
+	}
+	consumerOptions := &redisqueue2.ConsumerOptions{
+		VisibilityTimeout: 30 * time.Second,
+		BlockingTimeout:   2 * time.Second,
+		ReclaimInterval:   1 * time.Second,
+		BufferSize:        10,
+		Concurrency:       1,
+		RedisClient:       client,
+	}
+
+	q, err := NewRedis(producerOptions, consumerOptions)
+	if err != nil {
+		t.Fatalf("NewRedis error: %v", err)
+	}
+	defer func() {
+		q.Shutdown()
+		_ = client.Del(context.Background(), stream).Err()
+	}()
+
+	got := make(chan map[string]interface{}, 1)
+	q.Register(stream, func(message storage.Messager) error {
+		fmt.Printf("[consume] stream=%s values=%v\n", message.GetStream(), message.GetValues())
+		got <- message.GetValues()
+		return nil
+	})
+
+	// Start consumer
+	go q.Run()
+
+	msg := &Message{redisqueue2.Message{
+		Stream: stream,
+		Values: map[string]interface{}{"hello": "world"},
+	}}
+	fmt.Printf("[produce] stream=%s values=%v\n", msg.GetStream(), msg.GetValues())
+	if err := q.Append(msg); err != nil {
+		t.Fatalf("Append error: %v", err)
+	}
+
+	select {
+	case vals := <-got:
+		if vals["hello"] != "world" {
+			t.Fatalf("unexpected payload: %+v", vals)
+		}
+	case <-time.After(10 * time.Second):
+		t.Fatal("timed out waiting for message consumption")
 	}
 }
 

@@ -7,7 +7,7 @@ settings:
     # 服务器ip，默认使用 0.0.0.0
     host: 0.0.0.0
     # 服务名称
-    name: challenge
+    name: challenge-api
     # 版本
     version: 2.0.0
     # 端口号
@@ -69,35 +69,42 @@ settings:
       network: tcp
       username: ""
       db: 0
-      poolSize: 10
+      poolSize: 100
       maxRetries: 3
   queue:
-    nats:
-      url: nats://127.0.0.1:4222
-      stream: CHALLENGE_QUEUE
-      subjectPrefix: queue.
-      durablePrefix: durable_
-      ackWaitSeconds: 60
-      maxAckPending: 1024
-      maxDeliver: 10
-      connectTimeoutMs: 2000
-      reconnectWaitMs: 500
-      maxReconnects: -1
+    redis:
+      addr: 127.0.0.1:6379
+      password: ""
+      network: tcp
+      username: ""
+      db: 0
+      poolSize: 100
+      maxRetries: 3
+      # producer 配置：streamMaxLength 为流最大长度(超过即裁剪旧消息)，approximateMaxLength 使用近似裁剪以提升性能
+      producer:
+        streamMaxLength: 10000
+        approximateMaxLength: true
+      # consumer 配置：visibilityTimeout 待确认超时重试秒数，bufferSize 缓冲队列，concurrency 并发消费数，
+      # blockingTimeout 拉取阻塞秒数，reclaimInterval 待确认重试检查间隔秒数
+      consumer:
+        visibilityTimeout: 60   # 秒
+        bufferSize: 100
+        concurrency: 10
+        blockingTimeout: 5      # 秒
+        reclaimInterval: 1      # 秒
+#    nats:
+#      url: nats://127.0.0.1:4222
+#      stream: CHALLENGE_QUEUE
+#      subjectPrefix: queue.
+#      durablePrefix: durable_
+#      ackWaitSeconds: 60
+#      maxAckPending: 1024
+#      maxDeliver: 10
+#      connectTimeoutMs: 2000
+#      reconnectWaitMs: 500
+#      maxReconnects: -1
 #    memory:
 #      poolSize: 100
-#    其余第三方队列服务，下方配置未完善，待定，先占位
-#    redis:
-#      addr: 127.0.0.1:6379
-#      password: xxxxxx
-#      producer:
-#        streamMaxLength: 100
-#        approximateMaxLength: true
-#      consumer:
-#        visibilityTimeout: 60
-#        bufferSize: 100
-#        concurrency: 10
-#        blockingTimeout: 5
-#        reclaimInterval: 1
 #    nsq: 自行根据代码配置 config/option_nsg.go
 #  主要是redis锁服务，下方配置未完善，待定，先占位
   locker:
@@ -107,5 +114,5 @@ settings:
       network: tcp
       username: ""
       db: 0
-      poolSize: 10
+      poolSize: 100
       maxRetries: 3
