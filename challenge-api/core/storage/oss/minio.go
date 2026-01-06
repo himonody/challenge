@@ -4,6 +4,7 @@ import (
 	"challenge/core/config"
 	"context"
 	"fmt"
+	"io"
 	"time"
 
 	"github.com/minio/minio-go/v7"
@@ -52,6 +53,17 @@ func (m *MinioStorage) Upload(objectKey, localPath string) error {
 		objectKey,
 		localPath,
 		minio.PutObjectOptions{},
+	)
+	return err
+}
+func (m *MinioStorage) UploadReader(objectKey string, r io.Reader, size int64, contentType string) error {
+	_, err := m.client.PutObject(
+		context.Background(),
+		m.cfg.Bucket,
+		objectKey,
+		r,
+		size,
+		minio.PutObjectOptions{ContentType: contentType},
 	)
 	return err
 }

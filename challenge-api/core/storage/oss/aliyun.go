@@ -3,6 +3,7 @@ package oss
 import (
 	"challenge/core/config"
 	"fmt"
+	"io"
 	"os"
 	"time"
 
@@ -42,7 +43,13 @@ func (a *AliyunOSS) Init(cfg config.Oss) error {
 func (a *AliyunOSS) Upload(objectKey, localPath string) error {
 	return a.bucket.PutObjectFromFile(objectKey, localPath)
 }
-
+func (a *AliyunOSS) UploadReader(objectKey string, r io.Reader, size int64, contentType string) error {
+	opts := []oss.Option{}
+	if contentType != "" {
+		opts = append(opts, oss.ContentType(contentType))
+	}
+	return a.bucket.PutObject(objectKey, r, opts...)
+}
 func (a *AliyunOSS) UploadMultipart(objectKey, localPath string) error {
 	chunks, err := oss.SplitFileByPartNum(localPath, 5)
 	if err != nil {

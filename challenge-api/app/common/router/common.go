@@ -2,6 +2,7 @@ package router
 
 import (
 	"challenge/app/common/apis"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,6 +23,7 @@ func registerNoCheckCommonRouter(v1 *gin.RouterGroup) {
 	{
 
 		r.POST("/captcha", api.Captcha)
+		r.POST("/upload", api.Upload)
 
 	}
 }

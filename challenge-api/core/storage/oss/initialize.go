@@ -3,6 +3,7 @@ package oss
 import (
 	"challenge/core/config"
 	"errors"
+	"io"
 	"time"
 )
 
@@ -22,6 +23,8 @@ type ObjectStorage interface {
 
 	// Upload 普通上传
 	Upload(objectKey, localPath string) error
+
+	UploadReader(objectKey string, r io.Reader, size int64, contentType string) error // 新增
 
 	// UploadMultipart 分片/大文件上传
 	UploadMultipart(objectKey, localPath string) error
