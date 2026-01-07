@@ -7,9 +7,9 @@ import (
 type UserLevel struct {
 	Id        int64      `json:"id" gorm:"primaryKey;autoIncrement;comment:主键编码"`
 	Name      string     `json:"name" gorm:"column:name;type:varchar(255);comment:等级名称"`
-	LevelType string     `json:"levelType" gorm:"column:level_type;type:varchar(10);comment:等级类型"`
-	Level     int64      `json:"level" gorm:"column:level;type:int;comment:等级"`
-	Status    string     `json:"status" gorm:"column:status;type:char(1);comment:状态(1-正常 2-异常)"`
+	LevelType string     `json:"levelType" gorm:"column:level_type;type:varchar(10);uniqueIndex:uk_level_type_level,priority:1;comment:等级类型"`
+	Level     int64      `json:"level" gorm:"column:level;type:int;uniqueIndex:uk_level_type_level,priority:2;comment:等级"`
+	Status    string     `json:"status" gorm:"column:status;type:char(1);index:idx_status;comment:状态(1-正常 2-异常)"`
 	Remark    string     `json:"remark" gorm:"column:remark;type:varchar(500);comment:备注信息"`
 	CreateBy  int64      `json:"createBy" gorm:"column:create_by;type:int;comment:创建者"`
 	UpdateBy  int64      `json:"updateBy" gorm:"column:update_by;type:int;comment:更新者"`

@@ -16,13 +16,14 @@ func registerNoCheckAuthRouter(v1 *gin.RouterGroup) {
 	r := v1.Group("/app/auth")
 	{
 		r.POST("/register", c.Register)
-		//r.POST("/login", service.Login)
+		r.POST("/login", c.Login)
 	}
 }
 
 func registerAuthRouter(v1 *gin.RouterGroup) {
-	//r := v1.Group("/app/auth").Use(middleware.Auth())
+	c := apis.Auth{}
+	r := v1.Group("/app/auth")
 	{
-		//r.POST("/logout", service.Logout)
+		r.POST("/logout", c.Logout)
 	}
 }

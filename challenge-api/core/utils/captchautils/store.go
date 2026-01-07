@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	prefix = "captcha" //登录中转
+	prefix = "challenge:captcha" //验证码缓存前缀
 )
 
 type cacheStore struct {

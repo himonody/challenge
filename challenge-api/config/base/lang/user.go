@@ -27,6 +27,11 @@ const (
 	UserIdEmptyCode             = 40113
 	UserRefCodeErrLogCode       = 40114
 	UserRegisterErrCode         = 40115
+	UserNotFoundCode            = 40134
+	PasswordErrorCode           = 40135
+	PayPasswordErrorCode        = 40136
+	PasswordFormatErrorCode     = 40137
+	UserNoFieldsToUpdateCode    = 40138
 
 	//国家区号
 	UserCountryEmptyCode        = 40116
@@ -77,6 +82,11 @@ func init() {
 	lang.MsgInfo[UserIdEmptyCode] = "用户编号"
 	lang.MsgInfo[UserRefCodeErrLogCode] = "推荐吗异常：%s"
 	lang.MsgInfo[UserRegisterErrCode] = "注册异常"
+	lang.MsgInfo[UserNoFieldsToUpdateCode] = "没有需要更新的字段"
+	lang.MsgInfo[UserNotFoundCode] = "用户不存在"
+	lang.MsgInfo[PasswordErrorCode] = "密码错误"
+	lang.MsgInfo[PayPasswordErrorCode] = "支付密码错误"
+	lang.MsgInfo[PasswordFormatErrorCode] = "密码格式错误，密码必须包含大小写字母、数字，长度8-20位"
 
 	//国家区号
 	lang.MsgInfo[UserCountryEmptyCode] = "国家名称不得为空"

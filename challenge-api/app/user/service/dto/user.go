@@ -1,99 +1,142 @@
 package dto
 
 import (
-	commDto "challenge/app/common/service/dto"
-	"challenge/core/dto"
 	"time"
 
 	"github.com/shopspring/decimal"
 )
 
-type UserQueryReq struct {
-	dto.Pagination    `search:"-"`
-	BeginCreatedAt    string   `form:"beginCreatedAt" search:"type:gte;column:created_at;table:app_user" comment:"创建时间"`
-	EndCreatedAt      string   `form:"endCreatedAt" search:"type:lte;column:created_at;table:app_user" comment:"创建时间"`
-	LevelId           int64    `form:"levelId"  search:"type:exact;column:level_id;table:app_user" comment:"用户等级编号"`
-	LevelIds          []int64  `form:"levelId"  search:"type:exact;column:level_id;table:app_user" comment:"用户等级编号"`
-	UserName          string   `form:"userName"  search:"type:exact;column:user_name;table:app_user" comment:"用户昵称"`
-	TrueName          string   `form:"trueName"  search:"type:exact;column:true_name;table:app_user" comment:"真实姓名"`
-	Email             string   `form:"email"  search:"type:exact;column:email;table:app_user" comment:"电子邮箱"`
-	MobileTitle       string   `form:"mobileTitle"  search:"type:exact;column:mobile_title;table:app_user" comment:"国家区号"`
-	MobileTitles      []string `form:"-"  search:"type:in;column:mobile_title;table:app_user" comment:"国家区号列表"`
-	Mobile            string   `form:"mobile"  search:"type:exact;column:mobile;table:app_user" comment:"手机号码"`
-	RefCode           string   `form:"-"  search:"type:exact;column:ref_code;table:app_user" comment:"推荐码"`
-	ParentId          int64    `form:"parentId"  search:"type:exact;column:parent_id;table:app_user" comment:"父级编号"`
-	Status            string   `form:"status" search:"type:exact;column:status;table:app_user" comment:"状态"`
-	ShowInfo          bool     `form:"-"  search:"-" comment:"是否明文显示加密信息"`
-	commDto.LevelJoin `search:"type:inner;on:id:level_id;table:app_user;join:app_user_level"`
-	//扩展
-	ParentRefCode string `form:"parentRefCode"  search:"-" comment:"上级用户邀请码"`
-	UserOrder
+// GetProfileReq 获取用户资料请求
+type GetProfileReq struct {
+	UserID uint64 `json:"userId" binding:"required"` // 用户ID
 }
 
-type UserOrder struct {
-	IdOrder          int64           `form:"idOrder"  search:"type:order;column:id;table:app_user"`
-	LevelIdOrder     int64           `form:"levelIdOrder"  search:"type:order;column:level_id;table:app_user"`
-	UserNameOrder    string          `form:"userNameOrder"  search:"type:order;column:user_name;table:app_user"`
-	TrueNameOrder    string          `form:"trueNameOrder"  search:"type:order;column:true_name;table:app_user"`
-	MoneyOrder       decimal.Decimal `form:"moneyOrder"  search:"type:order;column:money;table:app_user"`
-	EmailOrder       string          `form:"emailOrder"  search:"type:order;column:email;table:app_user"`
-	MobileTitleOrder string          `form:"mobileTitleOrder"  search:"type:order;column:mobile_title;table:app_user"`
-	MobileOrder      string          `form:"mobileOrder"  search:"type:order;column:mobile;table:app_user"`
-	AvatarOrder      string          `form:"avatarOrder"  search:"type:order;column:avatar;table:app_user"`
-	PayPwdOrder      string          `form:"payPwdOrder"  search:"type:order;column:pay_pwd;table:app_user"`
-	PwdOrder         string          `form:"pwdOrder"  search:"type:order;column:pwd;table:app_user"`
-	RefCodeOrder     string          `form:"refCodeOrder"  search:"type:order;column:ref_code;table:app_user"`
-	ParentIdOrder    int64           `form:"parentIdOrder"  search:"type:order;column:parent_id;table:app_user"`
-	ParentIdsOrder   string          `form:"parentIdsOrder"  search:"type:order;column:parent_ids;table:app_user"`
-	TreeSortOrder    decimal.Decimal `form:"treeSortOrder"  search:"type:order;column:tree_sort;table:app_user"`
-	TreeSortsOrder   string          `form:"treeSortsOrder"  search:"type:order;column:tree_sorts;table:app_user"`
-	TreeLeafOrder    string          `form:"treeLeafOrder"  search:"type:order;column:tree_leaf;table:app_user"`
-	TreeLevelOrder   int64           `form:"treeLevelOrder"  search:"type:order;column:tree_level;table:app_user"`
-	StatusOrder      string          `form:"statusOrder"  search:"type:order;column:status;table:app_user"`
-	RemarkOrder      string          `form:"remarkOrder"  search:"type:order;column:remark;table:app_user"`
-	CreateByOrder    int64           `form:"createByOrder"  search:"type:order;column:create_by;table:app_user"`
-	UpdateByOrder    int64           `form:"updateByOrder"  search:"type:order;column:update_by;table:app_user"`
-	CreatedAtOrder   *time.Time      `form:"createdAtOrder"  search:"type:order;column:created_at;table:app_user"`
-	UpdatedAtOrder   *time.Time      `form:"updatedAtOrder"  search:"type:order;column:updated_at;table:app_user"`
+// GetProfileResp 获取用户资料响应
+type GetProfileResp struct {
+	ID          uint64          `json:"id"`          // 用户ID
+	Username    string          `json:"username"`    // 用户名
+	Nickname    string          `json:"nickname"`    // 昵称
+	TrueName    string          `json:"trueName"`    // 真实姓名
+	Money       decimal.Decimal `json:"money"`       // 余额
+	FreezeMoney decimal.Decimal `json:"freezeMoney"` // 冻结金额
+	Email       string          `json:"email"`       // 邮箱
+	MobileTitle string          `json:"mobileTitle"` // 手机号国家前缀
+	Mobile      string          `json:"mobile"`      // 手机号
+	Avatar      string          `json:"avatar"`      // 头像
+	RefCode     string          `json:"refCode"`     // 推荐码
+	LevelID     int             `json:"levelId"`     // 等级ID
+	Status      string          `json:"status"`      // 状态
+	RegisterAt  time.Time       `json:"registerAt"`  // 注册时间
+	RegisterIP  string          `json:"registerIp"`  // 注册IP
+	LastLoginAt *time.Time      `json:"lastLoginAt"` // 最后登录时间
+	LastLoginIP string          `json:"lastLoginIp"` // 最后登录IP
 }
 
-func (m *UserQueryReq) GetNeedSearch() interface{} {
-	return *m
+// ChangeLoginPwdReq 修改登录密码请求
+type ChangeLoginPwdReq struct {
+	UserID      uint64 `json:"userId" binding:"required"`      // 用户ID
+	OldPassword string `json:"oldPassword" binding:"required"` // 旧密码
+	NewPassword string `json:"newPassword" binding:"required"` // 新密码
 }
 
-type UserInsertReq struct {
-	LevelId     int64           `json:"levelId" comment:"用户等级编号"`
-	UserName    string          `json:"userName" comment:"用户昵称"`
-	TrueName    string          `json:"trueName" comment:"真实姓名"`
-	Money       decimal.Decimal `json:"money" comment:"余额"`
-	Email       string          `json:"email" comment:"电子邮箱"`
-	MobileTitle string          `json:"mobileTitle" comment:"用户手机号国家前缀"`
-	Mobile      string          `json:"mobile" comment:"手机号码"`
-	CurrUserId  int64           `json:"-" comment:"当前登陆用户"`
-	RefCode     string          `json:"refCode" comment:"邀请码"`
-	Emails      string          `json:"emails" comment:"邮箱集合"`
-	Mobiles     string          `json:"mobiles" comment:"手机集合"`
+// ChangePayPwdReq 修改支付密码请求
+type ChangePayPwdReq struct {
+	UserID    uint64 `json:"userId" binding:"required"`    // 用户ID
+	OldPayPwd string `json:"oldPayPwd" binding:"required"` // 旧支付密码
+	NewPayPwd string `json:"newPayPwd" binding:"required"` // 新支付密码
 }
 
-type UserUpdateReq struct {
-	Id          int64           `json:"-" uri:"id" comment:"用户编号"` // 用户编号
-	LevelId     int64           `json:"levelId" comment:"用户等级编号"`
-	UserName    string          `json:"userName" comment:"用户昵称"`
-	TrueName    string          `json:"trueName" comment:"真实姓名"`
-	Money       decimal.Decimal `json:"money" comment:"余额"`
-	Email       string          `json:"email" comment:"电子邮箱"`
-	MobileTitle string          `json:"mobileTitle" comment:"用户手机号国家前缀"`
-	Mobile      string          `json:"mobile" comment:"手机号码"`
-	CurrUserId  int64           `json:"-" comment:"当前登陆用户"`
+// UpdateProfileReq 修改用户资料请求（除密码）
+type UpdateProfileReq struct {
+	UserID      uint64 `json:"userId" binding:"required"` // 用户ID
+	Nickname    string `json:"nickname"`                  // 昵称
+	TrueName    string `json:"trueName"`                  // 真实姓名
+	Email       string `json:"email"`                     // 邮箱
+	MobileTitle string `json:"mobileTitle"`               // 手机号国家前缀
+	Mobile      string `json:"mobile"`                    // 手机号
+	Avatar      string `json:"avatar"`                    // 头像
 }
 
-type UserStatusUpdateReq struct {
-	Id         int64  `json:"-" uri:"id" comment:"用户ID"` // 用户ID
-	Status     string `json:"status" comment:"状态"`
-	CurrUserId int64  `json:"-" comment:""`
+// GetInviteInfoReq 邀请好友请求
+type GetInviteInfoReq struct {
+	UserID uint64 `json:"userId" binding:"required"` // 用户ID
 }
 
-// UserGetReq 功能获取请求参数
-type UserGetReq struct {
-	Id int64 `uri:"id"`
+// GetInviteInfoResp 邀请好友响应
+type GetInviteInfoResp struct {
+	InviteCode string `json:"inviteCode"` // 邀请码
+	InviteURL  string `json:"inviteUrl"`  // 邀请链接
+	UsedTotal  int    `json:"usedTotal"`  // 已使用总次数
+	TotalLimit int    `json:"totalLimit"` // 总次数限制
+	DailyLimit int    `json:"dailyLimit"` // 每日次数限制
+	UsedToday  int    `json:"usedToday"`  // 今日已使用次数
+}
+
+// GetMyInvitesReq 我的邀请请求
+type GetMyInvitesReq struct {
+	UserID   uint64 `json:"userId" binding:"required"` // 用户ID
+	Page     int    `json:"page"`                      // 页码
+	PageSize int    `json:"pageSize"`                  // 每页数量
+}
+
+// InviteeInfo 被邀请人信息
+type InviteeInfo struct {
+	UserID       uint64          `json:"userId"`       // 用户ID
+	Username     string          `json:"username"`     // 用户名
+	Nickname     string          `json:"nickname"`     // 昵称
+	Avatar       string          `json:"avatar"`       // 头像
+	InviteReward decimal.Decimal `json:"inviteReward"` // 邀请奖励
+	CreatedAt    time.Time       `json:"createdAt"`    // 邀请时间
+}
+
+// GetMyInvitesResp 我的邀请响应
+type GetMyInvitesResp struct {
+	Total    int64         `json:"total"`    // 总数
+	List     []InviteeInfo `json:"list"`     // 邀请列表
+	Page     int           `json:"page"`     // 当前页
+	PageSize int           `json:"pageSize"` // 每页数量
+}
+
+// GetStatisticsReq 统计请求
+type GetStatisticsReq struct {
+	UserID uint64 `json:"userId" binding:"required"` // 用户ID
+}
+
+// GetStatisticsResp 统计响应
+type GetStatisticsResp struct {
+	// 打卡相关
+	TotalCheckin      int `json:"totalCheckin"`      // 总打卡天数
+	TotalMissCheckin  int `json:"totalMissCheckin"`  // 总未打卡天数
+	ContinuousCheckin int `json:"continuousCheckin"` // 连续打卡天数
+
+	// 挑战相关
+	ChallengeAmount  decimal.Decimal `json:"challengeAmount"`  // 挑战金
+	ExperienceAmount decimal.Decimal `json:"experienceAmount"` // 体验金
+
+	// 收益相关
+	PlatformBonus decimal.Decimal `json:"platformBonus"` // 平台补贴
+	WanfenIncome  decimal.Decimal `json:"wanfenIncome"`  // 万份收益
+	TodayIncome   decimal.Decimal `json:"todayIncome"`   // 今日收益
+	TotalIncome   decimal.Decimal `json:"totalIncome"`   // 总收益
+
+	// 邀请相关
+	TodayInvite       int             `json:"todayInvite"`       // 今日邀请人数
+	TotalInvite       int             `json:"totalInvite"`       // 总邀请人数
+	InviteRewardToday decimal.Decimal `json:"inviteRewardToday"` // 今日邀请收益
+	InviteRewardTotal decimal.Decimal `json:"inviteRewardTotal"` // 总邀请收益
+}
+
+// GetTodayStatReq 今日统计请求
+type GetTodayStatReq struct {
+	UserID uint64 `json:"userId" binding:"required"` // 用户ID
+}
+
+// GetTodayStatResp 今日统计响应
+type GetTodayStatResp struct {
+	TodayCheckin      bool            `json:"todayCheckin"`      // 今日是否打卡
+	TodayIncome       decimal.Decimal `json:"todayIncome"`       // 今日收益
+	TodayInvite       int             `json:"todayInvite"`       // 今日邀请人数
+	TodayInviteReward decimal.Decimal `json:"todayInviteReward"` // 今日邀请收益
+	ContinuousCheckin int             `json:"continuousCheckin"` // 连续打卡天数
+	ChallengeStatus   string          `json:"challengeStatus"`   // 挑战状态（进行中/成功/失败）
 }

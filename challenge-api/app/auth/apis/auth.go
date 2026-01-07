@@ -17,7 +17,7 @@ type Auth struct {
 
 func (a *Auth) Register(c *gin.Context) {
 	req := dto.RegisterReq{}
-	s := service.Auth{}
+	s := service.AuthRegister{}
 	err := a.MakeContext(c).
 		MakeOrm().
 		Bind(&req).
@@ -27,7 +27,7 @@ func (a *Auth) Register(c *gin.Context) {
 		return
 	}
 	user, code := s.Register(&req)
-	if code != 0 {
+	if code != 200 {
 		a.Error(code, lang.Get(a.Lang, code))
 		return
 	}
@@ -37,9 +37,49 @@ func (a *Auth) Register(c *gin.Context) {
 }
 
 func (a *Auth) Login(c *gin.Context) {
-
+	req := dto.LoginReq{}
+	s := service.AuthLogin{}
+	err := a.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		MakeRuntime().Errors
+	if err != nil {
+		return
+	}
+	user, code := s.Login(&req)
+	if code != 200 {
+		a.Error(code, lang.Get(a.Lang, code))
+		return
+	}
+	c.Set(authdto.UserId, user.ID)
+	c.Set(authdto.Username, user.Username)
+	auth.Auth.Login(c)
 }
 
 func (a *Auth) Logout(c *gin.Context) {
+	// 获取用户信息
+	userID, _ := c.Get(authdto.UserId)
+	username, _ := c.Get(authdto.Username)
+
+	// 调用登出服务记录日志
+	s := service.AuthLogout{}
+	err := a.MakeContext(c).
+		MakeOrm().
+		MakeService(&s.Service).
+		MakeRuntime().Errors
+	if err != nil {
+		a.Error(500, "登出失败")
+		return
+	}
+
+	// 记录登出日志
+	if uid, ok := userID.(int); ok {
+		uname, _ := username.(string)
+		_ = s.Logout(uid, uname)
+	}
+
+	// 调用认证中间件的登出
+	auth.Auth.Logout(c)
 
 }

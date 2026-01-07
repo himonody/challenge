@@ -138,6 +138,52 @@ func IsMobile(mobile string) bool {
 	return true
 }
 
+// 用户名和密码验证正则表达式
+var (
+	// UsernameRegex 用户名格式：4-12位字母、数字、特殊字符
+	UsernameRegex = regexp.MustCompile(`^[A-Za-z0-9!@#$%^&*()\-_=+,.?/:;{}\[\]` + "`" + `~]{4,12}$`)
+
+	// PasswordRegex 密码格式：4-12位字母、数字、特殊字符
+	PasswordRegex = regexp.MustCompile(`^[A-Za-z0-9!@#$%^&*()\-_=+,.?/:;{}\[\]` + "`" + `~]{4,12}$`)
+
+	// StrongPasswordRegex 强密码格式：8-20位，必须包含大小写字母、数字
+	StrongPasswordRegex = regexp.MustCompile(`^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d!@#$%^&*()\-_=+,.?/:;{}\[\]` + "`" + `~]{8,20}$`)
+)
+
+// IsValidUsername 验证用户名格式（4-12位字母、数字、特殊字符）
+func IsValidUsername(username string) bool {
+	if username == "" {
+		return false
+	}
+	return UsernameRegex.MatchString(username)
+}
+
+// IsValidPassword 验证密码格式（4-12位字母、数字、特殊字符）
+func IsValidPassword(password string) bool {
+	if password == "" {
+		return false
+	}
+	return PasswordRegex.MatchString(password)
+}
+
+// IsStrongPassword 验证强密码格式（8-20位，必须包含大小写字母、数字）
+func IsStrongPassword(password string) bool {
+	if password == "" {
+		return false
+	}
+	return StrongPasswordRegex.MatchString(password)
+}
+
+// VerifyUsernameFormat 验证用户名格式（别名，保持命名一致性）
+func VerifyUsernameFormat(username string) bool {
+	return IsValidUsername(username)
+}
+
+// VerifyPasswordFormat 验证密码格式（别名，保持命名一致性）
+func VerifyPasswordFormat(password string) bool {
+	return IsValidPassword(password)
+}
+
 func Hmac(data string) string {
 	h := md5.New()
 	h.Write([]byte(data))

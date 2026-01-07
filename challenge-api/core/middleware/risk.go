@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"challenge/app/risk/serivces/dto"
+	"challenge/app/risk/service/dto"
 
 	"github.com/gin-gonic/gin"
 )

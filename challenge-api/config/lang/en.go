@@ -28,4 +28,8 @@ var en = map[int]string{
 	lang.AuthVerificationCodeErrorCode:   "Invalid verification code",
 	lang.AuthUserAlreadyExistsCode:       "User already exists",
 	lang.AuthInviteCodeNotFoundErrorCode: "Invite code not found",
+
+	// risk
+	lang.RiskStrategyNotFoundCode: "No risk strategy available",
+	lang.RiskBlacklistHitCode:     "Request blocked by risk blacklist",
 }

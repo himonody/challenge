@@ -4,8 +4,15 @@ package app
 
 import (
 	authRouter "challenge/app/auth"
+	sseRouter "challenge/app/sse"
 	userRouter "challenge/app/user"
 )
+
+// InitModules 初始化各模块
+func InitModules() {
+	// 初始化 SSE 模块
+	sseRouter.Init()
+}
 
 // ChallengeRouter
 // @Description: 汇总各大板块接口
@@ -17,6 +24,7 @@ func ChallengeRouter() []func() {
 	//app-应用
 	routers = append(routers, authRouter.AuthRouter()...)
 	routers = append(routers, userRouter.UserRouter()...)
+	routers = append(routers, sseRouter.SSERouter()...) // SSE 路由
 
 	return routers
 }

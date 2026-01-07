@@ -19,6 +19,8 @@ func InitMiddleware(r *gin.Engine) {
 	r.Use(LoggerToFile())
 	// 自定义错误处理
 	r.Use(CustomError)
+	// 限流中间件（500 QPS）
+	r.Use(RateLimit())
 	//只允许post请求
 	r.Use(OnlyPost())
 	// IsKeepAlive is a middleware function that appends headers
@@ -48,10 +50,25 @@ func Auth() gin.HandlerFunc {
 
 func OnlyPost() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if c.Request.Method == http.MethodPost || c.Request.Method == http.MethodOptions {
+		// OPTIONS 请求直接放行（用于跨域预检）
+		if c.Request.Method == http.MethodOptions {
 			c.Next()
 			return
 		}
+
+		// SSE 连接端点允许 GET 请求
+		if c.Request.Method == http.MethodGet && IsSSEStreamEndpoint(c.Request.URL.Path) {
+			c.Next()
+			return
+		}
+
+		// 其他接口只允许 POST 请求
+		if c.Request.Method == http.MethodPost {
+			c.Next()
+			return
+		}
+
+		// 不允许的请求方法
 		c.AbortWithStatusJSON(http.StatusOK, gin.H{
 			"code": http.StatusMethodNotAllowed,
 			"msg":  "Method Not Allowed",

@@ -29,4 +29,8 @@ var zh = map[int]string{
 	lang.AuthVerificationCodeErrorCode:   "验证码错误",
 	lang.AuthUserAlreadyExistsCode:       "用户已存在",
 	lang.AuthInviteCodeNotFoundErrorCode: "推荐码不存在",
+
+	// 风控
+	lang.RiskStrategyNotFoundCode: "未找到可用风控策略",
+	lang.RiskBlacklistHitCode:     "命中风控黑名单",
 }

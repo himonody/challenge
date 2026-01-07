@@ -6,7 +6,7 @@ import (
 )
 
 type ChallengeDailyStat struct {
-	StatDate       *time.Time      `json:"statDate" gorm:"primaryKey;column:stat_date;type:date;comment:统计日期 YYYYMMDD"`
+	StatDate       *time.Time      `json:"statDate" gorm:"primaryKey;column:stat_date;type:date;index:idx_date;comment:统计日期 YYYYMMDD"`
 	JoinUserCnt    int64           `json:"joinUserCnt" gorm:"column:join_user_cnt;type:int;comment:参与人数"`
 	SuccessUserCnt int64           `json:"successUserCnt" gorm:"column:success_user_cnt;type:int;comment:成功人数"`
 	FailUserCnt    int64           `json:"failUserCnt" gorm:"column:fail_user_cnt;type:int;comment:失败人数"`

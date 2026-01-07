@@ -47,6 +47,11 @@ settings:
     source: root:root@tcp(127.0.0.1:3306)/app_db?charset=utf8&parseTime=True&loc=Local&timeout=1000ms
     # postgres 数据库连接dns
     # source: host=ip port=端口 user=账号 dbname=数据库名 password=密码 sslmode=disable TimeZone=Asia/Shanghai default_query_exec_mode=simple_protocol
+    # 数据库连接池配置（8核16G 单机部署优化配置）
+    maxOpenConns: 100      # 最大连接数（MySQL max_connections=151，预留51给其他服务）
+    maxIdleConns: 20       # 最大空闲连接数（约 maxOpenConns 的 20%）
+    connMaxLifeTime: 3600  # 连接最大生命周期（秒）- 1小时
+    connMaxIdleTime: 1800  # 空闲连接最大生命周期（秒）- 30分钟
   #  多db服务，下方配置未完善，待定，先占位
   #  databases:
   #    'locaohost:8888':

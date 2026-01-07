@@ -18,8 +18,9 @@ const (
 	UserCanLoginNo  = "2"
 
 	// 通用状态（1 正常 2 异常/停用）
-	GeneralStatusOk    = "1"
-	GeneralStatusBlock = "2"
+	GeneralStatusOk       = "1"
+	GeneralStatusBlock    = "2"
+	GeneralStatusAbnormal = "2" // 异常（别名）
 
 	// 用户行为日志 by_type（1 app 用户，2 后台用户）
 	UserOperByTypeApp   = "1"
@@ -27,7 +28,9 @@ const (
 
 	// 用户关键行为类型
 	UserActionRegister          = "1"  // 注册
-	UserActionLogin             = "2"  // 登录
+	UserActionLogin             = "2"  // 登录成功
+	UserActionLoginFail         = "22" // 登录失败
+	UserActionLoginSuccess      = "2"  // 登录成功（别名）
 	UserActionLogout            = "3"  // 登出
 	UserActionCheckin           = "4"  // 打卡
 	UserActionProfileNickname   = "5"  // 修改昵称
