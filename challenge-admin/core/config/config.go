@@ -2,9 +2,10 @@ package config
 
 import (
 	"fmt"
+	"go-admin/core/utils/log"
+
 	loadconfig "github.com/bitxx/load-config"
 	"github.com/bitxx/load-config/source"
-	"go-admin/core/utils/log"
 )
 
 var (
@@ -25,12 +26,12 @@ func (e *Settings) runCallback() {
 
 func (e *Settings) OnChange() {
 	e.init()
-	log.Warn("!!! config change and reload")
+	log.Warn("config reloaded due to change...")
 }
 
 func (e *Settings) Init() {
 	e.init()
-	log.Warn("!!! config init")
+	log.Warn("config initialized...")
 }
 
 func (e *Settings) init() {

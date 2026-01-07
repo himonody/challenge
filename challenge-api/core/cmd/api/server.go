@@ -14,7 +14,6 @@ import (
 	"challenge/core/utils/textutils"
 	"context"
 	"fmt"
-	"go-admin/app/admin/sys/models"
 	"net/http"
 	"os"
 	"os/signal"
@@ -80,10 +79,10 @@ func setup() {
 	//}
 
 	// 3. 注册监听函数
-	queue := runtime.RuntimeConfig.GetMemoryQueue("")
-	queue.Register(global.LoginLog, models.SaveLoginLog)
-	queue.Register(global.OperateLog, models.SaveOperLog)
-	go queue.Run()
+	//queue := runtime.RuntimeConfig.GetMemoryQueue("")
+	//queue.Register(global.LoginLog, models.SaveLoginLog)
+	//queue.Register(global.OperateLog, models.SaveOperLog)
+	//go queue.Run()
 	log.Info(`starting api server...`)
 }
 
