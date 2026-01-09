@@ -59,8 +59,8 @@ func (a *Auth) Login(c *gin.Context) {
 
 func (a *Auth) Logout(c *gin.Context) {
 	// 获取用户信息
-	userID, _ := c.Get(authdto.UserId)
-	username, _ := c.Get(authdto.Username)
+	userId := c.GetInt64(authdto.UserId)
+	username := c.GetString(authdto.Username)
 
 	// 调用登出服务记录日志
 	s := service.AuthLogout{}
@@ -74,10 +74,7 @@ func (a *Auth) Logout(c *gin.Context) {
 	}
 
 	// 记录登出日志
-	if uid, ok := userID.(int); ok {
-		uname, _ := username.(string)
-		_ = s.Logout(uid, uname)
-	}
+	_ = s.Logout(int(userId), username)
 
 	// 调用认证中间件的登出
 	auth.Auth.Logout(c)

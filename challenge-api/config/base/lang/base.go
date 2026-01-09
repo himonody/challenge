@@ -4,26 +4,27 @@ import "challenge/core/lang"
 
 const (
 	//600（包含600）以下必须符合http规则，否则接口会异常
-	SuccessCode       = 200
-	RequestErr        = 400
-	AuthErr           = 401
-	ForbitErr         = 403
-	ServerErr         = 500
-	ParamErrCode      = 1001
-	OpErrCode         = 1002
-	DataQueryCode     = 1003
-	DataQueryLogCode  = 1004
-	DataInsertLogCode = 1005
-	DataInsertCode    = 1006
-	DataUpdateCode    = 1007
-	DataUpdateLogCode = 1008
-	DataDeleteCode    = 1009
-	DataDeleteLogCode = 1010
-	DataNotFoundCode  = 1011
-	ServerErrLogCode  = 1012
-	DataDecodeCode    = 1013
-	DataNotUpdateCode = 1014
-	DataDecodeLogCode = 1015
+	SuccessCode         = 200
+	RequestErr          = 400
+	AuthErr             = 401
+	ForbitErr           = 403
+	ServerErr           = 500
+	ParamErrCode        = 1001
+	OpErrCode           = 1002
+	DataQueryCode       = 1003
+	DataQueryLogCode    = 1004
+	DataInsertLogCode   = 1005
+	DataInsertCode      = 1006
+	DataUpdateCode      = 1007
+	DataUpdateLogCode   = 1008
+	DataDeleteCode      = 1009
+	DataDeleteLogCode   = 1010
+	DataNotFoundCode    = 1011
+	ServerErrLogCode    = 1012
+	DataDecodeCode      = 1013
+	DataNotUpdateCode   = 1014
+	DataDecodeLogCode   = 1015
+	RepeatOperationCode = 1016
 )
 
 func init() {

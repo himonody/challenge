@@ -38,9 +38,9 @@ func (a *AuthRegister) Register(req *dto.RegisterReq) (*userModels.AppUser, int)
 
 	// 分布式锁防重复注册请求（按用户名）
 	locker := a.Run.GetLockerPrefix(authStorage.AuthLockPrefix)
-	lock, err := authStorage.LockAuthAction(ctx, locker, "register", strings.TrimSpace(req.UserName), 10)
+	lock, err := authStorage.LockAuthAction(ctx, locker, baseConstant.AuthRegisterAction, strings.TrimSpace(req.UserName), 10)
 	if err != nil {
-		return nil, lang.ServerErr
+		return nil, lang.RepeatOperationCode
 	}
 	if lock != nil {
 		defer lock.Release(ctx)
@@ -72,7 +72,7 @@ func (a *AuthRegister) Register(req *dto.RegisterReq) (*userModels.AppUser, int)
 	// 2. 风控检查（黑名单+限流）
 	riskSvc := NewRiskCheckService(&a.Service)
 	if code, err := riskSvc.CheckRegisterRisk(ctx, rc); code != lang.SuccessCode {
-		a.Log.Warnf("register risk check failed: %v", err)
+		a.Log.Errorf("challenge.app.auth.service.Register.CheckRegisterRisk risk check failed: %v", err)
 		return nil, code
 	}
 
@@ -141,7 +141,7 @@ func (a *AuthRegister) Register(req *dto.RegisterReq) (*userModels.AppUser, int)
 	}
 
 	if err = repo.CreateUser(tx, user); err != nil {
-		a.Log.Errorf("register CreateUser error: %v", err)
+		a.Log.Errorf("challenge.app.auth.service.Register.CreateUser create user failed: %v,user:%v", err, user)
 		tx.Rollback()
 		return nil, lang.DataInsertCode
 	}

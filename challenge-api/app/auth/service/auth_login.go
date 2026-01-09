@@ -39,9 +39,9 @@ func (a *AuthLogin) Login(req *dto.LoginReq) (*userModels.AppUser, int) {
 
 	// 分布式锁防重复登录请求（按用户名）
 	locker := a.Run.GetLockerPrefix(authStorage.AuthLockPrefix)
-	lock, err := authStorage.LockAuthAction(ctx, locker, "login", req.UserName, 10)
+	lock, err := authStorage.LockAuthAction(ctx, locker, baseConstant.AuthLoginAction, req.UserName, 10)
 	if err != nil {
-		return nil, lang.ServerErr
+		return nil, lang.RepeatOperationCode
 	}
 	if lock != nil {
 		defer lock.Release(ctx)
@@ -72,7 +72,7 @@ func (a *AuthLogin) Login(req *dto.LoginReq) (*userModels.AppUser, int) {
 	// 2. 风控检查（黑名单+锁定+失败次数）
 	riskSvc := NewRiskCheckService(&a.Service)
 	if code, err := riskSvc.CheckLoginRisk(ctx, req.UserName, rc); code != lang.SuccessCode {
-		a.Log.Warnf("login risk check failed: %v", err)
+		a.Log.Errorf("challenge.app.auth.service.Login.CheckLoginRisk risk check failed: %v", err)
 
 		// 记录风控拦截日志
 		now := time.Now()
@@ -119,7 +119,7 @@ func (a *AuthLogin) Login(req *dto.LoginReq) (*userModels.AppUser, int) {
 
 			return nil, lang.DataNotFoundCode
 		}
-		a.Log.Errorf("login query user error: %v", err)
+		a.Log.Errorf("challenge.app.auth.service.Login login query user error: %v", err)
 		return nil, lang.ServerErr
 	}
 

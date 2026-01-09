@@ -33,4 +33,5 @@ var zh = map[int]string{
 	// 风控
 	lang.RiskStrategyNotFoundCode: "未找到可用风控策略",
 	lang.RiskBlacklistHitCode:     "命中风控黑名单",
+	lang.RepeatOperationCode:      "正在处理中,请勿重复操作",
 }

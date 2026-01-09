@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"time"
 )
 
@@ -38,8 +39,8 @@ func CacheStrategies(ctx context.Context, cache storage.AdapterCache, scene stri
 	if err != nil {
 		return err
 	}
-	key := fmt.Sprintf("%s:%s", baseConstant.RiskStrategyCachePrefix, scene)
-	return cache.Set("", key, string(b), DefaultStrategyTTL)
+
+	return cache.Set(baseConstant.RiskStrategyCachePrefix, scene, string(b), DefaultStrategyTTL)
 }
 
 // GetStrategies 从缓存取策略集合
@@ -48,8 +49,8 @@ func GetStrategies(ctx context.Context, cache storage.AdapterCache, scene string
 	if cache == nil {
 		return out, nil
 	}
-	key := fmt.Sprintf("%s:%s", baseConstant.RiskStrategyCachePrefix, scene)
-	val, err := cache.Get("", key)
+
+	val, err := cache.Get(baseConstant.RiskStrategyCachePrefix, scene)
 	if err != nil || val == "" {
 		return out, err
 	}
@@ -62,12 +63,12 @@ func CacheBlacklistFlag(ctx context.Context, cache storage.AdapterCache, typ, va
 	if cache == nil {
 		return nil
 	}
-	key := fmt.Sprintf("%s:%s:%s", baseConstant.RiskBlacklistPrefix, typ, value)
+	key := fmt.Sprintf("%s:%s", typ, value)
 	flag := "0"
 	if blocked {
 		flag = "1"
 	}
-	return cache.Set("", key, flag, int(ttl.Seconds()))
+	return cache.Set(baseConstant.RiskBlacklistPrefix, key, flag, int(ttl.Seconds()))
 }
 
 // GetBlacklistFlag 读取黑名单命中缓存
@@ -75,8 +76,8 @@ func GetBlacklistFlag(ctx context.Context, cache storage.AdapterCache, typ, valu
 	if cache == nil {
 		return false, false
 	}
-	key := fmt.Sprintf("%s:%s:%s", baseConstant.RiskBlacklistPrefix, typ, value)
-	val, err := cache.Get("", key)
+	key := fmt.Sprintf("%s:%s", typ, value)
+	val, err := cache.Get(baseConstant.RiskBlacklistPrefix, key)
 	if err != nil || val == "" {
 		return false, false
 	}
@@ -90,8 +91,8 @@ func CacheRiskScore(ctx context.Context, cache storage.AdapterCache, userID uint
 	if cache == nil {
 		return nil
 	}
-	key := fmt.Sprintf("%s:%d", RiskScorePrefix, userID)
-	return cache.Set("", key, fmt.Sprintf("%d", score), int(ttl.Seconds()))
+
+	return cache.Set(RiskScorePrefix, strconv.FormatUint(userID, 10), fmt.Sprintf("%d", score), int(ttl.Seconds()))
 }
 
 // GetRiskScore 获取缓存的风险分数
@@ -99,8 +100,7 @@ func GetRiskScore(ctx context.Context, cache storage.AdapterCache, userID uint64
 	if cache == nil {
 		return 0, false
 	}
-	key := fmt.Sprintf("%s:%d", RiskScorePrefix, userID)
-	val, err := cache.Get("", key)
+	val, err := cache.Get(RiskScorePrefix, strconv.FormatUint(userID, 10))
 	if err != nil || val == "" {
 		return 0, false
 	}
@@ -116,8 +116,8 @@ func ClearStrategyCache(ctx context.Context, cache storage.AdapterCache, scene s
 	if cache == nil {
 		return nil
 	}
-	key := fmt.Sprintf("%s:%s", baseConstant.RiskStrategyCachePrefix, scene)
-	return cache.Del("", key)
+
+	return cache.Del(baseConstant.RiskStrategyCachePrefix, scene)
 }
 
 // ClearBlacklistCache 清除黑名单缓存
@@ -125,6 +125,6 @@ func ClearBlacklistCache(ctx context.Context, cache storage.AdapterCache, typ, v
 	if cache == nil {
 		return nil
 	}
-	key := fmt.Sprintf("%s:%s:%s", baseConstant.RiskBlacklistPrefix, typ, value)
-	return cache.Del("", key)
+	key := fmt.Sprintf("%s:%s", typ, value)
+	return cache.Del(baseConstant.RiskBlacklistPrefix, key)
 }

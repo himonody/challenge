@@ -1,6 +1,7 @@
 package apis
 
 import (
+	"challenge/core/middleware/auth/authdto"
 	"net/http"
 
 	"challenge/app/user/service"
@@ -116,7 +117,7 @@ func (a *User) UpdateProfile(c *gin.Context) {
 		Errors; err != nil {
 		return
 	}
-
+	req.UserID = c.GetUint64(authdto.UserId)
 	if err := svc.UpdateProfile(&req); err != nil {
 		a.Error(http.StatusInternalServerError, err.Error())
 		return
@@ -133,21 +134,20 @@ func (a *User) UpdateProfile(c *gin.Context) {
 // @Success 200 {object} dto.GetInviteInfoResp
 // @Router /api/v1/user/invite-info [post]
 func (a *User) GetInviteInfo(c *gin.Context) {
-	req := dto.GetInviteInfoReq{}
+
 	svc := service.UserService{}
 	if err := a.MakeContext(c).
 		MakeOrm().
-		Bind(&req).
 		MakeService(&svc.Service).
 		MakeRuntime().
 		Errors; err != nil {
 		return
 	}
-
+	userID := c.GetUint64(authdto.UserId)
 	// 构建注册URL（可改为配置）
 	registerURL := "https://your-domain.com/register"
 
-	resp, err := svc.GetInviteInfo(&req, registerURL)
+	resp, err := svc.GetInviteInfo(userID, registerURL)
 	if err != nil {
 		a.Error(http.StatusInternalServerError, "获取邀请信息失败")
 		return
@@ -174,7 +174,7 @@ func (a *User) GetMyInvites(c *gin.Context) {
 		Errors; err != nil {
 		return
 	}
-
+	req.UserID = c.GetUint64(authdto.UserId)
 	resp, err := svc.GetMyInvites(&req)
 	if err != nil {
 		a.Error(http.StatusInternalServerError, "获取邀请列表失败")
@@ -192,18 +192,17 @@ func (a *User) GetMyInvites(c *gin.Context) {
 // @Success 200 {object} dto.GetStatisticsResp
 // @Router /api/v1/user/statistics [post]
 func (a *User) GetStatistics(c *gin.Context) {
-	req := dto.GetStatisticsReq{}
+	userID := c.GetUint64(authdto.UserId)
 	svc := service.UserService{}
 	if err := a.MakeContext(c).
 		MakeOrm().
-		Bind(&req).
 		MakeService(&svc.Service).
 		MakeRuntime().
 		Errors; err != nil {
 		return
 	}
 
-	resp, err := svc.GetStatistics(&req)
+	resp, err := svc.GetStatistics(userID)
 	if err != nil {
 		a.Error(http.StatusInternalServerError, "获取统计信息失败")
 		return

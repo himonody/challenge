@@ -48,18 +48,13 @@ type ChangePayPwdReq struct {
 
 // UpdateProfileReq 修改用户资料请求（除密码）
 type UpdateProfileReq struct {
-	UserID      uint64 `json:"userId" binding:"required"` // 用户ID
-	Nickname    string `json:"nickname"`                  // 昵称
-	TrueName    string `json:"trueName"`                  // 真实姓名
-	Email       string `json:"email"`                     // 邮箱
-	MobileTitle string `json:"mobileTitle"`               // 手机号国家前缀
-	Mobile      string `json:"mobile"`                    // 手机号
-	Avatar      string `json:"avatar"`                    // 头像
-}
-
-// GetInviteInfoReq 邀请好友请求
-type GetInviteInfoReq struct {
-	UserID uint64 `json:"userId" binding:"required"` // 用户ID
+	UserID      uint64 `json:"-"`           // 用户ID
+	Nickname    string `json:"nickname"`    // 昵称
+	TrueName    string `json:"trueName"`    // 真实姓名
+	Email       string `json:"email"`       // 邮箱
+	MobileTitle string `json:"mobileTitle"` // 手机号国家前缀
+	Mobile      string `json:"mobile"`      // 手机号
+	Avatar      string `json:"avatar"`      // 头像
 }
 
 // GetInviteInfoResp 邀请好友响应
@@ -74,9 +69,9 @@ type GetInviteInfoResp struct {
 
 // GetMyInvitesReq 我的邀请请求
 type GetMyInvitesReq struct {
-	UserID   uint64 `json:"userId" binding:"required"` // 用户ID
-	Page     int    `json:"page"`                      // 页码
-	PageSize int    `json:"pageSize"`                  // 每页数量
+	UserID   uint64 `json:"-"`        // 用户ID
+	Page     int    `json:"page"`     // 页码
+	PageSize int    `json:"pageSize"` // 每页数量
 }
 
 // InviteeInfo 被邀请人信息
@@ -95,11 +90,6 @@ type GetMyInvitesResp struct {
 	List     []InviteeInfo `json:"list"`     // 邀请列表
 	Page     int           `json:"page"`     // 当前页
 	PageSize int           `json:"pageSize"` // 每页数量
-}
-
-// GetStatisticsReq 统计请求
-type GetStatisticsReq struct {
-	UserID uint64 `json:"userId" binding:"required"` // 用户ID
 }
 
 // GetStatisticsResp 统计响应

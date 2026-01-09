@@ -52,7 +52,7 @@ func (a *AuthLogout) Logout(userID int, username string) error {
 		CreatedAt:  &now,
 	}
 	if err := a.Orm.Create(logoutLog).Error; err != nil {
-		a.Log.Errorf("logout CreateLoginLog error: %v", err)
+		a.Log.Errorf("challenge.app.auth.service.Logout.Create create user login log failed: %v", err)
 	}
 
 	// 3. 记录用户操作日志

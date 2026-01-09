@@ -19,14 +19,14 @@ func registerUserRouter(v1 *gin.RouterGroup) {
 	r := v1.Group("/app/user").Use(middleware.Auth())
 	{
 		// 用户资料相关
-		r.POST("/profile", userApis.GetProfile)               // 获取用户资料
-		r.POST("/profile/update", userApis.UpdateProfile)     // 修改用户资料
-		r.POST("/pwd/change", userApis.ChangeLoginPassword)   // 修改登录密码
-		r.POST("/pay-pwd/change", userApis.ChangePayPassword) // 修改支付密码
+		r.POST("/profile", userApis.GetProfile)           // 获取用户资料
+		r.POST("/profile/update", userApis.UpdateProfile) // 修改用户资料
+		r.POST("/pwd", userApis.ChangeLoginPassword)      // 修改登录密码
+		r.POST("/pay-pwd", userApis.ChangePayPassword)    // 修改支付密码
 
 		// 邀请相关
-		r.POST("/invite/info", userApis.GetInviteInfo) // 邀请好友
-		r.POST("/invites", userApis.GetMyInvites)      // 我的邀请
+		r.POST("/invite", userApis.GetInviteInfo) // 邀请好友
+		r.POST("/invites", userApis.GetMyInvites) // 我的邀请
 
 		// 统计相关
 		r.POST("/stats", userApis.GetStatistics)            // 统计

@@ -213,16 +213,16 @@ func (s *UserService) UpdateProfile(req *dto.UpdateProfileReq) error {
 }
 
 // GetInviteInfo 获取邀请信息
-func (s *UserService) GetInviteInfo(req *dto.GetInviteInfoReq, registerURL string) (*dto.GetInviteInfoResp, error) {
+func (s *UserService) GetInviteInfo(userID uint64, registerURL string) (*dto.GetInviteInfoResp, error) {
 	var inviteCodeRes *dto.GetInviteInfoResp
 	locker := s.Run.GetLockerPrefix(userStorage.UserLockPrefix)
-	err := userStorage.WithUserLock(s.C.Request.Context(), locker, req.UserID, "invite_info", 10, func() error {
+	err := userStorage.WithUserLock(s.C.Request.Context(), locker, userID, "invite_info", 10, func() error {
 		// 获取用户邀请码
-		inviteCode, err := repo.GetInviteCodeByUserID(s.Orm, req.UserID)
+		inviteCode, err := repo.GetInviteCodeByUserID(s.Orm, userID)
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				// 如果不存在，创建邀请码
-				inviteCode, err = s.createInviteCode(req.UserID)
+				inviteCode, err = s.createInviteCode(userID)
 				if err != nil {
 					return err
 				}
@@ -331,7 +331,7 @@ func (s *UserService) GetMyInvites(req *dto.GetMyInvitesReq) (*dto.GetMyInvitesR
 }
 
 // GetStatistics 获取用户统计信息
-func (s *UserService) GetStatistics(req *dto.GetStatisticsReq) (*dto.GetStatisticsResp, error) {
+func (s *UserService) GetStatistics(userID uint64) (*dto.GetStatisticsResp, error) {
 	resp := &dto.GetStatisticsResp{
 		ExperienceAmount: formatFloatToDec2(0),
 		PlatformBonus:    formatFloatToDec2(0),
@@ -341,7 +341,7 @@ func (s *UserService) GetStatistics(req *dto.GetStatisticsReq) (*dto.GetStatisti
 	g, ctx := errgroup.WithContext(s.C.Request.Context())
 
 	g.Go(func() error {
-		totalCheckin, err := repo.CountUserTotalCheckin(s.Orm.WithContext(ctx), req.UserID)
+		totalCheckin, err := repo.CountUserTotalCheckin(s.Orm.WithContext(ctx), userID)
 		if err == nil {
 			resp.TotalCheckin = int(totalCheckin)
 		}
@@ -349,7 +349,7 @@ func (s *UserService) GetStatistics(req *dto.GetStatisticsReq) (*dto.GetStatisti
 	})
 
 	g.Go(func() error {
-		totalMissCheckin, err := repo.CountUserTotalMissCheckin(s.Orm.WithContext(ctx), req.UserID)
+		totalMissCheckin, err := repo.CountUserTotalMissCheckin(s.Orm.WithContext(ctx), userID)
 		if err == nil {
 			resp.TotalMissCheckin = int(totalMissCheckin)
 		}
@@ -357,7 +357,7 @@ func (s *UserService) GetStatistics(req *dto.GetStatisticsReq) (*dto.GetStatisti
 	})
 
 	g.Go(func() error {
-		continuousCheckin, err := repo.GetUserContinuousCheckin(s.Orm.WithContext(ctx), req.UserID)
+		continuousCheckin, err := repo.GetUserContinuousCheckin(s.Orm.WithContext(ctx), userID)
 		if err == nil {
 			resp.ContinuousCheckin = continuousCheckin
 		}
@@ -365,7 +365,7 @@ func (s *UserService) GetStatistics(req *dto.GetStatisticsReq) (*dto.GetStatisti
 	})
 
 	g.Go(func() error {
-		challengeAmount, err := repo.GetUserChallengeAmount(s.Orm.WithContext(ctx), req.UserID)
+		challengeAmount, err := repo.GetUserChallengeAmount(s.Orm.WithContext(ctx), userID)
 		if err == nil {
 			resp.ChallengeAmount = formatFloatToDec2(challengeAmount)
 		}
@@ -373,7 +373,7 @@ func (s *UserService) GetStatistics(req *dto.GetStatisticsReq) (*dto.GetStatisti
 	})
 
 	g.Go(func() error {
-		todayIncome, err := repo.SumUserTodaySettlement(s.Orm.WithContext(ctx), req.UserID)
+		todayIncome, err := repo.SumUserTodaySettlement(s.Orm.WithContext(ctx), userID)
 		if err == nil {
 			resp.TodayIncome = formatFloatToDec2(todayIncome)
 		}
@@ -381,7 +381,7 @@ func (s *UserService) GetStatistics(req *dto.GetStatisticsReq) (*dto.GetStatisti
 	})
 
 	g.Go(func() error {
-		totalIncome, err := repo.SumUserTotalSettlement(s.Orm.WithContext(ctx), req.UserID)
+		totalIncome, err := repo.SumUserTotalSettlement(s.Orm.WithContext(ctx), userID)
 		if err == nil {
 			resp.TotalIncome = formatFloatToDec2(totalIncome)
 		}
@@ -389,7 +389,7 @@ func (s *UserService) GetStatistics(req *dto.GetStatisticsReq) (*dto.GetStatisti
 	})
 
 	g.Go(func() error {
-		todayInvite, err := repo.CountTodayInvites(s.Orm.WithContext(ctx), req.UserID)
+		todayInvite, err := repo.CountTodayInvites(s.Orm.WithContext(ctx), userID)
 		if err == nil {
 			resp.TodayInvite = int(todayInvite)
 		}
@@ -397,7 +397,7 @@ func (s *UserService) GetStatistics(req *dto.GetStatisticsReq) (*dto.GetStatisti
 	})
 
 	g.Go(func() error {
-		totalInvite, err := repo.CountTotalInvites(s.Orm.WithContext(ctx), req.UserID)
+		totalInvite, err := repo.CountTotalInvites(s.Orm.WithContext(ctx), userID)
 		if err == nil {
 			resp.TotalInvite = int(totalInvite)
 		}
@@ -405,7 +405,7 @@ func (s *UserService) GetStatistics(req *dto.GetStatisticsReq) (*dto.GetStatisti
 	})
 
 	g.Go(func() error {
-		inviteRewardToday, err := repo.SumInviteRewardToday(s.Orm.WithContext(ctx), req.UserID)
+		inviteRewardToday, err := repo.SumInviteRewardToday(s.Orm.WithContext(ctx), userID)
 		if err == nil {
 			resp.InviteRewardToday = formatFloatToDec2(inviteRewardToday)
 		}
@@ -413,7 +413,7 @@ func (s *UserService) GetStatistics(req *dto.GetStatisticsReq) (*dto.GetStatisti
 	})
 
 	g.Go(func() error {
-		inviteRewardTotal, err := repo.SumInviteRewardTotal(s.Orm.WithContext(ctx), req.UserID)
+		inviteRewardTotal, err := repo.SumInviteRewardTotal(s.Orm.WithContext(ctx), userID)
 		if err == nil {
 			resp.InviteRewardTotal = formatFloatToDec2(inviteRewardTotal)
 		}
