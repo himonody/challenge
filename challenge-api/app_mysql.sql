@@ -128,7 +128,7 @@ CREATE TABLE `app_user_login_log` (
   `user_agent` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'UA信息',
   `status` tinyint NOT NULL DEFAULT 1 COMMENT '登录状态 1成功 2失败 3风控拦截',
   `fail_reason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '失败原因/拦截原因',
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间戳',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
   PRIMARY KEY (`id`),
   KEY `idx_user_time` (`user_id`,`login_at`),
   KEY `idx_status` (`status`),
@@ -344,10 +344,12 @@ CREATE TABLE `app_challenge_config` (
                                     `checkin_end` datetime  DEFAULT NULL COMMENT '每日打卡结束时间',
                                     `platform_bonus` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '平台补贴金额',
                                     `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态 1启用 2停用',
-                                    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间戳',
+                                    `sort` TINYINT NOT NULL DEFAULT 1 COMMENT '排序 1 2 3 4',
+                                    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                                     PRIMARY KEY (`id`),
                                     UNIQUE KEY `uk_day_amount` (`day_count`,`amount`),
-                                    KEY `idx_status` (`status`)
+                                    KEY `idx_status` (`status`),
+                                    KEY `idx_sort` (`sort` DESC)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin  COMMENT='打卡挑战活动配置';
 
 -- ----------------------------
@@ -360,7 +362,7 @@ CREATE TABLE `app_challenge_checkin` (
                                      `user_id` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '用户ID',
 
                                      `checkin_date` DATE NOT NULL COMMENT '打卡日期 YYYYMMDD',
-                                     `checkin_time` datetime  DEFAULT NULL COMMENT '打卡时间戳',
+                                     `checkin_time` datetime  DEFAULT NULL COMMENT '打卡时间',
 
                                      `mood_code` TINYINT NOT NULL DEFAULT 0 COMMENT '心情枚举 1开心 2平静 3一般 4疲惫 5低落 6爆棚',
                                      `mood_text` VARCHAR(200) NOT NULL DEFAULT '' COMMENT '用户心情文字描述（最多200字）',
@@ -369,7 +371,7 @@ CREATE TABLE `app_challenge_checkin` (
 
 
                                          `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态 1成功 2超时',
-                                     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间戳',
+                                     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
 
                                      PRIMARY KEY (`id`),
                                      UNIQUE KEY `uk_challenge_date` (`challenge_id`,`checkin_date`),
@@ -389,7 +391,7 @@ CREATE TABLE `app_challenge_checkin_image` (
                                            `image_hash` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '图片Hash（防重复）',
                                            `sort_no` TINYINT NOT NULL DEFAULT 1 COMMENT '图片顺序',
                                            `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态 1正常 2屏蔽 3审核中',
-                                           `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '上传时间戳',
+                                           `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '上传时间',
                                            PRIMARY KEY (`id`),
                                            UNIQUE KEY `uk_checkin_hash` (`checkin_id`,`image_hash`),
                                            KEY `idx_checkin` (`checkin_id`),
@@ -416,8 +418,8 @@ CREATE TABLE `app_challenge_checkin_video_ad` (
                                               `reward_amount` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '该广告产生的收益',
                                               `verify_status` TINYINT NOT NULL DEFAULT 0 COMMENT '校验状态 0待校验 1成功 2失败',
 
-                                              `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '观看完成时间戳',
-                                              `verified_at` datetime  DEFAULT NULL COMMENT '校验完成时间戳',
+                                              `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '观看完成时间',
+                                              `verified_at` datetime  DEFAULT NULL COMMENT '校验完成时间',
 
                                               PRIMARY KEY (`id`),
                                               UNIQUE KEY `uk_ad_order` (`ad_order_no`),
@@ -440,8 +442,8 @@ CREATE TABLE `app_challenge_user` (
                                   `end_date` INT NOT NULL DEFAULT 0 COMMENT '活动结束日期 YYYYMMDD',
                                   `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态 1进行中 2成功 3失败',
                                   `fail_reason` TINYINT NOT NULL DEFAULT 0 COMMENT '失败原因 0无 1未打卡 2作弊',
-                                  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '报名时间戳',
-                                  `finished_at` datetime  DEFAULT NULL COMMENT '完成时间戳',
+                                  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '报名时间',
+                                  `finished_at` datetime  DEFAULT NULL COMMENT '完成时间',
                                   PRIMARY KEY (`id`),
                                   UNIQUE KEY `uk_user_active` (`user_id`,`status`),
                                   KEY `idx_pool` (`pool_id`),
@@ -459,7 +461,7 @@ CREATE TABLE `app_challenge_pool` (
                                   `end_date` datetime  DEFAULT NULL COMMENT '活动结束日期',
                                   `total_amount` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '奖池当前总金额',
                                   `settled` TINYINT NOT NULL DEFAULT 0 COMMENT '是否已结算 0否 1是',
-                                  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间戳',
+                                  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                                   PRIMARY KEY (`id`),
                                   UNIQUE KEY `uk_config_date` (`config_id`,`start_date`),
                                   KEY `idx_settled` (`settled`)
@@ -475,7 +477,7 @@ CREATE TABLE `app_challenge_pool_flow` (
                                        `user_id` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '用户ID',
                                        `amount` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '变动金额',
                                        `type` TINYINT NOT NULL DEFAULT 0 COMMENT '类型 1报名 2失败 3平台补贴 4结算',
-                                       `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间戳',
+                                       `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                                        PRIMARY KEY (`id`),
                                        KEY `idx_pool` (`pool_id`),
                                        KEY `idx_user` (`user_id`),
@@ -491,7 +493,7 @@ CREATE TABLE `app_challenge_settlement` (
                                         `challenge_id` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '用户挑战ID',
                                         `user_id` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '用户ID',
                                         `reward` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '最终获得金额',
-                                        `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '结算时间戳',
+                                        `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '结算时间',
                                         PRIMARY KEY (`id`),
                                         UNIQUE KEY `uk_challenge_user` (`challenge_id`,`user_id`),
                                         KEY `idx_user` (`user_id`)
@@ -511,8 +513,8 @@ CREATE TABLE `app_challenge_daily_stat` (
                                         `fail_amount` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '失败金额',
                                         `platform_bonus` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '平台补贴',
                                         `pool_amount` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '奖池金额',
-                                        `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间戳',
-                                        `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间戳',
+                                        `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                        `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
                                         PRIMARY KEY (`stat_date`),
                                         KEY `idx_date` (`stat_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='每日运营统计';
@@ -532,7 +534,7 @@ CREATE TABLE `app_challenge_total_stat` (
                                         `total_fail_amount` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '累计失败金额',
                                         `total_platform_bonus` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '累计平台补贴',
                                         `total_pool_amount` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '累计奖池金额',
-                                        `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间戳',
+                                        `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
                                         PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='平台累计统计';
 
