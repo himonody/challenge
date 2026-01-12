@@ -1,11 +1,11 @@
 package database
 
 import (
-	"go-admin/core/config"
-	"go-admin/core/config/database"
-	"go-admin/core/runtime"
-	"go-admin/core/utils/log"
-	"go-admin/core/utils/textutils"
+	"challenge-admin/core/config"
+	"challenge-admin/core/config/database"
+	"challenge-admin/core/runtime"
+	"challenge-admin/core/utils/log"
+	"challenge-admin/core/utils/textutils"
 	"time"
 
 	"gorm.io/gorm"

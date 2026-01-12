@@ -1,10 +1,10 @@
 package auth
 
 import (
+	"challenge-admin/core/config"
+	"challenge-admin/core/middleware/auth/jwtauth"
+	"challenge-admin/core/middleware/auth/sessionauth"
 	"github.com/gin-gonic/gin"
-	"go-admin/core/config"
-	"go-admin/core/middleware/auth/jwtauth"
-	"go-admin/core/middleware/auth/sessionauth"
 )
 
 const (

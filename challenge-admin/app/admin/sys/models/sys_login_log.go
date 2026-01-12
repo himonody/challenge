@@ -1,11 +1,11 @@
 package models
 
 import (
+	"challenge-admin/core/runtime"
+	"challenge-admin/core/utils/log"
+	"challenge-admin/core/utils/storage"
 	"encoding/json"
 	"errors"
-	"go-admin/core/runtime"
-	"go-admin/core/utils/log"
-	"go-admin/core/utils/storage"
 	"time"
 )
 

@@ -1,14 +1,14 @@
 package jwtauth
 
 import (
+	baseLang "challenge-admin/config/base/lang"
+	"challenge-admin/core/config"
+	"challenge-admin/core/lang"
+	"challenge-admin/core/middleware/auth/authdto"
+	"challenge-admin/core/runtime"
+	"challenge-admin/core/utils/strutils"
 	"crypto/rsa"
 	"errors"
-	baseLang "go-admin/config/base/lang"
-	"go-admin/core/config"
-	"go-admin/core/lang"
-	"go-admin/core/middleware/auth/authdto"
-	"go-admin/core/runtime"
-	"go-admin/core/utils/strutils"
 	"net/http"
 	"os"
 	"strconv"

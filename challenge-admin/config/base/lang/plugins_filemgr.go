@@ -1,6 +1,6 @@
 package lang
 
-import "go-admin/core/lang"
+import "challenge-admin/core/lang"
 
 const (
 	AppPlatformEmptyCode       = 30000

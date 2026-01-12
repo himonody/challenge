@@ -1,10 +1,10 @@
 package config
 
 import (
+	"challenge-admin/core/utils/storage"
+	"challenge-admin/core/utils/storage/queue"
+	"challenge-admin/core/utils/storage/queue/redisqueue"
 	"github.com/redis/go-redis/v9"
-	"go-admin/core/utils/storage"
-	"go-admin/core/utils/storage/queue"
-	"go-admin/core/utils/storage/queue/redisqueue"
 	"time"
 )
 

@@ -1,11 +1,11 @@
 package router
 
 import (
+	"challenge-admin/core/config"
+	"challenge-admin/core/global"
+	"challenge-admin/core/runtime"
+	"challenge-admin/core/ws"
 	"github.com/gin-gonic/gin"
-	"go-admin/core/config"
-	"go-admin/core/global"
-	"go-admin/core/runtime"
-	"go-admin/core/ws"
 	"mime"
 )
 

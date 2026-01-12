@@ -1,11 +1,11 @@
 package cmd
 
 import (
+	"challenge-admin/core/cmd/api"
+	"challenge-admin/core/config"
+	"challenge-admin/core/utils/log"
+	"challenge-admin/core/utils/textutils"
 	"errors"
-	"go-admin/core/cmd/api"
-	"go-admin/core/config"
-	"go-admin/core/utils/log"
-	"go-admin/core/utils/textutils"
 	"os"
 
 	"github.com/spf13/cobra"

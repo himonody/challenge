@@ -1,8 +1,8 @@
 package dto
 
 import (
+	"challenge-admin/core/dto"
 	"github.com/shopspring/decimal"
-	"go-admin/core/dto"
 )
 
 type SysDictDataQueryReq struct {

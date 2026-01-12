@@ -1,10 +1,10 @@
 package router
 
 import (
+	"challenge-admin/core/global"
+	"challenge-admin/core/runtime"
+	"challenge-admin/core/utils/log"
 	"github.com/gin-gonic/gin"
-	"go-admin/core/global"
-	"go-admin/core/runtime"
-	"go-admin/core/utils/log"
 )
 
 var (

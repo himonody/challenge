@@ -1,9 +1,9 @@
 package middleware
 
 import (
+	"challenge-admin/core/middleware/auth/jwtauth"
+	"challenge-admin/core/runtime"
 	"github.com/gin-gonic/gin"
-	"go-admin/core/middleware/auth/jwtauth"
-	"go-admin/core/runtime"
 )
 
 const (

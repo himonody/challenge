@@ -1,20 +1,20 @@
 package service
 
 import (
+	"challenge-admin/app/admin/sys/models"
+	baseLang "challenge-admin/config/base/lang"
+	"challenge-admin/core/dto/service"
+	"challenge-admin/core/global"
+	"challenge-admin/core/lang"
+	"challenge-admin/core/middleware"
+	"challenge-admin/core/utils/tree"
 	"errors"
-	"go-admin/app/admin/sys/models"
-	baseLang "go-admin/config/base/lang"
-	"go-admin/core/dto/service"
-	"go-admin/core/global"
-	"go-admin/core/lang"
-	"go-admin/core/middleware"
-	"go-admin/core/utils/tree"
 	"gorm.io/gorm"
 	"strconv"
 	"time"
 
-	"go-admin/app/admin/sys/service/dto"
-	cDto "go-admin/core/dto"
+	"challenge-admin/app/admin/sys/service/dto"
+	cDto "challenge-admin/core/dto"
 )
 
 type SysDept struct {

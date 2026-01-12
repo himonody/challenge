@@ -1,12 +1,12 @@
 package log
 
 import (
+	"challenge-admin/core/global"
+	"challenge-admin/core/utils/strutils"
+	"challenge-admin/core/utils/textutils"
 	"github.com/bitxx/logger"
 	"github.com/bitxx/logger/logbase"
 	"github.com/gin-gonic/gin"
-	"go-admin/core/global"
-	"go-admin/core/utils/strutils"
-	"go-admin/core/utils/textutils"
 )
 
 var logHelper *logbase.Helper

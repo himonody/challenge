@@ -3,19 +3,19 @@ package middleware
 import (
 	"bufio"
 	"bytes"
+	"challenge-admin/core/config"
+	"challenge-admin/core/middleware/auth"
+	"challenge-admin/core/runtime"
+	"challenge-admin/core/utils/iputils"
+	"challenge-admin/core/utils/log"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
-	"go-admin/core/config"
-	"go-admin/core/middleware/auth"
-	"go-admin/core/runtime"
-	"go-admin/core/utils/iputils"
-	"go-admin/core/utils/log"
 	"io"
 	"net/http"
 	"strconv"
 	"time"
 
-	"go-admin/core/global"
+	"challenge-admin/core/global"
 )
 
 // LoggerToFile 日志记录到文件

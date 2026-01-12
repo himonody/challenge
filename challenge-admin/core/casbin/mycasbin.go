@@ -1,11 +1,11 @@
 package mycasbin
 
 import (
+	"challenge-admin/core/runtime"
+	"challenge-admin/core/utils/log"
 	"github.com/casbin/casbin/v2"
 	"github.com/casbin/casbin/v2/model"
 	"github.com/gin-gonic/gin"
-	"go-admin/core/runtime"
-	"go-admin/core/utils/log"
 	"gorm.io/gorm"
 )
 

@@ -1,0 +1,48 @@
+package router
+
+import (
+	"challenge-admin/core/global"
+	"challenge-admin/core/runtime"
+	"github.com/gin-gonic/gin"
+)
+
+var (
+	routerNoCheckRole = make([]func(*gin.RouterGroup), 0)
+	routerCheckRole   = make([]func(v1 *gin.RouterGroup), 0)
+)
+
+// InitRouter 初始化路由
+func InitRouter() {
+	var r *gin.Engine
+	h := runtime.RuntimeConfig.GetEngine()
+	if h == nil {
+		panic("not found engine...")
+	}
+	switch h.(type) {
+	case *gin.Engine:
+		r = h.(*gin.Engine)
+	default:
+		panic("not support other engine")
+	}
+
+	// 无需认证的路由
+	noCheckRoleRouter(r)
+	// 需要认证的路由
+	checkRoleRouter(r)
+}
+
+// noCheckRoleRouter 无需认证的路由
+func noCheckRoleRouter(r *gin.Engine) {
+	v1 := r.Group(global.RouteRootPath + "/v1")
+	for _, f := range routerNoCheckRole {
+		f(v1)
+	}
+}
+
+// checkRoleRouter 需要认证的路由
+func checkRoleRouter(r *gin.Engine) {
+	v1 := r.Group(global.RouteRootPath + "/v1")
+	for _, f := range routerCheckRole {
+		f(v1)
+	}
+}

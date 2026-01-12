@@ -1,7 +1,7 @@
 package runtime
 
 import (
-	"go-admin/core/utils/storage"
+	"challenge-admin/core/utils/storage"
 )
 
 const (

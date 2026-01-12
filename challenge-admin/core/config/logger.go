@@ -1,7 +1,7 @@
 package config
 
 import (
-	"go-admin/core/utils/log"
+	"challenge-admin/core/utils/log"
 )
 
 type Logger struct {

@@ -1,6 +1,6 @@
 package lang
 
-import "go-admin/core/lang"
+import "challenge-admin/core/lang"
 
 const (
 	PluginsAnnouncementTitleEmptyCode   = 20000

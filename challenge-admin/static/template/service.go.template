@@ -4,14 +4,14 @@ import (
 	"errors"
 	"fmt"
 	"github.com/xuri/excelize/v2"
-	baseLang "go-admin/config/base/lang"
-	adminService "go-admin/app/admin/sys/service"
-	"go-admin/app/{{.PackageName}}/{{.BusinessName}}/models"
-	"go-admin/app/{{.PackageName}}/{{.BusinessName}}/service/dto"
-	"go-admin/core/middleware"
-	"go-admin/core/dto/service"
-	cDto "go-admin/core/dto"
-	"go-admin/core/global"
+	baseLang "challenge-admin/config/base/lang"
+	adminService "challenge-admin/app/admin/sys/service"
+	"challenge-admin/app/{{.PackageName}}/{{.BusinessName}}/models"
+	"challenge-admin/app/{{.PackageName}}/{{.BusinessName}}/service/dto"
+	"challenge-admin/core/middleware"
+	"challenge-admin/core/dto/service"
+	cDto "challenge-admin/core/dto"
+	"challenge-admin/core/global"
 	{{- $hasDecimal := false }}
 	{{- range .SysGenColumns }}
     {{- if eq .GoType "decimal.Decimal"}}{{- $hasDecimal = true }}{{- end }}
@@ -19,7 +19,7 @@ import (
 	{{- if eq $hasDecimal true }}
     "github.com/shopspring/decimal"
 	{{- end }}
-	"go-admin/core/lang"
+	"challenge-admin/core/lang"
 	"gorm.io/gorm"
 	"time"
 )

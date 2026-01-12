@@ -1,10 +1,10 @@
 package lang
 
 import (
+	"challenge-admin/core/utils/log"
 	"encoding/csv"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"go-admin/core/utils/log"
 	"os"
 )
 

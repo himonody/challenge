@@ -1,8 +1,8 @@
 package router
 
 import (
-	"go-admin/app/admin/sys/apis"
-	"go-admin/core/middleware"
+	"challenge-admin/app/admin/sys/apis"
+	"challenge-admin/core/middleware"
 
 	"github.com/gin-gonic/gin"
 )

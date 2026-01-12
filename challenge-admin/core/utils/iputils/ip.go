@@ -1,9 +1,9 @@
 package iputils
 
 import (
+	"challenge-admin/core/utils/log"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
-	"go-admin/core/utils/log"
 	"io"
 	"net"
 	"net/http"

@@ -1,8 +1,8 @@
 package queue
 
 import (
-	"go-admin/core/utils/storage"
-	"go-admin/core/utils/storage/queue/redisqueue"
+	"challenge-admin/core/utils/storage"
+	"challenge-admin/core/utils/storage/queue/redisqueue"
 )
 
 type Message struct {

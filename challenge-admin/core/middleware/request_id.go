@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"go-admin/core/global"
-	"go-admin/core/utils/idgen"
-	"go-admin/core/utils/log"
+	"challenge-admin/core/global"
+	"challenge-admin/core/utils/idgen"
+	"challenge-admin/core/utils/log"
 	"net/http"
 	"strings"
 

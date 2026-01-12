@@ -1,14 +1,14 @@
 package apis
 
 import (
+	"challenge-admin/app/plugins/msg/service"
+	"challenge-admin/app/plugins/msg/service/dto"
+	baseLang "challenge-admin/config/base/lang"
+	"challenge-admin/core/dto/api"
+	_ "challenge-admin/core/dto/response"
+	"challenge-admin/core/lang"
+	"challenge-admin/core/middleware"
 	"github.com/gin-gonic/gin"
-	"go-admin/app/plugins/msg/service"
-	"go-admin/app/plugins/msg/service/dto"
-	baseLang "go-admin/config/base/lang"
-	"go-admin/core/dto/api"
-	_ "go-admin/core/dto/response"
-	"go-admin/core/lang"
-	"go-admin/core/middleware"
 )
 
 type MsgCode struct {

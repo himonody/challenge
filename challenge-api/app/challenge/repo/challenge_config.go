@@ -6,8 +6,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetChallengeConfig(db *gorm.DB) ([]*models.AppChallengeConfig, error) {
-	configs := make([]*models.AppChallengeConfig, 0)
-	err := db.Table("app_challenge_config").Where("status = 1").Order("sort DESC").Find(&configs).Error
-	return configs, err
+func GetChallengeConfig(db *gorm.DB) (*models.AppChallengeConfig, error) {
+	config := new(models.AppChallengeConfig)
+	err := db.Table("app_challenge_config").Where("status = 1").Order("sort DESC").Last(&config).Error
+	return config, err
 }

@@ -1,6 +1,6 @@
 package lang
 
-import "go-admin/core/lang"
+import "challenge-admin/core/lang"
 
 const (
 	//600（包含600）以下必须符合http规则，否则接口会异常

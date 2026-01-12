@@ -1,9 +1,10 @@
 package router
 
 import (
+	"challenge-admin/app/app/user/apis"
+	"challenge-admin/core/middleware"
+
 	"github.com/gin-gonic/gin"
-	"go-admin/app/app/user/apis"
-	"go-admin/core/middleware"
 )
 
 func init() {
@@ -21,6 +22,11 @@ func registerUserRouter(v1 *gin.RouterGroup) {
 		r.POST("", api.Insert)
 		r.PUT("/:id", api.Update)
 		r.GET("/export", api.Export)
+
+		r.POST("/recharge/:id", api.Update)           //人工充值
+		r.POST("/deduct/:id", api.Update)             //人工扣款
+		r.POST("/reset/password/:id", api.Update)     //重置密码
+		r.POST("/reset/pay-password/:id", api.Update) //重置支付密码
 	}
 }
 

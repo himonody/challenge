@@ -22,6 +22,4 @@ const (
 	AuthRegisterDeviceWindow = 24 * 3600 // 设备限流窗口：24小时
 	AuthRegisterDeviceLimit  = 2         // 设备限流：24小时2次
 
-	AuthRegisterAction = "register"
-	AuthLoginAction    = "login"
 )

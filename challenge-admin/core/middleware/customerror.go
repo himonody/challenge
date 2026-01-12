@@ -1,9 +1,9 @@
 package middleware
 
 import (
+	"challenge-admin/core/utils/iputils"
+	"challenge-admin/core/utils/log"
 	"github.com/gin-gonic/gin"
-	"go-admin/core/utils/iputils"
-	"go-admin/core/utils/log"
 	"net/http"
 	"strconv"
 	"strings"

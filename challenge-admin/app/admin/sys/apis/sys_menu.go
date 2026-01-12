@@ -1,16 +1,16 @@
 package apis
 
 import (
+	"challenge-admin/app/admin/sys/service"
+	"challenge-admin/app/admin/sys/service/dto"
+	baseLang "challenge-admin/config/base/lang"
+	mycasbin "challenge-admin/core/casbin"
+	"challenge-admin/core/dto/api"
+	"challenge-admin/core/lang"
+	"challenge-admin/core/middleware"
+	"challenge-admin/core/middleware/auth"
+	"challenge-admin/core/runtime"
 	"github.com/gin-gonic/gin"
-	"go-admin/app/admin/sys/service"
-	"go-admin/app/admin/sys/service/dto"
-	baseLang "go-admin/config/base/lang"
-	mycasbin "go-admin/core/casbin"
-	"go-admin/core/dto/api"
-	"go-admin/core/lang"
-	"go-admin/core/middleware"
-	"go-admin/core/middleware/auth"
-	"go-admin/core/runtime"
 )
 
 type SysMenu struct {

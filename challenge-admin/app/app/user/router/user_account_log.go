@@ -1,9 +1,10 @@
 package router
 
 import (
+	"challenge-admin/app/app/user/apis"
+	"challenge-admin/core/middleware"
+
 	"github.com/gin-gonic/gin"
-	"go-admin/app/app/user/apis"
-	"go-admin/core/middleware"
 )
 
 func init() {

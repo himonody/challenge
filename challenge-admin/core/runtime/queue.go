@@ -1,7 +1,7 @@
 package runtime
 
 import (
-	"go-admin/core/utils/storage"
+	"challenge-admin/core/utils/storage"
 )
 
 // NewQueue 创建对应上下文队列

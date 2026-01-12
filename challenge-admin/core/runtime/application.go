@@ -1,9 +1,9 @@
 package runtime
 
 import (
+	"challenge-admin/core/utils/storage"
+	"challenge-admin/core/utils/storage/queue"
 	"github.com/gin-gonic/gin"
-	"go-admin/core/utils/storage"
-	"go-admin/core/utils/storage/queue"
 	"net/http"
 	"sync"
 

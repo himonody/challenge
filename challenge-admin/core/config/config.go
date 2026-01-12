@@ -1,8 +1,8 @@
 package config
 
 import (
+	"challenge-admin/core/utils/log"
 	"fmt"
-	"go-admin/core/utils/log"
 
 	loadconfig "github.com/bitxx/load-config"
 	"github.com/bitxx/load-config/source"

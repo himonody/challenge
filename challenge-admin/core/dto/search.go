@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"go-admin/core/dto/search"
+	"challenge-admin/core/dto/search"
 	"gorm.io/gorm"
 )
 

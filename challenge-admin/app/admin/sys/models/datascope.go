@@ -1,11 +1,11 @@
 package models
 
 import (
+	"challenge-admin/core/config"
+	"challenge-admin/core/utils/log"
+	"challenge-admin/core/utils/strutils"
+	"challenge-admin/core/utils/textutils"
 	"errors"
-	"go-admin/core/config"
-	"go-admin/core/utils/log"
-	"go-admin/core/utils/strutils"
-	"go-admin/core/utils/textutils"
 	"gorm.io/gorm"
 )
 

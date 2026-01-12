@@ -1,19 +1,19 @@
 package service
 
 import (
+	baseLang "challenge-admin/config/base/lang"
+	"challenge-admin/core/dto/service"
+	"challenge-admin/core/global"
+	"challenge-admin/core/lang"
+	"challenge-admin/core/middleware"
+	"challenge-admin/core/runtime"
 	"errors"
-	baseLang "go-admin/config/base/lang"
-	"go-admin/core/dto/service"
-	"go-admin/core/global"
-	"go-admin/core/lang"
-	"go-admin/core/middleware"
-	"go-admin/core/runtime"
 	"gorm.io/gorm"
 	"time"
 
-	"go-admin/app/admin/sys/models"
-	"go-admin/app/admin/sys/service/dto"
-	cDto "go-admin/core/dto"
+	"challenge-admin/app/admin/sys/models"
+	"challenge-admin/app/admin/sys/service/dto"
+	cDto "challenge-admin/core/dto"
 )
 
 type SysDictData struct {

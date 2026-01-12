@@ -1,8 +1,8 @@
 package config
 
 import (
-	"go-admin/core/utils/storage"
-	"go-admin/core/utils/storage/cache"
+	"challenge-admin/core/utils/storage"
+	"challenge-admin/core/utils/storage/cache"
 )
 
 type Cache struct {

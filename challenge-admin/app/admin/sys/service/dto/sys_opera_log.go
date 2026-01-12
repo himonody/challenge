@@ -3,7 +3,7 @@ package dto
 import (
 	"time"
 
-	"go-admin/core/dto"
+	"challenge-admin/core/dto"
 )
 
 type SysOperLogQueryReq struct {

@@ -1,6 +1,6 @@
 package casbin
 
-import "go-admin/core/global"
+import "challenge-admin/core/global"
 
 type UrlInfo struct {
 	Url    string

@@ -1,9 +1,9 @@
 package queue
 
 import (
+	"challenge-admin/core/utils/storage"
+	"challenge-admin/core/utils/storage/queue/redisqueue"
 	"fmt"
-	"go-admin/core/utils/storage"
-	"go-admin/core/utils/storage/queue/redisqueue"
 	"log"
 	"sync"
 	"testing"

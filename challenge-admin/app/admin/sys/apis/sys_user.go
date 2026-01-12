@@ -1,23 +1,23 @@
 package apis
 
 import (
+	"challenge-admin/app/admin/sys/service"
+	"challenge-admin/app/admin/sys/service/dto"
+	"challenge-admin/config/base/constant"
+	baseLang "challenge-admin/config/base/lang"
+	"challenge-admin/core/config"
+	"challenge-admin/core/dto/api"
+	_ "challenge-admin/core/dto/response"
+	"challenge-admin/core/global"
+	"challenge-admin/core/lang"
+	"challenge-admin/core/middleware"
+	"challenge-admin/core/middleware/auth"
+	"challenge-admin/core/middleware/auth/authdto"
+	"challenge-admin/core/utils/captchautils"
+	"challenge-admin/core/utils/fileutils"
+	"challenge-admin/core/utils/idgen"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	"go-admin/app/admin/sys/service"
-	"go-admin/app/admin/sys/service/dto"
-	"go-admin/config/base/constant"
-	baseLang "go-admin/config/base/lang"
-	"go-admin/core/config"
-	"go-admin/core/dto/api"
-	_ "go-admin/core/dto/response"
-	"go-admin/core/global"
-	"go-admin/core/lang"
-	"go-admin/core/middleware"
-	"go-admin/core/middleware/auth"
-	"go-admin/core/middleware/auth/authdto"
-	"go-admin/core/utils/captchautils"
-	"go-admin/core/utils/fileutils"
-	"go-admin/core/utils/idgen"
 )
 
 type SysUser struct {

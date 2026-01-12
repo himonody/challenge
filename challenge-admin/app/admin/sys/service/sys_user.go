@@ -1,27 +1,27 @@
 package service
 
 import (
+	"challenge-admin/config/base/constant"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/mssola/user_agent"
-	"go-admin/config/base/constant"
 
-	"go-admin/app/admin/sys/models"
-	"go-admin/app/admin/sys/service/dto"
-	baseLang "go-admin/config/base/lang"
-	"go-admin/core/config"
-	"go-admin/core/dto/service"
-	"go-admin/core/global"
-	"go-admin/core/lang"
-	"go-admin/core/middleware"
-	"go-admin/core/runtime"
-	"go-admin/core/utils/dateutils"
-	"go-admin/core/utils/iputils"
-	"go-admin/core/utils/strutils"
+	"challenge-admin/app/admin/sys/models"
+	"challenge-admin/app/admin/sys/service/dto"
+	baseLang "challenge-admin/config/base/lang"
+	"challenge-admin/core/config"
+	"challenge-admin/core/dto/service"
+	"challenge-admin/core/global"
+	"challenge-admin/core/lang"
+	"challenge-admin/core/middleware"
+	"challenge-admin/core/runtime"
+	"challenge-admin/core/utils/dateutils"
+	"challenge-admin/core/utils/iputils"
+	"challenge-admin/core/utils/strutils"
 	"gorm.io/gorm"
 	"time"
 
-	cDto "go-admin/core/dto"
+	cDto "challenge-admin/core/dto"
 )
 
 type SysUser struct {

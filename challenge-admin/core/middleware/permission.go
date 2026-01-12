@@ -1,15 +1,15 @@
 package middleware
 
 import (
+	"challenge-admin/config/base/constant"
+	"challenge-admin/core/config"
+	"challenge-admin/core/dto/response"
+	"challenge-admin/core/middleware/auth"
+	"challenge-admin/core/utils/ginutils"
+	"challenge-admin/core/utils/log"
+	"challenge-admin/core/utils/strutils"
 	"errors"
 	"github.com/gin-gonic/gin"
-	"go-admin/config/base/constant"
-	"go-admin/core/config"
-	"go-admin/core/dto/response"
-	"go-admin/core/middleware/auth"
-	"go-admin/core/utils/ginutils"
-	"go-admin/core/utils/log"
-	"go-admin/core/utils/strutils"
 	"gorm.io/gorm"
 )
 

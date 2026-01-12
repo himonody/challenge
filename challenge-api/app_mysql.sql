@@ -332,6 +332,46 @@ INSERT INTO `app_user_oper_log` (
 COMMIT;
 
 
+
+DROP TABLE IF EXISTS `app_user_invite_code`;
+CREATE TABLE `app_user_invite_code` (
+                                        `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+                                        `code` varchar(64) NOT NULL COMMENT '邀请码',
+                                        `owner_user_id` BIGINT UNSIGNED NOT NULL COMMENT '所属用户',
+                                        `status` char(1) NOT NULL DEFAULT '1' COMMENT '1可用 2禁用',
+                                        `total_limit` int NOT NULL DEFAULT 0 COMMENT '总次数 0不限制',
+                                        `daily_limit` int NOT NULL DEFAULT 0 COMMENT '每日次数 0不限制',
+                                        `used_total` int NOT NULL DEFAULT 0 COMMENT '已使用总次数',
+                                        `used_today` int NOT NULL DEFAULT 0 COMMENT '今日已使用次数',
+                                        `last_used_at` datetime DEFAULT NULL COMMENT '最后使用时间',
+                                        `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                        PRIMARY KEY (`id`),
+                                        UNIQUE KEY `uk_code` (`code`),
+                                        KEY `idx_owner` (`owner_user_id`),
+                                        KEY `idx_status` (`status`),
+                                        KEY `idx_owner_status` (`owner_user_id`,`status`),
+                                        KEY `idx_used_today` (`used_today`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='邀请码表';
+
+-- ----------------------------
+-- Table structure for app_user_invite_relation
+-- ----------------------------
+DROP TABLE IF EXISTS `app_user_invite_relation`;
+CREATE TABLE `app_user_invite_relation` (
+                                            `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '邀请关系ID',
+                                            `inviter_user_id` BIGINT UNSIGNED NOT NULL COMMENT '邀请人用户ID',
+                                            `invitee_user_id` BIGINT UNSIGNED NOT NULL COMMENT '被邀请人用户ID',
+                                            `invite_code` varchar(64) NOT NULL COMMENT '使用的邀请码',
+                                            `invite_reward` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '邀请奖励',
+                                            `invitee_reward` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '被邀请人奖励',
+                                            `status` char(1) NOT NULL DEFAULT '1' COMMENT '状态 1有效 2无效',
+                                            `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '邀请时间',
+                                            PRIMARY KEY (`id`),
+                                            UNIQUE KEY `uk_invitee` (`invitee_user_id`),
+                                            KEY `idx_inviter` (`inviter_user_id`),
+                                            KEY `idx_invite_code` (`invite_code`),
+                                            KEY `idx_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='用户邀请关系表';
 -- ----------------------------
 -- Table structure for app_challenge_config
 -- ----------------------------
@@ -815,46 +855,6 @@ CREATE TABLE `app_message_template` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='站内信-消息模板';
 
 
-
-DROP TABLE IF EXISTS `app_user_invite_code`;
-CREATE TABLE `app_user_invite_code` (
-                                   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-                                   `code` varchar(64) NOT NULL COMMENT '邀请码',
-                                   `owner_user_id` BIGINT UNSIGNED NOT NULL COMMENT '所属用户',
-                                   `status` char(1) NOT NULL DEFAULT '1' COMMENT '1可用 2禁用',
-                                   `total_limit` int NOT NULL DEFAULT 0 COMMENT '总次数 0不限制',
-                                   `daily_limit` int NOT NULL DEFAULT 0 COMMENT '每日次数 0不限制',
-                                   `used_total` int NOT NULL DEFAULT 0 COMMENT '已使用总次数',
-                                   `used_today` int NOT NULL DEFAULT 0 COMMENT '今日已使用次数',
-                                   `last_used_at` datetime DEFAULT NULL COMMENT '最后使用时间',
-                                   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                   PRIMARY KEY (`id`),
-                                   UNIQUE KEY `uk_code` (`code`),
-                                   KEY `idx_owner` (`owner_user_id`),
-                                   KEY `idx_status` (`status`),
-                                   KEY `idx_owner_status` (`owner_user_id`,`status`),
-                                   KEY `idx_used_today` (`used_today`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='邀请码表';
-
--- ----------------------------
--- Table structure for app_user_invite_relation
--- ----------------------------
-DROP TABLE IF EXISTS `app_user_invite_relation`;
-CREATE TABLE `app_user_invite_relation` (
-                                            `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '邀请关系ID',
-                                            `inviter_user_id` BIGINT UNSIGNED NOT NULL COMMENT '邀请人用户ID',
-                                            `invitee_user_id` BIGINT UNSIGNED NOT NULL COMMENT '被邀请人用户ID',
-                                            `invite_code` varchar(64) NOT NULL COMMENT '使用的邀请码',
-                                            `invite_reward` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '邀请奖励',
-                                            `invitee_reward` DECIMAL(30,2) NOT NULL DEFAULT 0.00 COMMENT '被邀请人奖励',
-                                            `status` char(1) NOT NULL DEFAULT '1' COMMENT '状态 1有效 2无效',
-                                            `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '邀请时间',
-                                            PRIMARY KEY (`id`),
-                                            UNIQUE KEY `uk_invitee` (`invitee_user_id`),
-                                            KEY `idx_inviter` (`inviter_user_id`),
-                                            KEY `idx_invite_code` (`invite_code`),
-                                            KEY `idx_created_at` (`created_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='用户邀请关系表';
 
 
 SET FOREIGN_KEY_CHECKS = 1;

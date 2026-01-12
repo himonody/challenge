@@ -13,7 +13,7 @@ const (
 )
 
 // SetChallengeConfigCache 缓存策略集合
-func SetChallengeConfigCache(ctx context.Context, cache storage.AdapterCache, items []models.AppChallengeConfig) error {
+func SetChallengeConfigCache(ctx context.Context, cache storage.AdapterCache, items *models.AppChallengeConfig) error {
 	if cache == nil {
 		return nil
 	}
@@ -26,8 +26,8 @@ func SetChallengeConfigCache(ctx context.Context, cache storage.AdapterCache, it
 }
 
 // GetChallengeConfigCache 从缓存取策略集合
-func GetChallengeConfigCache(ctx context.Context, cache storage.AdapterCache) ([]models.AppChallengeConfig, error) {
-	var out []models.AppChallengeConfig
+func GetChallengeConfigCache(ctx context.Context, cache storage.AdapterCache) (*models.AppChallengeConfig, error) {
+	var out models.AppChallengeConfig
 	if cache == nil {
 		return out, nil
 	}

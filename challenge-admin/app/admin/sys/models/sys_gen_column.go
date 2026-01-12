@@ -1,8 +1,8 @@
 package models
 
 import (
-	"go-admin/core/config"
-	"go-admin/core/global"
+	"challenge-admin/core/config"
+	"challenge-admin/core/global"
 	"time"
 )
 

@@ -1,7 +1,7 @@
 package captchautils
 
 import (
-	"go-admin/core/utils/idgen"
+	"challenge-admin/core/utils/idgen"
 	"image/color"
 
 	"github.com/mojocn/base64Captcha"

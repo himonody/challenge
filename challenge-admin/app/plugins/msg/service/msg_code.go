@@ -1,14 +1,14 @@
 package service
 
 import (
+	"challenge-admin/app/plugins/msg/models"
+	"challenge-admin/app/plugins/msg/service/dto"
+	baseLang "challenge-admin/config/base/lang"
+	cDto "challenge-admin/core/dto"
+	"challenge-admin/core/dto/service"
+	"challenge-admin/core/lang"
+	"challenge-admin/core/middleware"
 	"errors"
-	"go-admin/app/plugins/msg/models"
-	"go-admin/app/plugins/msg/service/dto"
-	baseLang "go-admin/config/base/lang"
-	cDto "go-admin/core/dto"
-	"go-admin/core/dto/service"
-	"go-admin/core/lang"
-	"go-admin/core/middleware"
 	"gorm.io/gorm"
 )
 

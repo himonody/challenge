@@ -1,9 +1,9 @@
 package ws
 
 import (
+	"challenge-admin/core/utils/fileutils"
+	"challenge-admin/core/utils/log"
 	"context"
-	"go-admin/core/utils/fileutils"
-	"go-admin/core/utils/log"
 	"net/http"
 	"sync"
 	"time"

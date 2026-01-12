@@ -8,11 +8,11 @@
 package cache
 
 import (
+	"challenge-admin/core/config"
+	"challenge-admin/core/runtime"
+	"challenge-admin/core/utils/captchautils"
+	"challenge-admin/core/utils/log"
 	"fmt"
-	"go-admin/core/config"
-	"go-admin/core/runtime"
-	"go-admin/core/utils/captchautils"
-	"go-admin/core/utils/log"
 )
 
 // Setup 配置storage组件

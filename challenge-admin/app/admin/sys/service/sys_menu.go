@@ -1,23 +1,23 @@
 package service
 
 import (
+	"challenge-admin/config/base/constant"
+	baseLang "challenge-admin/config/base/lang"
+	"challenge-admin/core/dto/service"
+	"challenge-admin/core/lang"
+	"challenge-admin/core/middleware"
+	"challenge-admin/core/utils/tree"
 	"errors"
 	"github.com/casbin/casbin/v2"
-	"go-admin/config/base/constant"
-	baseLang "go-admin/config/base/lang"
-	"go-admin/core/dto/service"
-	"go-admin/core/lang"
-	"go-admin/core/middleware"
-	"go-admin/core/utils/tree"
 	"strconv"
 	"strings"
 	"time"
 
 	"gorm.io/gorm"
 
-	"go-admin/app/admin/sys/models"
-	"go-admin/app/admin/sys/service/dto"
-	cDto "go-admin/core/dto"
+	"challenge-admin/app/admin/sys/models"
+	"challenge-admin/app/admin/sys/service/dto"
+	cDto "challenge-admin/core/dto"
 )
 
 type SysMenu struct {

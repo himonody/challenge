@@ -1,17 +1,17 @@
 package apis
 
 import (
+	adminService "challenge-admin/app/admin/sys/service"
+	baseLang "challenge-admin/config/base/lang"
+	"challenge-admin/core/dto/api"
+	"challenge-admin/core/lang"
+	"challenge-admin/core/middleware"
+	"challenge-admin/core/utils/dateutils"
 	"github.com/gin-gonic/gin"
-	adminService "go-admin/app/admin/sys/service"
-	baseLang "go-admin/config/base/lang"
-	"go-admin/core/dto/api"
-	"go-admin/core/lang"
-	"go-admin/core/middleware"
-	"go-admin/core/utils/dateutils"
 	"time"
 
-	"go-admin/app/admin/sys/service"
-	"go-admin/app/admin/sys/service/dto"
+	"challenge-admin/app/admin/sys/service"
+	"challenge-admin/app/admin/sys/service/dto"
 )
 
 type SysLoginLog struct {

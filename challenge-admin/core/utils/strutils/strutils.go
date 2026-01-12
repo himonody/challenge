@@ -1,6 +1,8 @@
 package strutils
 
 import (
+	"challenge-admin/core/global"
+	"challenge-admin/core/utils/idgen"
 	"crypto/md5"
 	"encoding/base64"
 	"encoding/hex"
@@ -9,8 +11,6 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/shopspring/decimal"
-	"go-admin/core/global"
-	"go-admin/core/utils/idgen"
 	"golang.org/x/crypto/bcrypt"
 	"io/ioutil"
 	"math"

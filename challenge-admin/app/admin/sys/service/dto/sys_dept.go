@@ -1,9 +1,9 @@
 package dto
 
 import (
+	"challenge-admin/app/admin/sys/models"
+	"challenge-admin/core/dto"
 	"github.com/shopspring/decimal"
-	"go-admin/app/admin/sys/models"
-	"go-admin/core/dto"
 )
 
 // SysDeptQueryReq 列表或者搜索使用结构体

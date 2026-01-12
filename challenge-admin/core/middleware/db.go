@@ -1,8 +1,8 @@
 package middleware
 
 import (
+	"challenge-admin/core/runtime"
 	"github.com/gin-gonic/gin"
-	"go-admin/core/runtime"
 )
 
 func WithContextDb(c *gin.Context) {

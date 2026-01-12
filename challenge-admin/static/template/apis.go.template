@@ -2,16 +2,16 @@ package apis
 
 import (
 	"github.com/gin-gonic/gin"
-	baseLang "go-admin/config/base/lang"
-	adminService "go-admin/app/admin/sys/service"
-	"go-admin/app/{{.PackageName}}/{{.BusinessName}}/service"
-	"go-admin/app/{{.PackageName}}/{{.BusinessName}}/service/dto"
-	"go-admin/core/dto/api"
-	_ "go-admin/core/dto/response"
-	"go-admin/core/middleware"
-	"go-admin/core/middleware/auth"
-	"go-admin/core/utils/dateutils"
-	"go-admin/core/lang"
+	baseLang "challenge-admin/config/base/lang"
+	adminService "challenge-admin/app/admin/sys/service"
+	"challenge-admin/app/{{.PackageName}}/{{.BusinessName}}/service"
+	"challenge-admin/app/{{.PackageName}}/{{.BusinessName}}/service/dto"
+	"challenge-admin/core/dto/api"
+	_ "challenge-admin/core/dto/response"
+	"challenge-admin/core/middleware"
+	"challenge-admin/core/middleware/auth"
+	"challenge-admin/core/utils/dateutils"
+	"challenge-admin/core/lang"
 	"time"
 )
 

@@ -4,7 +4,10 @@ package app
  * app应用体量过大的时候，可以在该应用根目录下新建这样一个文件，将子模块的路由和多语言都辉总在这里，然后再去项目根目录(go-admin/app/init.go)中注册整个应用
  */
 import (
-	userRouter "go-admin/app/app/user/router"
+	challengeRouter "challenge-admin/app/app/challenge/router"
+	riskRouter "challenge-admin/app/app/risk/router"
+	userRouter "challenge-admin/app/app/user/router"
+	withdrawRouter "challenge-admin/app/app/withdraw/router"
 )
 
 // AllRouter
@@ -16,5 +19,11 @@ func AllRouter() []func() {
 
 	//app-用户管理
 	routers = append(routers, userRouter.InitRouter)
+	//app-提现管理
+	routers = append(routers, withdrawRouter.InitRouter)
+	//app-风控管理
+	routers = append(routers, riskRouter.InitRouter)
+	//app-挑战管理
+	routers = append(routers, challengeRouter.InitRouter)
 	return routers
 }

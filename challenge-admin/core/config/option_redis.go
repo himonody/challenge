@@ -1,11 +1,11 @@
 package config
 
 import (
+	"challenge-admin/core/utils/log"
 	"context"
 	"crypto/tls"
 	"crypto/x509"
 	"github.com/redis/go-redis/v9"
-	"go-admin/core/utils/log"
 	"os"
 )
 

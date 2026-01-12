@@ -1,8 +1,8 @@
 package captchautils
 
 import (
+	"challenge-admin/core/utils/storage"
 	"github.com/mojocn/base64Captcha"
-	"go-admin/core/utils/storage"
 )
 
 const (

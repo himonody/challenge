@@ -1,18 +1,18 @@
 package service
 
 import (
+	"challenge-admin/app/plugins/content/models"
+	"challenge-admin/app/plugins/content/service/dto"
+	baseLang "challenge-admin/config/base/lang"
 	"errors"
 	"fmt"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/xuri/excelize/v2"
-	"go-admin/app/plugins/content/models"
-	"go-admin/app/plugins/content/service/dto"
-	baseLang "go-admin/config/base/lang"
 
-	cDto "go-admin/core/dto"
-	"go-admin/core/dto/service"
-	"go-admin/core/lang"
-	"go-admin/core/middleware"
+	cDto "challenge-admin/core/dto"
+	"challenge-admin/core/dto/service"
+	"challenge-admin/core/lang"
+	"challenge-admin/core/middleware"
 	"gorm.io/gorm"
 	"time"
 )

@@ -1,10 +1,6 @@
 package constant
 
 const (
-	// 风控缓存前缀
-	RiskStrategyCachePrefix = "challenge:risk:strategy"
-	RiskRateLimitPrefix     = "challenge:risk:ratelimit"
-	RiskBlacklistPrefix     = "challenge:risk:blacklist"
 
 	// 风控事件类型
 	RiskEventRegister      = 1 // 注册

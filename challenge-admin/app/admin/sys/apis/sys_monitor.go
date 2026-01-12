@@ -1,25 +1,25 @@
 package apis
 
 import (
+	baseLang "challenge-admin/config/base/lang"
+	"challenge-admin/core/dto/api"
+	"challenge-admin/core/lang"
+	"challenge-admin/core/utils/fileutils"
+	"challenge-admin/core/utils/iputils"
+	"challenge-admin/core/utils/strutils"
 	"fmt"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/shirou/gopsutil/v4/host"
-	baseLang "go-admin/config/base/lang"
-	"go-admin/core/dto/api"
-	"go-admin/core/lang"
-	"go-admin/core/utils/fileutils"
-	"go-admin/core/utils/iputils"
-	"go-admin/core/utils/strutils"
 	"net/http"
 	"runtime"
 	"strconv"
 	"time"
 
+	_ "challenge-admin/core/dto/response"
 	"github.com/gin-gonic/gin"
 	"github.com/shirou/gopsutil/v4/cpu"
 	"github.com/shirou/gopsutil/v4/disk"
 	"github.com/shirou/gopsutil/v4/mem"
-	_ "go-admin/core/dto/response"
 )
 
 const (

@@ -1,10 +1,10 @@
 package queue
 
 import (
+	"challenge-admin/core/utils/storage"
+	redisqueue2 "challenge-admin/core/utils/storage/queue/redisqueue"
 	"fmt"
 	"github.com/redis/go-redis/v9"
-	"go-admin/core/utils/storage"
-	redisqueue2 "go-admin/core/utils/storage/queue/redisqueue"
 	"testing"
 	"time"
 )

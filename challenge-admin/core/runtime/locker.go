@@ -1,8 +1,8 @@
 package runtime
 
 import (
+	"challenge-admin/core/utils/storage"
 	"github.com/bsm/redislock"
-	"go-admin/core/utils/storage"
 )
 
 // NewLocker 创建对应上下文分布式锁

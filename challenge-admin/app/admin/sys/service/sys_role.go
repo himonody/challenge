@@ -1,15 +1,15 @@
 package service
 
 import (
+	"challenge-admin/config/base/constant"
+	mycasbin "challenge-admin/core/casbin"
 	"errors"
 	"fmt"
-	"go-admin/config/base/constant"
-	mycasbin "go-admin/core/casbin"
 
-	baseLang "go-admin/config/base/lang"
-	"go-admin/core/dto/service"
-	"go-admin/core/lang"
-	"go-admin/core/middleware"
+	baseLang "challenge-admin/config/base/lang"
+	"challenge-admin/core/dto/service"
+	"challenge-admin/core/lang"
+	"challenge-admin/core/middleware"
 	"gorm.io/gorm/clause"
 	"time"
 
@@ -17,9 +17,9 @@ import (
 
 	"gorm.io/gorm"
 
-	"go-admin/app/admin/sys/models"
-	"go-admin/app/admin/sys/service/dto"
-	cDto "go-admin/core/dto"
+	"challenge-admin/app/admin/sys/models"
+	"challenge-admin/app/admin/sys/service/dto"
+	cDto "challenge-admin/core/dto"
 )
 
 type SysRole struct {

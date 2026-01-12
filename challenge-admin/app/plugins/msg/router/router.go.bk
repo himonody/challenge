@@ -2,8 +2,8 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	log "go-admin/common/core/logger"
-	"go-admin/common/core/sdk"
+	log "challenge-admin/common/core/logger"
+	"challenge-admin/common/core/sdk"
 	"os"
 )
 

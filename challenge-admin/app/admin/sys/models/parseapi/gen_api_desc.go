@@ -1,8 +1,8 @@
 package main
 
 import (
+	"challenge-admin/core/global"
 	"fmt"
-	"go-admin/core/global"
 	"go/ast"
 	"go/parser"
 	"go/token"

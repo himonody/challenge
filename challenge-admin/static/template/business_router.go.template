@@ -2,8 +2,8 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"go-admin/app/{{.PackageName}}/{{.BusinessName}}/apis"
-	"go-admin/core/middleware"
+	"challenge-admin/app/{{.PackageName}}/{{.BusinessName}}/apis"
+	"challenge-admin/core/middleware"
 )
 
 func init() {

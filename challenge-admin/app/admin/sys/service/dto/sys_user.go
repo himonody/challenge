@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"go-admin/core/dto"
+	"challenge-admin/core/dto"
 )
 
 type SysUserQueryReq struct {

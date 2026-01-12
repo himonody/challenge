@@ -1,9 +1,9 @@
 package captchautils
 
 import (
+	"challenge-admin/core/utils/storage"
+	"challenge-admin/core/utils/storage/cache"
 	"fmt"
-	"go-admin/core/utils/storage"
-	"go-admin/core/utils/storage/cache"
 	"math/rand"
 	"testing"
 	"time"

@@ -1,10 +1,10 @@
 package models
 
 import (
+	"challenge-admin/config/base/constant"
+	"challenge-admin/core/runtime"
 	"errors"
 	"fmt"
-	"go-admin/config/base/constant"
-	"go-admin/core/runtime"
 	"gorm.io/gorm"
 	"strings"
 	"time"

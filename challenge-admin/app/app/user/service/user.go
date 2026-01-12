@@ -1,23 +1,23 @@
 package service
 
 import (
+	adminService "challenge-admin/app/admin/sys/service"
+	"challenge-admin/app/app/user/models"
+	"challenge-admin/app/app/user/service/dto"
+	"challenge-admin/config/base/constant"
+	baseLang "challenge-admin/config/base/lang"
+	"challenge-admin/core/config"
+	cDto "challenge-admin/core/dto"
+	"challenge-admin/core/dto/service"
+	"challenge-admin/core/global"
+	"challenge-admin/core/lang"
+	"challenge-admin/core/middleware"
+	"challenge-admin/core/utils/encrypt"
+	"challenge-admin/core/utils/idgen"
+	"challenge-admin/core/utils/strutils"
 	"errors"
 	"fmt"
 	"github.com/xuri/excelize/v2"
-	adminService "go-admin/app/admin/sys/service"
-	"go-admin/app/app/user/models"
-	"go-admin/app/app/user/service/dto"
-	"go-admin/config/base/constant"
-	baseLang "go-admin/config/base/lang"
-	"go-admin/core/config"
-	cDto "go-admin/core/dto"
-	"go-admin/core/dto/service"
-	"go-admin/core/global"
-	"go-admin/core/lang"
-	"go-admin/core/middleware"
-	"go-admin/core/utils/encrypt"
-	"go-admin/core/utils/idgen"
-	"go-admin/core/utils/strutils"
 	"strconv"
 	"strings"
 
@@ -461,10 +461,19 @@ func (e *User) Update(c *dto.UserUpdateReq, p *middleware.DataPermission) (bool,
 		updates["level_id"] = c.LevelId
 	}
 	if c.UserName != "" && data.UserName != c.UserName {
-		updates["user_name"] = c.UserName
+		updates["username"] = c.UserName
+	}
+	if c.NickName != "" && data.NickName != c.NickName {
+		updates["nickname"] = c.NickName
 	}
 	if c.TrueName != "" && data.TrueName != c.TrueName {
 		updates["true_name"] = c.TrueName
+	}
+	if c.Money.Cmp(data.Money) != 0 {
+		updates["money"] = c.Money
+	}
+	if c.FreezeMoney.Cmp(data.FreezeMoney) != 0 {
+		updates["freeze_money"] = c.FreezeMoney
 	}
 	if c.Email != "" && data.Email != c.Email {
 		updates["email"] = email
@@ -474,6 +483,21 @@ func (e *User) Update(c *dto.UserUpdateReq, p *middleware.DataPermission) (bool,
 	}
 	if c.Mobile != "" && data.Mobile != c.Mobile {
 		updates["mobile"] = mobile
+	}
+	if c.Avatar != "" && data.Avatar != c.Avatar {
+		updates["avatar"] = c.Avatar
+	}
+	if c.PayPwd != "" && data.PayPwd != c.PayPwd {
+		updates["pay_pwd"] = c.PayPwd
+	}
+	if c.PayStatus != "" && data.PayStatus != c.PayStatus {
+		updates["pay_status"] = c.PayStatus
+	}
+	if c.Pwd != "" {
+		updates["pwd"] = c.Pwd
+	}
+	if c.RefCode != "" && data.RefCode != c.RefCode {
+		updates["ref_code"] = c.RefCode
 	}
 	if len(updates) > 0 {
 		updates["updated_at"] = time.Now()

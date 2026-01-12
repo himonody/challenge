@@ -1,8 +1,8 @@
 package queue
 
 import (
-	"go-admin/core/utils/idgen"
-	"go-admin/core/utils/storage"
+	"challenge-admin/core/utils/idgen"
+	"challenge-admin/core/utils/storage"
 	"sync"
 )
 

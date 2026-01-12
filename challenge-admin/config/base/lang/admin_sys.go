@@ -1,7 +1,7 @@
 package lang
 
 import (
-	"go-admin/core/lang"
+	"challenge-admin/core/lang"
 )
 
 const (

@@ -3,9 +3,9 @@
 package app
 
 import (
-	adminRouter "go-admin/app/admin"
-	appRouter "go-admin/app/app"
-	pluginsRouter "go-admin/app/plugins"
+	adminRouter "challenge-admin/app/admin"
+	appRouter "challenge-admin/app/app"
+	pluginsRouter "challenge-admin/app/plugins"
 )
 
 // AllRouter

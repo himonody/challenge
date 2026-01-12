@@ -1,9 +1,9 @@
 package cache
 
 import (
+	"challenge-admin/core/runtime"
 	"context"
 	"github.com/redis/go-redis/v9"
-	"go-admin/core/runtime"
 	"time"
 )
 

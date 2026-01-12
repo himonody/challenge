@@ -2,7 +2,6 @@ package storage
 
 import (
 	"challenge/app/risk/models"
-	baseConstant "challenge/config/base/constant"
 	"challenge/core/utils/storage"
 	"context"
 	"encoding/json"
@@ -16,6 +15,10 @@ const (
 	DefaultStrategyTTL  = 300  // 策略缓存：5分钟
 	DefaultBlacklistTTL = 600  // 黑名单缓存：10分钟
 	DefaultRiskScoreTTL = 3600 // 风险分数缓存：1小时
+	// 风控缓存前缀
+	RiskStrategyCachePrefix = "challenge:risk:strategy"
+	RiskRateLimitPrefix     = "challenge:risk:ratelimit"
+	RiskBlacklistPrefix     = "challenge:risk:blacklist"
 )
 
 // 缓存Key前缀定义
@@ -40,7 +43,7 @@ func CacheStrategies(ctx context.Context, cache storage.AdapterCache, scene stri
 		return err
 	}
 
-	return cache.Set(baseConstant.RiskStrategyCachePrefix, scene, string(b), DefaultStrategyTTL)
+	return cache.Set(RiskStrategyCachePrefix, scene, string(b), DefaultStrategyTTL)
 }
 
 // GetStrategies 从缓存取策略集合
@@ -50,7 +53,7 @@ func GetStrategies(ctx context.Context, cache storage.AdapterCache, scene string
 		return out, nil
 	}
 
-	val, err := cache.Get(baseConstant.RiskStrategyCachePrefix, scene)
+	val, err := cache.Get(RiskStrategyCachePrefix, scene)
 	if err != nil || val == "" {
 		return out, err
 	}
@@ -68,7 +71,7 @@ func CacheBlacklistFlag(ctx context.Context, cache storage.AdapterCache, typ, va
 	if blocked {
 		flag = "1"
 	}
-	return cache.Set(baseConstant.RiskBlacklistPrefix, key, flag, int(ttl.Seconds()))
+	return cache.Set(RiskBlacklistPrefix, key, flag, int(ttl.Seconds()))
 }
 
 // GetBlacklistFlag 读取黑名单命中缓存
@@ -77,7 +80,7 @@ func GetBlacklistFlag(ctx context.Context, cache storage.AdapterCache, typ, valu
 		return false, false
 	}
 	key := fmt.Sprintf("%s:%s", typ, value)
-	val, err := cache.Get(baseConstant.RiskBlacklistPrefix, key)
+	val, err := cache.Get(RiskBlacklistPrefix, key)
 	if err != nil || val == "" {
 		return false, false
 	}
@@ -117,7 +120,7 @@ func ClearStrategyCache(ctx context.Context, cache storage.AdapterCache, scene s
 		return nil
 	}
 
-	return cache.Del(baseConstant.RiskStrategyCachePrefix, scene)
+	return cache.Del(RiskStrategyCachePrefix, scene)
 }
 
 // ClearBlacklistCache 清除黑名单缓存
@@ -126,5 +129,5 @@ func ClearBlacklistCache(ctx context.Context, cache storage.AdapterCache, typ, v
 		return nil
 	}
 	key := fmt.Sprintf("%s:%s", typ, value)
-	return cache.Del(baseConstant.RiskBlacklistPrefix, key)
+	return cache.Del(RiskBlacklistPrefix, key)
 }

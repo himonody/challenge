@@ -8,7 +8,7 @@ import (
 	baseLang "challenge/config/base/lang"
 	"challenge/core/dto/service"
 	"challenge/core/lang"
-	"challenge/core/utils/storage"
+
 	"context"
 	"errors"
 	"fmt"
@@ -31,17 +31,9 @@ func NewRiskService(s *service.Service) *Risk {
 	return srv
 }
 
-// getCache 获取缓存适配器
-func (r *Risk) getCache() storage.AdapterCache {
-	if r.Run == nil {
-		return nil
-	}
-	return r.Run.GetCacheAdapter()
-}
-
 // LoadStrategies 获取场景策略（带缓存，下发策略缓存表 & redis）
 func (r *Risk) LoadStrategies(ctx context.Context, scene string) ([]models.RiskStrategyCache, int, error) {
-	cache := r.getCache()
+	cache := r.Run.GetCacheAdapter()
 	if cache == nil {
 		r.Log.Warnf("risk.LoadStrategies: cache not available")
 		// 无缓存时直接查表
@@ -94,7 +86,7 @@ func (r *Risk) loadStrategiesFromDB(ctx context.Context, scene string) ([]models
 		return nil, baseLang.DataUpdateLogCode, lang.MsgLogErrf(r.Log, r.Lang, baseLang.DataUpdateCode, baseLang.DataUpdateLogCode, err)
 	}
 
-	cache := r.getCache()
+	cache := r.Run.GetCacheAdapter()
 	if cache != nil {
 		_ = riskStorage.CacheStrategies(ctx, cache, scene, caches)
 	}
@@ -117,7 +109,7 @@ func (r *Risk) ListActions() (map[string]models.RiskAction, int, error) {
 
 // CheckBlacklist 判断是否命中黑名单，缓存结果
 func (r *Risk) CheckBlacklist(ctx context.Context, typ, value string) (bool, int, error) {
-	cache := r.getCache()
+	cache := r.Run.GetCacheAdapter()
 	if cache != nil {
 		if hit, ok := riskStorage.GetBlacklistFlag(ctx, cache, typ, value); ok {
 			if hit {
@@ -148,7 +140,7 @@ func (r *Risk) CheckBlacklist(ctx context.Context, typ, value string) (bool, int
 // GetUserRiskLevel 获取用户风险等级
 func (r *Risk) GetUserRiskLevel(ctx context.Context, userID uint64) (int64, int64, error) {
 	// 先从缓存获取
-	cache := r.getCache()
+	cache := r.Run.GetCacheAdapter()
 	if cache != nil {
 		if score, ok := riskStorage.GetRiskScore(ctx, cache, userID); ok {
 			level := r.calculateRiskLevel(score)
@@ -219,7 +211,7 @@ func (r *Risk) UpdateUserRiskScore(ctx context.Context, userID uint64, deltaScor
 	}
 
 	// 清除缓存
-	cache := r.getCache()
+	cache := r.Run.GetCacheAdapter()
 	if cache != nil {
 		_ = riskStorage.CacheRiskScore(ctx, cache, userID, newScore, time.Hour)
 	}
@@ -259,7 +251,7 @@ func (r *Risk) AddToBlacklist(ctx context.Context, typ, value, reason string) er
 	}
 
 	// 清除缓存，强制重新查询
-	cache := r.getCache()
+	cache := r.Run.GetCacheAdapter()
 	if cache != nil {
 		_ = riskStorage.ClearBlacklistCache(ctx, cache, typ, value)
 	}
@@ -280,7 +272,7 @@ func (r *Risk) RemoveFromBlacklist(ctx context.Context, typ, value string) error
 	}
 
 	// 清除缓存
-	cache := r.getCache()
+	cache := r.Run.GetCacheAdapter()
 	if cache != nil {
 		_ = riskStorage.ClearBlacklistCache(ctx, cache, typ, value)
 	}
@@ -293,7 +285,7 @@ func (r *Risk) RemoveFromBlacklist(ctx context.Context, typ, value string) error
 
 // RefreshStrategyCache 刷新策略缓存
 func (r *Risk) RefreshStrategyCache(ctx context.Context, scene string) error {
-	cache := r.getCache()
+	cache := r.Run.GetCacheAdapter()
 	if cache == nil {
 		return errors.New("缓存不可用")
 	}

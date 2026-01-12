@@ -1,8 +1,8 @@
 package middleware
 
 import (
+	"challenge-admin/core/middleware/auth"
 	"github.com/gin-gonic/gin"
-	"go-admin/core/middleware/auth"
 )
 
 func Auth() gin.HandlerFunc {

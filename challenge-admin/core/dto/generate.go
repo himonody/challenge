@@ -1,8 +1,8 @@
 package dto
 
 import (
+	"challenge-admin/core/utils/log"
 	vd "github.com/bytedance/go-tagexpr/v2/validator"
-	"go-admin/core/utils/log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

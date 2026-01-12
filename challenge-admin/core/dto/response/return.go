@@ -1,7 +1,7 @@
 package response
 
 import (
-	"go-admin/core/utils/strutils"
+	"challenge-admin/core/utils/strutils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

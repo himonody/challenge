@@ -1,9 +1,9 @@
 package runtime
 
 import (
+	"challenge-admin/core/utils/storage"
 	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
-	"go-admin/core/utils/storage"
 	"net/http"
 
 	"gorm.io/gorm"

@@ -8,8 +8,8 @@ import (
 )
 
 // GetUserActiveChallenge 获取用户进行中的挑战
-func GetUserActiveChallenge(db *gorm.DB, userID uint64) (*challengeModels.ChallengeUser, error) {
-	var challenge challengeModels.ChallengeUser
+func GetUserActiveChallenge(db *gorm.DB, userID uint64) (*challengeModels.AppChallengeUser, error) {
+	var challenge challengeModels.AppChallengeUser
 	err := db.Table("app_challenge_user").
 		Where("user_id = ? AND status = ?", userID, 1). // 状态1=进行中
 		First(&challenge).Error
@@ -40,7 +40,7 @@ func CountUserTotalMissCheckin(db *gorm.DB, userID uint64) (int64, error) {
 // GetUserContinuousCheckin 获取用户连续打卡天数
 func GetUserContinuousCheckin(db *gorm.DB, userID uint64) (int, error) {
 	// 获取用户最近的打卡记录
-	var checkins []challengeModels.ChallengeCheckin
+	var checkins []challengeModels.AppChallengeUser
 	err := db.Table("app_challenge_checkin").
 		Where("user_id = ? AND status = ?", userID, 1).
 		Order("checkin_date DESC").
@@ -60,20 +60,20 @@ func GetUserContinuousCheckin(db *gorm.DB, userID uint64) (int, error) {
 	yesterday := time.Now().AddDate(0, 0, -1).Format("2006-01-02")
 
 	// 检查今天或昨天是否打卡
-	firstDate := checkins[0].CheckinDate.Format("2006-01-02")
+	firstDate := checkins[0].FinishedAt.Format("2006-01-02")
 	if firstDate != today && firstDate != yesterday {
 		return 0, nil
 	}
 
 	// 从第一个记录开始往前推算连续天数
-	lastDate := checkins[0].CheckinDate
+	lastDate := checkins[0].FinishedAt
 	continuous = 1
 
 	for i := 1; i < len(checkins); i++ {
 		expectedDate := lastDate.AddDate(0, 0, -1)
-		if checkins[i].CheckinDate.Format("2006-01-02") == expectedDate.Format("2006-01-02") {
+		if checkins[i].FinishedAt.Format("2006-01-02") == expectedDate.Format("2006-01-02") {
 			continuous++
-			lastDate = checkins[i].CheckinDate
+			lastDate = checkins[i].FinishedAt
 		} else {
 			break
 		}

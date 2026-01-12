@@ -1,17 +1,18 @@
 package apis
 
 import (
-	"github.com/gin-gonic/gin"
-	adminService "go-admin/app/admin/sys/service"
-	"go-admin/app/app/user/service"
-	"go-admin/app/app/user/service/dto"
-	baseLang "go-admin/config/base/lang"
-	"go-admin/core/dto/api"
-	_ "go-admin/core/dto/response"
-	"go-admin/core/lang"
-	"go-admin/core/middleware"
-	"go-admin/core/utils/dateutils"
+	adminService "challenge-admin/app/admin/sys/service"
+	"challenge-admin/app/app/user/service"
+	"challenge-admin/app/app/user/service/dto"
+	baseLang "challenge-admin/config/base/lang"
+	"challenge-admin/core/dto/api"
+	_ "challenge-admin/core/dto/response"
+	"challenge-admin/core/lang"
+	"challenge-admin/core/middleware"
+	"challenge-admin/core/utils/dateutils"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 type UserAccountLog struct {
