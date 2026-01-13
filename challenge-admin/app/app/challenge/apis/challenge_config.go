@@ -7,6 +7,7 @@ import (
 	"challenge-admin/core/dto/api"
 	"challenge-admin/core/lang"
 	"challenge-admin/core/middleware"
+	"challenge-admin/core/middleware/auth/authdto"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -65,7 +66,7 @@ func (e ChallengeConfig) ConfigCreate(c *gin.Context) {
 		e.Error(baseLang.DataDecodeCode, lang.MsgLogErrf(e.Logger, e.Lang, baseLang.DataDecodeCode, baseLang.DataDecodeLogCode, err).Error())
 		return
 	}
-	req.CurrUserId = middleware.GetCurrUserId(c)
+	req.CurrUserId = c.GetInt64(authdto.LoginUserId)
 	id, code, err := s.Create(&req)
 	if err != nil {
 		e.Error(code, err.Error())
@@ -83,7 +84,7 @@ func (e ChallengeConfig) ConfigUpdate(c *gin.Context) {
 		e.Error(baseLang.DataDecodeCode, lang.MsgLogErrf(e.Logger, e.Lang, baseLang.DataDecodeCode, baseLang.DataDecodeLogCode, err).Error())
 		return
 	}
-	req.CurrUserId = middleware.GetCurrUserId(c)
+	req.CurrUserId = c.GetInt64(authdto.LoginUserId)
 	ok, code, err := s.Update(&req)
 	if err != nil {
 		e.Error(code, err.Error())
@@ -103,7 +104,7 @@ func (e ChallengeConfig) ConfigDelete(c *gin.Context) {
 		e.Error(baseLang.DataDecodeCode, lang.MsgLogErrf(e.Logger, e.Lang, baseLang.DataDecodeCode, baseLang.DataDecodeLogCode, err).Error())
 		return
 	}
-	ok, code, err := s.Delete(uri.Id, middleware.GetCurrUserId(c))
+	ok, code, err := s.Delete(uri.Id, c.GetInt64(authdto.LoginUserId))
 	if err != nil {
 		e.Error(code, err.Error())
 		return

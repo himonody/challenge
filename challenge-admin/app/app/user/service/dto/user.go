@@ -119,10 +119,32 @@ type UserUpdateReq struct {
 	RefCode     string          `json:"refCode" comment:"推荐码"`
 	CurrUserId  int64           `json:"-" comment:"当前登陆用户"`
 }
-
+type UserRechargeReq struct {
+	Id         int64           `json:"-" uri:"id" comment:"用户编号"` // 用户编号
+	Amount     decimal.Decimal `json:"amount" comment:"金额"`
+	CurrUserId int64           `json:"-" comment:"当前登陆用户"`
+}
+type UserDeductReq struct {
+	Id         int64           `json:"-" uri:"id" comment:"用户编号"` // 用户编号
+	Amount     decimal.Decimal `json:"amount" comment:"金额"`
+	CurrUserId int64           `json:"-" comment:"当前登陆用户"`
+}
+type UserPasswordReq struct {
+	Id         int64 `json:"-" uri:"id" comment:"用户编号"` // 用户编号
+	CurrUserId int64 `json:"-" comment:"当前登陆用户"`
+}
+type UserPayPasswordReq struct {
+	Id         int64 `json:"-" uri:"id" comment:"用户编号"` // 用户编号
+	CurrUserId int64 `json:"-" comment:"当前登陆用户"`
+}
 type UserStatusUpdateReq struct {
 	Id         int64  `json:"-" uri:"id" comment:"用户ID"` // 用户ID
 	Status     string `json:"status" comment:"状态"`
+	CurrUserId int64  `json:"-" comment:""`
+}
+type UserPayStatusUpdateReq struct {
+	Id         int64  `json:"-" uri:"id" comment:"用户ID"` // 用户ID
+	PayStatus  string `json:"pay_status" comment:"支付状态"`
 	CurrUserId int64  `json:"-" comment:""`
 }
 

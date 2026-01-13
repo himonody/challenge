@@ -7,6 +7,7 @@ import (
 	"challenge-admin/core/dto/api"
 	"challenge-admin/core/lang"
 	"challenge-admin/core/middleware"
+	"challenge-admin/core/middleware/auth/authdto"
 	"challenge-admin/core/utils/dateutils"
 	"time"
 
@@ -66,7 +67,7 @@ func (e RiskAction) RiskActionCreate(c *gin.Context) {
 		e.Error(baseLang.DataDecodeCode, lang.MsgLogErrf(e.Logger, e.Lang, baseLang.DataDecodeCode, baseLang.DataDecodeLogCode, err).Error())
 		return
 	}
-	req.CurrUserId = middleware.GetCurrUserId(c)
+	req.CurrUserId = c.GetInt64(authdto.LoginUserId)
 	ok, code, err := s.CreateRiskAction(&req)
 	if err != nil {
 		e.Error(code, err.Error())
@@ -84,7 +85,7 @@ func (e RiskAction) RiskActionUpdate(c *gin.Context) {
 		e.Error(baseLang.DataDecodeCode, lang.MsgLogErrf(e.Logger, e.Lang, baseLang.DataDecodeCode, baseLang.DataDecodeLogCode, err).Error())
 		return
 	}
-	req.CurrUserId = middleware.GetCurrUserId(c)
+	req.CurrUserId = c.GetInt64(authdto.LoginUserId)
 	ok, code, err := s.UpdateRiskAction(&req)
 	if err != nil {
 		e.Error(code, err.Error())
@@ -102,7 +103,7 @@ func (e RiskAction) RiskActionDelete(c *gin.Context) {
 		e.Error(baseLang.DataDecodeCode, lang.MsgLogErrf(e.Logger, e.Lang, baseLang.DataDecodeCode, baseLang.DataDecodeLogCode, err).Error())
 		return
 	}
-	ok, code, err := s.DeleteRiskAction(codeParam, middleware.GetCurrUserId(c))
+	ok, code, err := s.DeleteRiskAction(codeParam, c.GetInt64(authdto.LoginUserId))
 	if err != nil {
 		e.Error(code, err.Error())
 		return

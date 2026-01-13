@@ -17,12 +17,18 @@ import (
 	"challenge-admin/core/utils/strutils"
 	"errors"
 	"fmt"
-	"github.com/xuri/excelize/v2"
 	"strconv"
 	"strings"
 
-	"gorm.io/gorm"
+	"github.com/bsm/redislock"
+	"github.com/shopspring/decimal"
+	"github.com/xuri/excelize/v2"
+	"go.uber.org/zap"
+
 	"time"
+
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type User struct {
@@ -510,6 +516,409 @@ func (e *User) Update(c *dto.UserUpdateReq, p *middleware.DataPermission) (bool,
 	}
 	return false, baseLang.SuccessCode, nil
 }
+func (e *User) UserRecharge(c *dto.UserRechargeReq, p *middleware.DataPermission, ip string) (bool, int, error) {
+
+	if c.CurrUserId <= 0 || c.Id <= 0 {
+		return false, baseLang.ParamErrCode, lang.MsgErr(baseLang.ParamErrCode, e.Lang)
+	}
+	if c.Amount.LessThanOrEqual(decimal.Zero) {
+		return true, baseLang.SuccessCode, nil
+	}
+	_, respCode, err := e.Get(c.Id, p)
+	if err != nil {
+		return false, respCode, err
+	}
+	locker := e.Run.GetLockerPrefix("admin:challenge:user:recharge")
+	// 分布式锁防并发充值
+	if locker != nil {
+		lockKey := fmt.Sprintf("admin:challenge:user:recharge:%d", c.Id)
+		lock, err := locker.Lock(lockKey, 10, &redislock.Options{
+			RetryStrategy: redislock.LimitRetry(redislock.LinearBackoff(200*time.Millisecond), 5),
+		})
+		if err != nil {
+			return false, baseLang.OpErrCode, lang.MsgErr(baseLang.OpErrCode, e.Lang)
+		}
+		if lock != nil {
+			defer lock.Release(e.Context.Request.Context())
+		}
+	}
+
+	tx := e.Orm.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+			panic(r)
+		}
+	}()
+
+	/*
+	   |--------------------------------------------------------------------------
+	   | 1️⃣ 锁定用户行（防并发）
+	   |--------------------------------------------------------------------------
+	*/
+	user := new(models.User)
+	if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).
+		First(&user, c.Id).Error; err != nil {
+
+		tx.Rollback()
+		return false, baseLang.DataQueryLogCode,
+			lang.MsgLogErrf(
+				e.Log, e.Lang,
+				baseLang.DataQueryCode,
+				baseLang.DataQueryLogCode,
+				err,
+			)
+	}
+
+	beforeMoney := user.Money
+
+	/*
+	   |--------------------------------------------------------------------------
+	   | 2️⃣ 更新用户余额（强一致）
+	   |--------------------------------------------------------------------------
+	*/
+	if err := tx.Model(&models.User{}).
+		Where("id = ?", user.Id).
+		Updates(map[string]interface{}{
+			"money":      gorm.Expr("money + ?", c.Amount),
+			"update_by":  c.CurrUserId,
+			"updated_at": time.Now(),
+		}).Error; err != nil {
+
+		tx.Rollback()
+		return false, baseLang.DataUpdateLogCode,
+			lang.MsgLogErrf(
+				e.Log, e.Lang,
+				baseLang.DataUpdateCode,
+				baseLang.DataUpdateLogCode,
+				err,
+			)
+	}
+
+	afterMoney := beforeMoney.Add(c.Amount)
+
+	/*
+	   |--------------------------------------------------------------------------
+	   | 3️⃣ 插入账变记录（Ledger，不影响主账）
+	   |--------------------------------------------------------------------------
+	*/
+	if err := tx.Exec(`
+	INSERT INTO app_user_account_log (
+		user_id,
+		change_money,
+		before_money,
+		after_money,
+		money_type,
+		change_type,
+		operate_ip,
+		status,
+		create_by,
+		update_by,
+		remarks
+	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+	`,
+		user.Id,
+		c.Amount,
+		beforeMoney,
+		afterMoney,
+		"1",                // money_type：余额
+		"challenge_income", // change_type：业务编码
+		ip,                 // 操作 IP
+		"1",
+		c.CurrUserId,
+		c.CurrUserId,
+		"挑战金充值",
+	).Error; err != nil {
+		e.Log.Error("insert account log failed", zap.Error(err))
+		tx.Rollback()
+		return false, baseLang.DataUpdateLogCode,
+			lang.MsgLogErrf(
+				e.Log, e.Lang,
+				baseLang.DataUpdateCode,
+				baseLang.DataUpdateLogCode,
+				err,
+			)
+	}
+
+	/*
+	   |--------------------------------------------------------------------------
+	   | 4️⃣ 更新 challenge_user（关键闸门）
+	   |--------------------------------------------------------------------------
+	*/
+	res := tx.Exec(`
+	UPDATE app_challenge_user
+	SET challenge_amount = challenge_amount + ?
+	WHERE id = (
+		SELECT id FROM app_challenge_user
+		WHERE user_id = ? AND status = 1
+		ORDER BY id DESC
+		LIMIT 1
+	)
+	`, c.Amount, user.Id)
+
+	challengeOK := res.Error == nil && res.RowsAffected > 0
+
+	/*
+	   |--------------------------------------------------------------------------
+	   | 5️⃣ 只有 challenge_user 成功，才写派生表
+	   |--------------------------------------------------------------------------
+	*/
+	if challengeOK {
+		// 5.1 更新奖池
+		if r := tx.Exec(`
+		UPDATE app_challenge_pool
+		SET total_amount = total_amount + ?
+		WHERE settled = 0
+		ORDER BY id DESC
+		LIMIT 1
+	`, c.Amount); r.Error != nil {
+			e.Log.Error("update challenge_pool failed", zap.Error(r.Error))
+			tx.Rollback()
+			return false, baseLang.DataUpdateLogCode,
+				lang.MsgLogErrf(
+					e.Log, e.Lang,
+					baseLang.DataUpdateCode,
+					baseLang.DataUpdateLogCode,
+					r.Error,
+				)
+		}
+
+		// 5.2 更新 / 插入奖池流水
+		if r := tx.Exec(`
+		INSERT INTO app_challenge_pool_flow (user_id, type, amount, created_at)
+		VALUES (?, 1, ?, NOW())
+		ON DUPLICATE KEY UPDATE
+		amount = amount + VALUES(amount)
+	`, user.Id, c.Amount); r.Error != nil {
+			e.Log.Error("upsert challenge_pool_flow failed", zap.Error(r.Error))
+			tx.Rollback()
+			return false, baseLang.DataUpdateLogCode,
+				lang.MsgLogErrf(
+					e.Log, e.Lang,
+					baseLang.DataUpdateCode,
+					baseLang.DataUpdateLogCode,
+					r.Error,
+				)
+		}
+	}
+
+	/*
+	   |--------------------------------------------------------------------------
+	   | 6️⃣ 无条件提交事务
+	   |--------------------------------------------------------------------------
+	*/
+	if err := tx.Commit().Error; err != nil {
+		return false, baseLang.DataUpdateLogCode,
+			lang.MsgLogErrf(
+				e.Log, e.Lang,
+				baseLang.DataUpdateCode,
+				baseLang.DataUpdateLogCode,
+				err,
+			)
+	}
+	return true, baseLang.SuccessCode, nil
+}
+func (e *User) UserDeduct(c *dto.UserDeductReq, p *middleware.DataPermission, ip string) (bool, int, error) {
+
+	if c.CurrUserId <= 0 || c.Id <= 0 {
+		return false, baseLang.ParamErrCode, lang.MsgErr(baseLang.ParamErrCode, e.Lang)
+	}
+	if c.Amount.LessThanOrEqual(decimal.Zero) {
+		return true, baseLang.SuccessCode, nil
+	}
+	_, respCode, err := e.Get(c.Id, p)
+	if err != nil {
+		return false, respCode, err
+	}
+	locker := e.Run.GetLockerPrefix("admin:challenge:user:deduct")
+	// 分布式锁防并发充值
+	if locker != nil {
+		lockKey := fmt.Sprintf("admin:challenge:user:deduct:%d", c.Id)
+		lock, err := locker.Lock(lockKey, 10, &redislock.Options{
+			RetryStrategy: redislock.LimitRetry(redislock.LinearBackoff(200*time.Millisecond), 5),
+		})
+		if err != nil {
+			return false, baseLang.OpErrCode, lang.MsgErr(baseLang.OpErrCode, e.Lang)
+		}
+		if lock != nil {
+			defer lock.Release(e.Context.Request.Context())
+		}
+	}
+
+	tx := e.Orm.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+			panic(r)
+		}
+	}()
+
+	/*
+	   |--------------------------------------------------------------------------
+	   | 1️⃣ 锁定用户行（防并发）
+	   |--------------------------------------------------------------------------
+	*/
+	user := new(models.User)
+	if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).
+		First(&user, c.Id).Error; err != nil {
+
+		tx.Rollback()
+		return false, baseLang.DataQueryLogCode,
+			lang.MsgLogErrf(
+				e.Log, e.Lang,
+				baseLang.DataQueryCode,
+				baseLang.DataQueryLogCode,
+				err,
+			)
+	}
+
+	beforeMoney := user.Money
+
+	// ❗余额校验（扣钱必做）
+	if beforeMoney.Cmp(c.Amount) < 0 {
+		tx.Rollback()
+		return false, baseLang.DataUpdateLogCode,
+			errors.New("insufficient balance")
+	}
+
+	/*
+	   |--------------------------------------------------------------------------
+	   | 2️⃣ 更新用户余额（强一致）
+	   |--------------------------------------------------------------------------
+	*/
+	if err := tx.Model(&models.User{}).
+		Where("id = ?", user.Id).
+		Updates(map[string]interface{}{
+			"money":      gorm.Expr("money - ?", c.Amount),
+			"update_by":  c.CurrUserId,
+			"updated_at": time.Now(),
+		}).Error; err != nil {
+
+		tx.Rollback()
+		return false, baseLang.DataUpdateLogCode,
+			lang.MsgLogErrf(
+				e.Log, e.Lang,
+				baseLang.DataUpdateCode,
+				baseLang.DataUpdateLogCode,
+				err,
+			)
+	}
+
+	changeMoney := c.Amount.Neg()
+	afterMoney := beforeMoney.Sub(c.Amount)
+
+	/*
+	   |--------------------------------------------------------------------------
+	   | 3️⃣ 插入账变记录（Ledger，不影响主账）
+	   |--------------------------------------------------------------------------
+	*/
+	if err := tx.Exec(`
+INSERT INTO app_user_account_log (
+	user_id,
+	change_money,
+	before_money,
+	after_money,
+	money_type,
+	change_type,
+	operate_ip,
+	status,
+	create_by,
+	update_by,
+	remarks
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+`,
+		user.Id,
+		changeMoney, // ⭐ 负数
+		beforeMoney,
+		afterMoney,
+		"1",             // 余额
+		"manual_deduct", // 建议用明确语义
+		ip,
+		"1",
+		c.CurrUserId,
+		c.CurrUserId,
+		"人工扣除",
+	).Error; err != nil {
+		e.Log.Error("insert account log failed", zap.Error(err))
+		tx.Rollback()
+		return false, baseLang.DataUpdateLogCode,
+			lang.MsgLogErrf(
+				e.Log, e.Lang,
+				baseLang.DataUpdateCode,
+				baseLang.DataUpdateLogCode,
+				err,
+			)
+	}
+
+	/*
+	   |--------------------------------------------------------------------------
+	   | 4️⃣ 提交事务
+	   |--------------------------------------------------------------------------
+	*/
+	if err := tx.Commit().Error; err != nil {
+		return false, baseLang.DataUpdateLogCode,
+			lang.MsgLogErrf(
+				e.Log, e.Lang,
+				baseLang.DataUpdateCode,
+				baseLang.DataUpdateLogCode,
+				err,
+			)
+	}
+
+	return true, baseLang.SuccessCode, nil
+}
+
+// ResetPassword app-更新用户管理状态
+func (e *User) ResetPassword(c *dto.UserPasswordReq, p *middleware.DataPermission) (bool, int, error) {
+	if c.CurrUserId <= 0 || c.Id <= 0 {
+		return false, baseLang.ParamErrCode, lang.MsgErr(baseLang.ParamErrCode, e.Lang)
+	}
+
+	var err error
+	_, respCode, err := e.Get(c.Id, p)
+	if err != nil {
+		return false, respCode, err
+	}
+	pwd := "aa1234"
+	updates := map[string]interface{}{}
+	updates["pwd"], _ = encrypt.HashEncrypt(pwd)
+
+	if len(updates) > 0 {
+		updates["update_by"] = c.CurrUserId
+		updates["updated_at"] = time.Now()
+		err = e.Orm.Model(&models.User{}).Where("id=?", c.Id).Updates(updates).Error
+		if err != nil {
+			return false, baseLang.DataUpdateLogCode, lang.MsgLogErrf(e.Log, e.Lang, baseLang.DataUpdateCode, baseLang.DataUpdateLogCode, err)
+		}
+	}
+	return true, baseLang.SuccessCode, nil
+}
+
+// ResetPayPassword app-更新用户管理状态
+func (e *User) ResetPayPassword(c *dto.UserPayPasswordReq, p *middleware.DataPermission) (bool, int, error) {
+	if c.CurrUserId <= 0 || c.Id <= 0 {
+		return false, baseLang.ParamErrCode, lang.MsgErr(baseLang.ParamErrCode, e.Lang)
+	}
+
+	var err error
+	_, respCode, err := e.Get(c.Id, p)
+	if err != nil {
+		return false, respCode, err
+	}
+	payPwd := "aa1234"
+	updates := map[string]interface{}{}
+	updates["pay_pwd"], _ = encrypt.HashEncrypt(payPwd)
+
+	if len(updates) > 0 {
+		updates["update_by"] = c.CurrUserId
+		updates["updated_at"] = time.Now()
+		err = e.Orm.Model(&models.User{}).Where("id=?", c.Id).Updates(updates).Error
+		if err != nil {
+			return false, baseLang.DataUpdateLogCode, lang.MsgLogErrf(e.Log, e.Lang, baseLang.DataUpdateCode, baseLang.DataUpdateLogCode, err)
+		}
+	}
+	return true, baseLang.SuccessCode, nil
+}
 
 // UpdateStatus app-更新用户管理状态
 func (e *User) UpdateStatus(c *dto.UserStatusUpdateReq, p *middleware.DataPermission) (bool, int, error) {
@@ -537,9 +946,38 @@ func (e *User) UpdateStatus(c *dto.UserStatusUpdateReq, p *middleware.DataPermis
 		if err != nil {
 			return false, baseLang.DataUpdateLogCode, lang.MsgLogErrf(e.Log, e.Lang, baseLang.DataUpdateCode, baseLang.DataUpdateLogCode, err)
 		}
-		return true, baseLang.SuccessCode, nil
 	}
-	return false, baseLang.SuccessCode, nil
+	return true, baseLang.SuccessCode, nil
+}
+
+// UpdatePayStatus app-更新用户管理支付状态
+func (e *User) UpdatePayStatus(c *dto.UserPayStatusUpdateReq, p *middleware.DataPermission) (bool, int, error) {
+	if c.CurrUserId <= 0 || c.Id <= 0 {
+		return false, baseLang.ParamErrCode, lang.MsgErr(baseLang.ParamErrCode, e.Lang)
+	}
+	if c.PayStatus == "" {
+		return false, baseLang.UserStatusEmptyCode, lang.MsgErr(baseLang.UserStatusEmptyCode, e.Lang)
+	}
+	var err error
+	u, respCode, err := e.Get(c.Id, p)
+	if err != nil {
+		return false, respCode, err
+	}
+
+	updates := map[string]interface{}{}
+	if c.PayStatus != "" && u.PayStatus != c.PayStatus {
+		updates["pay_status"] = c.PayStatus
+	}
+
+	if len(updates) > 0 {
+		updates["update_by"] = c.CurrUserId
+		updates["updated_at"] = time.Now()
+		err = e.Orm.Model(&models.User{}).Where("id=?", c.Id).Updates(updates).Error
+		if err != nil {
+			return false, baseLang.DataUpdateLogCode, lang.MsgLogErrf(e.Log, e.Lang, baseLang.DataUpdateCode, baseLang.DataUpdateLogCode, err)
+		}
+	}
+	return true, baseLang.SuccessCode, nil
 }
 
 // Export app-导出用户管理

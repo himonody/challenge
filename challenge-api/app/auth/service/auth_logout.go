@@ -1,7 +1,6 @@
 package service
 
 import (
-	authStorage "challenge/app/auth/storage"
 	riskDto "challenge/app/risk/service/dto"
 	userModels "challenge/app/user/models"
 	userRepo "challenge/app/user/repo"
@@ -26,19 +25,19 @@ func NewAuthLogoutService(s *service.Service) *AuthLogout {
 
 // Logout 登出（记录完整日志）
 func (a *AuthLogout) Logout(userID int, username string) error {
-	ctx := a.C.Request.Context()
+	//ctx := a.C.Request.Context()
 	now := time.Now()
 
 	// 采集风控上下文
 	rc := a.extractRiskContext()
 
-	// 1. 清除Redis中的Token（如果有缓存）
-	cache := a.Run.GetCacheAdapter()
-	if cache != nil {
-		_ = authStorage.DelLoginToken(ctx, cache, userID)
-		// 也可以清除Session
-		// _ = authStorage.DelLoginSession(ctx, cache, sessionID)
-	}
+	//// 1. 清除Redis中的Token（如果有缓存）
+	//cache := a.Run.GetCacheAdapter()
+	//if cache != nil {
+	//	_ = authStorage.DelLoginToken(ctx, cache, userID)
+	//	// 也可以清除Session
+	//	// _ = authStorage.DelLoginSession(ctx, cache, sessionID)
+	//}
 
 	// 2. 记录登出的登录日志（可选：记录为特殊的登出状态）
 	logoutLog := &userModels.UserLoginLog{

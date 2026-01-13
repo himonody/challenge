@@ -125,16 +125,161 @@ func (e User) Update(c *gin.Context) {
 	e.OK(nil, lang.MsgByCode(baseLang.SuccessCode, e.Lang))
 }
 func (e User) Recharge(c *gin.Context) {
+	req := dto.UserRechargeReq{}
+	s := service.User{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Error(baseLang.DataDecodeCode, lang.MsgLogErrf(e.Logger, e.Lang, baseLang.DataDecodeCode, baseLang.DataDecodeLogCode, err).Error())
+		return
+	}
+	p := middleware.GetPermissionFromContext(c)
+	uid, rCode, err := auth.Auth.GetUserId(c)
+	if err != nil {
+		e.Error(rCode, err.Error())
+		return
+	}
+	req.CurrUserId = uid
 
+	b, respCode, err := s.UserRecharge(&req, p, c.ClientIP())
+	if err != nil {
+		e.Error(respCode, err.Error())
+		return
+	}
+	if !b {
+		e.OK(nil, lang.MsgByCode(baseLang.DataNotUpdateCode, e.Lang))
+		return
+	}
+	e.OK(nil, lang.MsgByCode(baseLang.SuccessCode, e.Lang))
 }
 func (e User) Deduct(c *gin.Context) {
+	req := dto.UserDeductReq{}
+	s := service.User{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Error(baseLang.DataDecodeCode, lang.MsgLogErrf(e.Logger, e.Lang, baseLang.DataDecodeCode, baseLang.DataDecodeLogCode, err).Error())
+		return
+	}
+	p := middleware.GetPermissionFromContext(c)
+	uid, rCode, err := auth.Auth.GetUserId(c)
+	if err != nil {
+		e.Error(rCode, err.Error())
+		return
+	}
+	req.CurrUserId = uid
 
+	b, respCode, err := s.UserDeduct(&req, p, c.ClientIP())
+	if err != nil {
+		e.Error(respCode, err.Error())
+		return
+	}
+	if !b {
+		e.OK(nil, lang.MsgByCode(baseLang.DataNotUpdateCode, e.Lang))
+		return
+	}
+	e.OK(nil, lang.MsgByCode(baseLang.SuccessCode, e.Lang))
 }
 func (e User) ResetPassword(c *gin.Context) {
+	req := dto.UserPasswordReq{}
+	s := service.User{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Error(baseLang.DataDecodeCode, lang.MsgLogErrf(e.Logger, e.Lang, baseLang.DataDecodeCode, baseLang.DataDecodeLogCode, err).Error())
+		return
+	}
+	p := middleware.GetPermissionFromContext(c)
+	uid, rCode, err := auth.Auth.GetUserId(c)
+	if err != nil {
+		e.Error(rCode, err.Error())
+		return
+	}
+	req.CurrUserId = uid
 
+	b, respCode, err := s.ResetPassword(&req, p)
+	if err != nil {
+		e.Error(respCode, err.Error())
+		return
+	}
+	if !b {
+		e.OK(nil, lang.MsgByCode(baseLang.DataNotUpdateCode, e.Lang))
+		return
+	}
+	e.OK(nil, lang.MsgByCode(baseLang.SuccessCode, e.Lang))
 }
-func (e User) ResetPayPassword(c *gin.Context) {
 
+func (e User) ResetPayPassword(c *gin.Context) {
+	req := dto.UserPayPasswordReq{}
+	s := service.User{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Error(baseLang.DataDecodeCode, lang.MsgLogErrf(e.Logger, e.Lang, baseLang.DataDecodeCode, baseLang.DataDecodeLogCode, err).Error())
+		return
+	}
+	p := middleware.GetPermissionFromContext(c)
+	uid, rCode, err := auth.Auth.GetUserId(c)
+	if err != nil {
+		e.Error(rCode, err.Error())
+		return
+	}
+	req.CurrUserId = uid
+
+	b, respCode, err := s.ResetPayPassword(&req, p)
+	if err != nil {
+		e.Error(respCode, err.Error())
+		return
+	}
+	if !b {
+		e.OK(nil, lang.MsgByCode(baseLang.DataNotUpdateCode, e.Lang))
+		return
+	}
+	e.OK(nil, lang.MsgByCode(baseLang.SuccessCode, e.Lang))
+}
+
+func (e User) UpdatePayStatus(c *gin.Context) {
+	req := dto.UserPayStatusUpdateReq{}
+	s := service.User{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Error(baseLang.DataDecodeCode, lang.MsgLogErrf(e.Logger, e.Lang, baseLang.DataDecodeCode, baseLang.DataDecodeLogCode, err).Error())
+		return
+	}
+	p := middleware.GetPermissionFromContext(c)
+	uid, rCode, err := auth.Auth.GetUserId(c)
+	if err != nil {
+		e.Error(rCode, err.Error())
+		return
+	}
+	req.CurrUserId = uid
+
+	b, respCode, err := s.UpdatePayStatus(&req, p)
+	if err != nil {
+		e.Error(respCode, err.Error())
+		return
+	}
+	if !b {
+		e.OK(nil, lang.MsgByCode(baseLang.DataNotUpdateCode, e.Lang))
+		return
+	}
+	e.OK(nil, lang.MsgByCode(baseLang.SuccessCode, e.Lang))
 }
 
 // Export app-导出用户管理

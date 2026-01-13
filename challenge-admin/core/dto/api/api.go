@@ -4,16 +4,18 @@ import (
 	"challenge-admin/core/dto/response"
 	"challenge-admin/core/dto/service"
 	"challenge-admin/core/lang"
+	"challenge-admin/core/runtime"
 	"challenge-admin/core/utils/ginutils"
 	"challenge-admin/core/utils/log"
 	"errors"
 	"fmt"
+	"net/http"
+
 	"github.com/bitxx/logger/logbase"
 	vd "github.com/bytedance/go-tagexpr/v2/validator"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"gorm.io/gorm"
-	"net/http"
 )
 
 var DefaultLanguage = "zh-CN"
@@ -24,6 +26,7 @@ type Api struct {
 	Orm     *gorm.DB
 	Lang    string //语言 en 英文 zh-cn中文
 	Errors  error
+	Runtime runtime.Runtime
 }
 
 func (e *Api) AddError(err error) {
@@ -39,6 +42,7 @@ func (e *Api) AddError(err error) {
 func (e *Api) MakeContext(c *gin.Context) *Api {
 	e.Context = c
 	e.Logger = log.GetRequestLogger(c)
+	e.Runtime = runtime.RuntimeConfig
 	return e
 }
 
@@ -103,6 +107,8 @@ func (e *Api) MakeOrm() *Api {
 func (e *Api) MakeService(c *service.Service) *Api {
 	c.Log = e.Logger
 	c.Orm = e.Orm
+	c.Run = e.Runtime
+	c.Context = e.Context
 	return e
 }
 

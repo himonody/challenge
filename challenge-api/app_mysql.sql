@@ -410,7 +410,7 @@ CREATE TABLE `app_challenge_checkin` (
                                      `content_type` TINYINT NOT NULL DEFAULT 1 COMMENT '打卡内容类型 1图片 2视频广告',
 
 
-                                         `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态 1成功 2超时',
+                                         `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态 1打卡成功 2未打卡 3打卡失败',
                                      `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
 
                                      PRIMARY KEY (`id`),

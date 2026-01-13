@@ -7,6 +7,7 @@ import (
 	"challenge-admin/core/dto/api"
 	"challenge-admin/core/lang"
 	"challenge-admin/core/middleware"
+	"challenge-admin/core/middleware/auth/authdto"
 	"challenge-admin/core/utils/dateutils"
 	"fmt"
 	"time"
@@ -67,7 +68,7 @@ func (e RiskStrategy) RiskStrategyCreate(c *gin.Context) {
 		e.Error(baseLang.DataDecodeCode, lang.MsgLogErrf(e.Logger, e.Lang, baseLang.DataDecodeCode, baseLang.DataDecodeLogCode, err).Error())
 		return
 	}
-	req.CurrUserId = middleware.GetCurrUserId(c)
+	req.CurrUserId = c.GetInt64(authdto.LoginUserId)
 	id, code, err := s.CreateRiskStrategy(&req)
 	if err != nil {
 		e.Error(code, err.Error())
@@ -85,7 +86,7 @@ func (e RiskStrategy) RiskStrategyUpdate(c *gin.Context) {
 		e.Error(baseLang.DataDecodeCode, lang.MsgLogErrf(e.Logger, e.Lang, baseLang.DataDecodeCode, baseLang.DataDecodeLogCode, err).Error())
 		return
 	}
-	req.CurrUserId = middleware.GetCurrUserId(c)
+	req.CurrUserId = c.GetInt64(authdto.LoginUserId)
 	ok, code, err := s.UpdateRiskStrategy(&req)
 	if err != nil {
 		e.Error(code, err.Error())
@@ -106,7 +107,7 @@ func (e RiskStrategy) RiskStrategyDelete(c *gin.Context) {
 	// simple parse to uint64
 	var id uint64
 	_, _ = fmt.Sscan(idParam, &id)
-	ok, code, err := s.DeleteRiskStrategy(id, middleware.GetCurrUserId(c))
+	ok, code, err := s.DeleteRiskStrategy(id, c.GetInt64(authdto.LoginUserId))
 	if err != nil {
 		e.Error(code, err.Error())
 		return

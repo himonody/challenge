@@ -23,10 +23,11 @@ func registerUserRouter(v1 *gin.RouterGroup) {
 		r.PUT("/:id", api.Update)
 		r.GET("/export", api.Export)
 
-		r.POST("/recharge/:id", api.Update)           //人工充值
-		r.POST("/deduct/:id", api.Update)             //人工扣款
-		r.POST("/reset/password/:id", api.Update)     //重置密码
-		r.POST("/reset/pay-password/:id", api.Update) //重置支付密码
+		r.POST("/recharge/:id", api.Recharge)                   //人工充值
+		r.POST("/deduct/:id", api.Deduct)                       //人工扣款
+		r.POST("/reset/password/:id", api.ResetPassword)        //重置密码
+		r.POST("/reset/pay-password/:id", api.ResetPayPassword) //重置支付密码
+		r.POST("/pay-status/:id", api.UpdatePayStatus)          //支付状态改变
 	}
 }
 

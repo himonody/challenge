@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourcePerFileMappings">
+    <file url="file://$PROJECT_DIR$/challenge-admin/app_mysql.sql" value="c314252f-dd64-4af1-a872-80406574db51" />
     <file url="file://$PROJECT_DIR$/challenge-api/app_mysql.sql" value="c314252f-dd64-4af1-a872-80406574db51" />
   </component>
 </project>

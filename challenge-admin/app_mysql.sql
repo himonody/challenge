@@ -1488,6 +1488,128 @@ CREATE TABLE `plugins_msg_code` (
 -- Records of plugins_msg_code
 -- ----------------------------
 BEGIN;
+-- 挑战管理目录挂在 App应用(58)
+SET @parentId := 58;
+SET @parentIds := '0,58,';
+
+INSERT INTO `admin_sys_menu`
+(`title`,`icon`,`path`,`element`,`redirect`,`permission`,`sort`,`parent_id`,`parent_ids`,`menu_type`,`is_keep_alive`,`is_affix`,`is_hidden`,`is_frame`,`create_by`,`update_by`)
+VALUES
+    ('挑战管理','TrophyOutlined','/app/challenge','','/app/challenge/checkin','',10,@parentId,@parentIds,'1','2','2','2','1',1,1);
+SET @challengeId := LAST_INSERT_ID();
+SET @challengePids := CONCAT(@parentIds,@challengeId,',');
+
+-- 打卡
+INSERT INTO `admin_sys_menu`
+(`title`,`icon`,`path`,`element`,`redirect`,`permission`,`sort`,`parent_id`,`parent_ids`,`menu_type`,`is_keep_alive`,`is_affix`,`is_hidden`,`is_frame`,`create_by`,`update_by`)
+VALUES
+    ('打卡','TableOutlined','/app/challenge/checkin','/app/challenge/checkin/index','', '', 10, @challengeId, @challengePids, '2','2','2','2','1',1,1);
+SET @checkinId := LAST_INSERT_ID();
+INSERT INTO `admin_sys_menu` (`title`,`icon`,`path`,`element`,`redirect`,`permission`,`sort`,`parent_id`,`parent_ids`,`menu_type`,`create_by`,`update_by`) VALUES
+                                                                                                                                                               ('打卡-查询','AppstoreOutlined','','','', 'app:challenge:checkin:query', 0, @checkinId, CONCAT(@challengePids,@checkinId,','), '3',1,1),
+                                                                                                                                                               ('打卡-新增','AppstoreOutlined','','','', 'app:challenge:checkin:add',   1, @checkinId, CONCAT(@challengePids,@checkinId,','), '3',1,1),
+                                                                                                                                                               ('打卡-编辑','AppstoreOutlined','','','', 'app:challenge:checkin:edit',  2, @checkinId, CONCAT(@challengePids,@checkinId,','), '3',1,1),
+                                                                                                                                                               ('打卡-删除','AppstoreOutlined','','','', 'app:challenge:checkin:delete',3, @checkinId, CONCAT(@challengePids,@checkinId,','), '3',1,1),
+                                                                                                                                                               ('打卡-导出','AppstoreOutlined','','','', 'app:challenge:checkin:export',4, @checkinId, CONCAT(@challengePids,@checkinId,','), '3',1,1);
+
+-- 打卡图片
+INSERT INTO `admin_sys_menu`
+(`title`,`icon`,`path`,`element`,`redirect`,`permission`,`sort`,`parent_id`,`parent_ids`,`menu_type`,`is_keep_alive`,`is_affix`,`is_hidden`,`is_frame`,`create_by`,`update_by`)
+VALUES
+    ('打卡图片','PictureOutlined','/app/challenge/checkin-image','/app/challenge/checkin-image/index','', '', 20, @challengeId, @challengePids, '2','2','2','2','1',1,1);
+SET @imgId := LAST_INSERT_ID();
+INSERT INTO `admin_sys_menu` (`title`,`icon`,`path`,`element`,`redirect`,`permission`,`sort`,`parent_id`,`parent_ids`,`menu_type`,`create_by`,`update_by`) VALUES
+                                                                                                                                                               ('打卡图片-查询','AppstoreOutlined','','','', 'app:challenge:checkinImage:query', 0, @imgId, CONCAT(@challengePids,@imgId,','), '3',1,1),
+                                                                                                                                                               ('打卡图片-新增','AppstoreOutlined','','','', 'app:challenge:checkinImage:add',   1, @imgId, CONCAT(@challengePids,@imgId,','), '3',1,1),
+                                                                                                                                                               ('打卡图片-编辑','AppstoreOutlined','','','', 'app:challenge:checkinImage:edit',  2, @imgId, CONCAT(@challengePids,@imgId,','), '3',1,1),
+                                                                                                                                                               ('打卡图片-删除','AppstoreOutlined','','','', 'app:challenge:checkinImage:delete',3, @imgId, CONCAT(@challengePids,@imgId,','), '3',1,1),
+                                                                                                                                                               ('打卡图片-导出','AppstoreOutlined','','','', 'app:challenge:checkinImage:export',4, @imgId, CONCAT(@challengePids,@imgId,','), '3',1,1);
+
+-- 打卡视频广告
+INSERT INTO `admin_sys_menu`
+(`title`,`icon`,`path`,`element`,`redirect`,`permission`,`sort`,`parent_id`,`parent_ids`,`menu_type`,`is_keep_alive`,`is_affix`,`is_hidden`,`is_frame`,`create_by`,`update_by`)
+VALUES
+    ('打卡视频广告','VideoCameraOutlined','/app/challenge/checkin-video-ad','/app/challenge/checkin-video-ad/index','', '', 30, @challengeId, @challengePids, '2','2','2','2','1',1,1);
+SET @adId := LAST_INSERT_ID();
+INSERT INTO `admin_sys_menu` (`title`,`icon`,`path`,`element`,`redirect`,`permission`,`sort`,`parent_id`,`parent_ids`,`menu_type`,`create_by`,`update_by`) VALUES
+                                                                                                                                                               ('视频广告-查询','AppstoreOutlined','','','', 'app:challenge:checkinVideoAd:query', 0, @adId, CONCAT(@challengePids,@adId,','), '3',1,1),
+                                                                                                                                                               ('视频广告-新增','AppstoreOutlined','','','', 'app:challenge:checkinVideoAd:add',   1, @adId, CONCAT(@challengePids,@adId,','), '3',1,1),
+                                                                                                                                                               ('视频广告-编辑','AppstoreOutlined','','','', 'app:challenge:checkinVideoAd:edit',  2, @adId, CONCAT(@challengePids,@adId,','), '3',1,1),
+                                                                                                                                                               ('视频广告-删除','AppstoreOutlined','','','', 'app:challenge:checkinVideoAd:delete',3, @adId, CONCAT(@challengePids,@adId,','), '3',1,1),
+                                                                                                                                                               ('视频广告-导出','AppstoreOutlined','','','', 'app:challenge:checkinVideoAd:export',4, @adId, CONCAT(@challengePids,@adId,','), '3',1,1);
 COMMIT;
+
+-- 挑战管理目录 ID=210，parent_ids='0,58,210,'（如不同请替换）
+SET @challengeId := 210;
+SET @challengePids := '0,58,210,';
+
+-- 池子
+INSERT INTO admin_sys_menu (`title`,`icon`,`path`,`element`,`permission`,`sort`,`parent_id`,`parent_ids`,`menu_type`,`is_keep_alive`,`is_affix`,`is_hidden`,`is_frame`,`create_by`,`update_by`)
+VALUES ('挑战奖池','DatabaseOutlined','/app/challenge/pool','/app/challenge/pool/index','',10,@challengeId,@challengePids,'2','2','2','2','1',1,1);
+SET @poolId := LAST_INSERT_ID();
+INSERT INTO admin_sys_menu (`title`,`icon`,`permission`,`sort`,`parent_id`,`parent_ids`,`menu_type`,`create_by`,`update_by`) VALUES
+                                                                                                                                 ('池子-查询','AppstoreOutlined','app:challenge:pool:query',0,@poolId,CONCAT(@challengePids,@poolId,','),'3',1,1),
+                                                                                                                                 ('池子-新增','AppstoreOutlined','app:challenge:pool:add',1,@poolId,CONCAT(@challengePids,@poolId,','),'3',1,1),
+                                                                                                                                 ('池子-编辑','AppstoreOutlined','app:challenge:pool:edit',2,@poolId,CONCAT(@challengePids,@poolId,','),'3',1,1),
+                                                                                                                                 ('池子-删除','AppstoreOutlined','app:challenge:pool:delete',3,@poolId,CONCAT(@challengePids,@poolId,','),'3',1,1),
+                                                                                                                                 ('池子-导出','AppstoreOutlined','app:challenge:pool:export',4,@poolId,CONCAT(@challengePids,@poolId,','),'3',1,1);
+
+-- 池子流水
+INSERT INTO admin_sys_menu (`title`,`icon`,`path`,`element`,`permission`,`sort`,`parent_id`,`parent_ids`,`menu_type`,`is_keep_alive`,`is_affix`,`is_hidden`,`is_frame`,`create_by`,`update_by`)
+VALUES ('挑战奖池流水','SwapOutlined','/app/challenge/pool-flow','/app/challenge/pool-flow/index','',20,@challengeId,@challengePids,'2','2','2','2','1',1,1);
+SET @flowId := LAST_INSERT_ID();
+INSERT INTO admin_sys_menu (`title`,`icon`,`permission`,`sort`,`parent_id`,`parent_ids`,`menu_type`,`create_by`,`update_by`) VALUES
+                                                                                                                                 ('流水-查询','AppstoreOutlined','app:challenge:poolFlow:query',0,@flowId,CONCAT(@challengePids,@flowId,','),'3',1,1),
+                                                                                                                                 ('流水-新增','AppstoreOutlined','app:challenge:poolFlow:add',1,@flowId,CONCAT(@challengePids,@flowId,','),'3',1,1),
+                                                                                                                                 ('流水-编辑','AppstoreOutlined','app:challenge:poolFlow:edit',2,@flowId,CONCAT(@challengePids,@flowId,','),'3',1,1),
+                                                                                                                                 ('流水-删除','AppstoreOutlined','app:challenge:poolFlow:delete',3,@flowId,CONCAT(@challengePids,@flowId,','),'3',1,1),
+                                                                                                                                 ('流水-导出','AppstoreOutlined','app:challenge:poolFlow:export',4,@flowId,CONCAT(@challengePids,@flowId,','),'3',1,1);
+
+-- 结算
+INSERT INTO admin_sys_menu (`title`,`icon`,`path`,`element`,`permission`,`sort`,`parent_id`,`parent_ids`,`menu_type`,`is_keep_alive`,`is_affix`,`is_hidden`,`is_frame`,`create_by`,`update_by`)
+VALUES ('挑战结算','PayCircleOutlined','/app/challenge/settlement','/app/challenge/settlement/index','',30,@challengeId,@challengePids,'2','2','2','2','1',1,1);
+SET @settleId := LAST_INSERT_ID();
+INSERT INTO admin_sys_menu (`title`,`icon`,`permission`,`sort`,`parent_id`,`parent_ids`,`menu_type`,`create_by`,`update_by`) VALUES
+                                                                                                                                 ('结算-查询','AppstoreOutlined','app:challenge:settlement:query',0,@settleId,CONCAT(@challengePids,@settleId,','),'3',1,1),
+                                                                                                                                 ('结算-新增','AppstoreOutlined','app:challenge:settlement:add',1,@settleId,CONCAT(@challengePids,@settleId,','),'3',1,1),
+                                                                                                                                 ('结算-编辑','AppstoreOutlined','app:challenge:settlement:edit',2,@settleId,CONCAT(@challengePids,@settleId,','),'3',1,1),
+                                                                                                                                 ('结算-删除','AppstoreOutlined','app:challenge:settlement:delete',3,@settleId,CONCAT(@challengePids,@settleId,','),'3',1,1),
+                                                                                                                                 ('结算-导出','AppstoreOutlined','app:challenge:settlement:export',4,@settleId,CONCAT(@challengePids,@settleId,','),'3',1,1);
+
+-- 每日统计
+INSERT INTO admin_sys_menu (`title`,`icon`,`path`,`element`,`permission`,`sort`,`parent_id`,`parent_ids`,`menu_type`,`is_keep_alive`,`is_affix`,`is_hidden`,`is_frame`,`create_by`,`update_by`)
+VALUES ('挑战每日统计','CalendarOutlined','/app/challenge/daily-stat','/app/challenge/daily-stat/index','',40,@challengeId,@challengePids,'2','2','2','2','1',1,1);
+SET @dailyId := LAST_INSERT_ID();
+INSERT INTO admin_sys_menu (`title`,`icon`,`permission`,`sort`,`parent_id`,`parent_ids`,`menu_type`,`create_by`,`update_by`) VALUES
+                                                                                                                                 ('每日统计-查询','AppstoreOutlined','app:challenge:dailyStat:query',0,@dailyId,CONCAT(@challengePids,@dailyId,','),'3',1,1),
+                                                                                                                                 ('每日统计-新增','AppstoreOutlined','app:challenge:dailyStat:add',1,@dailyId,CONCAT(@challengePids,@dailyId,','),'3',1,1),
+                                                                                                                                 ('每日统计-编辑','AppstoreOutlined','app:challenge:dailyStat:edit',2,@dailyId,CONCAT(@challengePids,@dailyId,','),'3',1,1),
+                                                                                                                                 ('每日统计-删除','AppstoreOutlined','app:challenge:dailyStat:delete',3,@dailyId,CONCAT(@challengePids,@dailyId,','),'3',1,1),
+                                                                                                                                 ('每日统计-导出','AppstoreOutlined','app:challenge:dailyStat:export',4,@dailyId,CONCAT(@challengePids,@dailyId,','),'3',1,1);
+
+-- 总统计
+INSERT INTO admin_sys_menu (`title`,`icon`,`path`,`element`,`permission`,`sort`,`parent_id`,`parent_ids`,`menu_type`,`is_keep_alive`,`is_affix`,`is_hidden`,`is_frame`,`create_by`,`update_by`)
+VALUES ('挑战总统计','PieChartOutlined','/app/challenge/total-stat','/app/challenge/total-stat/index','',50,@challengeId,@challengePids,'2','2','2','2','1',1,1);
+SET @totalId := LAST_INSERT_ID();
+INSERT INTO admin_sys_menu (`title`,`icon`,`permission`,`sort`,`parent_id`,`parent_ids`,`menu_type`,`create_by`,`update_by`) VALUES
+                                                                                                                                 ('总统计-查询','AppstoreOutlined','app:challenge:totalStat:query',0,@totalId,CONCAT(@challengePids,@totalId,','),'3',1,1),
+                                                                                                                                 ('总统计-新增','AppstoreOutlined','app:challenge:totalStat:add',1,@totalId,CONCAT(@challengePids,@totalId,','),'3',1,1),
+                                                                                                                                 ('总统计-编辑','AppstoreOutlined','app:challenge:totalStat:edit',2,@totalId,CONCAT(@challengePids,@totalId,','),'3',1,1),
+                                                                                                                                 ('总统计-删除','AppstoreOutlined','app:challenge:totalStat:delete',3,@totalId,CONCAT(@challengePids,@totalId,','),'3',1,1),
+                                                                                                                                 ('总统计-导出','AppstoreOutlined','app:challenge:totalStat:export',4,@totalId,CONCAT(@challengePids,@totalId,','),'3',1,1);
+
+-- 挑战用户
+INSERT INTO admin_sys_menu (`title`,`icon`,`path`,`element`,`permission`,`sort`,`parent_id`,`parent_ids`,`menu_type`,`is_keep_alive`,`is_affix`,`is_hidden`,`is_frame`,`create_by`,`update_by`)
+VALUES ('挑战用户','TeamOutlined','/app/challenge/user','/app/challenge/user/index','',60,@challengeId,@challengePids,'2','2','2','2','1',1,1);
+SET @cuserId := LAST_INSERT_ID();
+INSERT INTO admin_sys_menu (`title`,`icon`,`permission`,`sort`,`parent_id`,`parent_ids`,`menu_type`,`create_by`,`update_by`) VALUES
+                                                                                                                                 ('挑战用户-查询','AppstoreOutlined','app:challenge:user:query',0,@cuserId,CONCAT(@challengePids,@cuserId,','),'3',1,1),
+                                                                                                                                 ('挑战用户-新增','AppstoreOutlined','app:challenge:user:add',1,@cuserId,CONCAT(@challengePids,@cuserId,','),'3',1,1),
+                                                                                                                                 ('挑战用户-编辑','AppstoreOutlined','app:challenge:user:edit',2,@cuserId,CONCAT(@challengePids,@cuserId,','),'3',1,1),
+                                                                                                                                 ('挑战用户-删除','AppstoreOutlined','app:challenge:user:delete',3,@cuserId,CONCAT(@challengePids,@cuserId,','),'3',1,1),
+                                                                                                                                 ('挑战用户-导出','AppstoreOutlined','app:challenge:user:export',4,@cuserId,CONCAT(@challengePids,@cuserId,','),'3',1,1);
+
+
+
 
 SET FOREIGN_KEY_CHECKS = 1;

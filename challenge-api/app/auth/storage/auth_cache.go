@@ -22,7 +22,6 @@ const (
 
 const (
 	// 登录相关缓存前缀
-	AuthLoginTokenPrefix   = "challenge:auth:login:token"   // 登录token
 	AuthLoginFailPrefix    = "challenge:auth:login:fail"    // 登录失败计数
 	AuthLoginLockPrefix    = "challenge:auth:login:lock"    // 登录锁定
 	AuthLoginSessionPrefix = "challenge:auth:login:session" // 登录会话
@@ -36,26 +35,6 @@ const (
 	AuthSMSCodePrefix   = "challenge:auth:sms:code"   // 短信验证码
 	AuthEmailCodePrefix = "challenge:auth:email:code" // 邮箱验证码
 )
-
-// ================ 登录Token管理 ================
-
-// SetLoginToken 设置登录token
-func SetLoginToken(ctx context.Context, cache storage.AdapterCache, userID int, token string, expireSec int) error {
-	key := fmt.Sprintf("%d", userID)
-	return cache.Set(AuthLoginTokenPrefix, key, token, expireSec)
-}
-
-// GetLoginToken 获取登录token
-func GetLoginToken(ctx context.Context, cache storage.AdapterCache, userID int) (string, error) {
-	key := fmt.Sprintf("%d", userID)
-	return cache.Get(AuthLoginTokenPrefix, key)
-}
-
-// DelLoginToken 删除登录token（登出）
-func DelLoginToken(ctx context.Context, cache storage.AdapterCache, userID int) error {
-	key := fmt.Sprintf("%d", userID)
-	return cache.Del(AuthLoginTokenPrefix, key)
-}
 
 // ================ 登录失败计数管理 ================
 
