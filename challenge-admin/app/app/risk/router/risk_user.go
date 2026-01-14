@@ -12,6 +12,6 @@ func init() {
 
 func registerRiskUserRoute(r *gin.RouterGroup) {
 	api := apis.RiskUser{}
-	r.GET("/user", api.RiskUserPage)
-	r.GET("/user/export", api.RiskUserExport)
+	r.GET("/risk/user", api.RiskUserPage)
+	r.GET("/risk/user/export", api.RiskUserExport)
 }

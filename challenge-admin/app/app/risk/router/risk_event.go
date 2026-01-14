@@ -12,6 +12,6 @@ func init() {
 
 func registerRiskEventRoute(r *gin.RouterGroup) {
 	api := apis.RiskEvent{}
-	r.GET("/event", api.RiskEventPage)
-	r.GET("/event/export", api.RiskEventExport)
+	r.GET("/risk/event", api.RiskEventPage)
+	r.GET("/risk/event/export", api.RiskEventExport)
 }

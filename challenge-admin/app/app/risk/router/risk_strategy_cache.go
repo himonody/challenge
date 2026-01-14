@@ -12,6 +12,6 @@ func init() {
 
 func registerRiskStrategyCacheRoute(r *gin.RouterGroup) {
 	api := apis.RiskStrategyCache{}
-	r.GET("/strategy/cache", api.RiskStrategyCachePage)
-	r.GET("/strategy/cache/export", api.RiskStrategyCacheExport)
+	r.GET("/risk/strategy/cache", api.RiskStrategyCachePage)
+	r.GET("/risk/strategy/cache/export", api.RiskStrategyCacheExport)
 }

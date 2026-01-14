@@ -12,9 +12,9 @@ func init() {
 
 func registerRiskActionRoute(r *gin.RouterGroup) {
 	api := apis.RiskAction{}
-	r.GET("/action", api.RiskActionPage)
-	r.GET("/action/export", api.RiskActionExport)
-	r.POST("/action", api.RiskActionCreate)
-	r.PUT("/action/:code", api.RiskActionUpdate)
-	r.DELETE("/action/:code", api.RiskActionDelete)
+	r.GET("/risk/action", api.RiskActionPage)
+	r.GET("/risk/action/export", api.RiskActionExport)
+	r.POST("/risk/action", api.RiskActionCreate)
+	r.PUT("/risk/action/:code", api.RiskActionUpdate)
+	r.DELETE("/risk/action/:code", api.RiskActionDelete)
 }

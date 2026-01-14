@@ -12,7 +12,7 @@ func init() {
 
 func registerRiskAppealRoute(r *gin.RouterGroup) {
 	api := apis.RiskAppeal{}
-	r.GET("/appeal", api.RiskAppealPage)
-	r.GET("/appeal/export", api.RiskAppealExport)
-	r.PUT("/appeal/:id/review", api.RiskAppealReview)
+	r.GET("/risk/appeal", api.RiskAppealPage)
+	r.GET("/risk/appeal/export", api.RiskAppealExport)
+	r.PUT("/risk/appeal/:id/review", api.RiskAppealReview)
 }

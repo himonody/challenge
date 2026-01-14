@@ -12,6 +12,6 @@ func init() {
 
 func registerRiskDeviceRoute(r *gin.RouterGroup) {
 	api := apis.RiskDevice{}
-	r.GET("/device", api.RiskDevicePage)
-	r.GET("/device/export", api.RiskDeviceExport)
+	r.GET("/risk/device", api.RiskDevicePage)
+	r.GET("/risk/device/export", api.RiskDeviceExport)
 }

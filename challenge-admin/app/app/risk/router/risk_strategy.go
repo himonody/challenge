@@ -12,9 +12,9 @@ func init() {
 
 func registerRiskStrategyRoute(r *gin.RouterGroup) {
 	api := apis.RiskStrategy{}
-	r.GET("/strategy", api.RiskStrategyPage)
-	r.GET("/strategy/export", api.RiskStrategyExport)
-	r.POST("/strategy", api.RiskStrategyCreate)
-	r.PUT("/strategy/:id", api.RiskStrategyUpdate)
-	r.DELETE("/strategy/:id", api.RiskStrategyDelete)
+	r.GET("/risk/strategy", api.RiskStrategyPage)
+	r.GET("/risk/strategy/export", api.RiskStrategyExport)
+	r.POST("/risk/strategy", api.RiskStrategyCreate)
+	r.PUT("/risk/strategy/:id", api.RiskStrategyUpdate)
+	r.DELETE("/risk/strategy/:id", api.RiskStrategyDelete)
 }

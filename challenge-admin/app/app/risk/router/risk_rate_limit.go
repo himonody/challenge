@@ -12,6 +12,6 @@ func init() {
 
 func registerRiskRateLimitRoute(r *gin.RouterGroup) {
 	api := apis.RiskRateLimit{}
-	r.GET("/rate-limit", api.RiskRateLimitPage)
-	r.GET("/rate-limit/export", api.RiskRateLimitExport)
+	r.GET("/risk/rate-limit", api.RiskRateLimitPage)
+	r.GET("/risk/rate-limit/export", api.RiskRateLimitExport)
 }
